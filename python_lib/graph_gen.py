@@ -1,0 +1,75 @@
+import networkx as nx
+import numpy as np
+from collections import defaultdict
+import math
+import torch
+import matplotlib.pyplot as plt
+import pygraphviz
+from networkx.drawing.nx_agraph import graphviz_layout
+import random
+
+def fixed_value(val = 1):
+    return lambda : val
+
+def spin_glass():
+    return 2.*(random.random()-0.5)
+
+def tree_interaction(d, h):
+    G = nx.balanced_tree(d-1, h)
+    pos = graphviz_layout(G, prog='twopi', args='')
+    plt.figure(figsize=(8, 8))
+    nx.draw(G, pos, node_size=500,  with_labels=True)
+    plt.axis('equal')
+    plt.show()
+    adiacency_dict = {}
+    for n, nbrdict in G.adjacency():
+        adiacency_dict[n] = nbrdict.keys()
+        
+    num_nodes = len(adiacency_dict)
+    adiacency_matrix = np.zeros((num_nodes, num_nodes))
+    for n in range(num_nodes):
+        for n_n in range(num_nodes):
+            is_there = n_n in adiacency_dict[n]
+            if n_n in adiacency_dict[n]:
+                adiacency_matrix[n][n_n] = 1
+    assert adiacency_matrix.size == num_nodes * num_nodes
+    return num_nodes, adiacency_matrix
+
+def grid_2d_interaction(n, m):
+    G = nx.grid_2d_graph(n,m)
+    pos = graphviz_layout(G, prog='neato', args='')
+    plt.figure(figsize=(8, 8))
+    nx.draw(G, pos, node_size=500,  with_labels=True)
+    plt.axis('equal')
+    plt.show()
+    adiacency_dict = {}
+    for index, nbrdict in G.adjacency():
+        pos_n = index[0] * n + index[1]
+        neighs = [pp[0]*n + pp[1] for pp in nbrdict.keys()]
+        adiacency_dict[pos_n] = neighs
+
+    num_nodes = len(adiacency_dict)
+    adiacency_matrix = np.zeros((num_nodes, num_nodes))
+    for index in range(num_nodes):
+        for n_n in range(num_nodes):
+            is_there = n_n in adiacency_dict[index]
+            if n_n in adiacency_dict[index]:
+                adiacency_matrix[index][n_n] = 1
+    assert adiacency_matrix.size == num_nodes * num_nodes
+    return num_nodes, adiacency_matrix
+
+
+def set_J(J, value_func):
+    J = J.copy()
+    for i in range(len(J)):
+        for j in range(len(J)):
+            if J[i][j] != 0:
+                J[i][j] = value_func()
+    J = 0.5*(J + J.transpose())            
+    
+    return J
+
+def set_H(H, value_func):
+    for i in range(len(H)):
+        if H[i] != 0:
+            H[i] = value_func()
