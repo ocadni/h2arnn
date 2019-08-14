@@ -4,11 +4,17 @@ import math
 from numba import jit, jitclass
 from numba import int32, float32, float64    # import the types
 
+#int32 = np.int32
+#int64 = np.int64
+#float64 = np.float64
+
 class model():
     def __init__(self, N, H, J, J_interaction, beta = 1):
         self.N = N
         self.J = J
         self.H = H
+        self.H_torch = torch.from_numpy(self.H).cpu().double()
+        self.J_torch = torch.from_numpy(self.J).cpu().double()
         self.J_interaction = J_interaction
         self.beta = beta
         assert N == len(H)
@@ -64,7 +70,17 @@ class model():
                                                   self.E_mean - (1./beta)*self.S_mean))
         
         return -(1/beta)* math.log(Z.numpy()[0][0])
-        
+    
+    def energy(self, samples):
+        """
+        Compute energy of samples, samples should be of size [m, n] where n is the number of spins, m is the number of samples.
+        """
+        samples = samples.view(samples.shape[0], -1)
+        assert samples.shape[1] == self.N
+        m = samples.shape[0]
+        return (-0.5 * ((samples @ self.J_torch).view(m, 1, self.N) @ samples.view(
+            m, self.N, 1)).squeeze() - self.H_torch * torch.sum(samples, 1))
+
     #@jit(nopython=True)
     def exact_numba(self):
         #assert self.N < 28
@@ -128,7 +144,7 @@ spec = [
     ("S_mean", float64),
 ]
 
-@jit
+#@jit
 def bin_numba(n):
     if n==0: return [0.]
     else:
@@ -136,7 +152,7 @@ def bin_numba(n):
         temp.extend(bin_numba(n//2))
         return temp
 
-@jitclass(spec)
+#@jitclass(spec)
 class model_numba(object):
     def __init__(self, N, H, J, J_interaction, beta):
         self.N = N
