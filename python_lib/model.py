@@ -78,8 +78,10 @@ class model():
         samples = samples.view(samples.shape[0], -1)
         assert samples.shape[1] == self.N
         m = samples.shape[0]
-        return (-0.5 * ((samples @ self.J_torch).view(m, 1, self.N) @ samples.view(
-            m, self.N, 1)).squeeze() - self.H_torch * torch.sum(samples, 1))
+        inter = -0.5 * ((samples @ self.J_torch).view(m, 1, self.N) @ samples.view(
+            m, self.N, 1)).squeeze()
+        field = -(samples.view(m, 1, self.N) @ self.H_torch.view(self.N, 1)).squeeze()
+        return (inter + field)
 
     #@jit(nopython=True)
     def exact_numba(self):
