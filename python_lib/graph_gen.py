@@ -12,10 +12,18 @@ def fixed_value(val = 1):
     return lambda : val
 
 def spin_glass():
-    return 2.*(random.random()-0.5)
+    return lambda : 2.*(random.random()-0.5)
 
-def tree_interaction(d, h):
+def tree_interaction(d, h, rand=False):
     G = nx.balanced_tree(d-1, h)
+    if rand:
+        a = sorted(G).copy()
+        random.shuffle(a)
+        mapping={}
+        for i, n in enumerate(sorted(G)):
+            mapping[n] = a[i]
+        G = nx.relabel_nodes(G, mapping)
+
     pos = graphviz_layout(G, prog='twopi', args='')
     plt.figure(figsize=(8, 8))
     nx.draw(G, pos, node_size=500,  with_labels=True)
@@ -35,8 +43,8 @@ def tree_interaction(d, h):
     assert adiacency_matrix.size == num_nodes * num_nodes
     return num_nodes, adiacency_matrix
 
-def grid_2d_interaction(n, m):
-    G = nx.grid_2d_graph(n,m)
+def grid_2d_interaction(n, m, periodic=False):
+    G = nx.grid_2d_graph(n,m, periodic=periodic)
     pos = graphviz_layout(G, prog='neato', args='')
     plt.figure(figsize=(8, 8))
     nx.draw(G, pos, node_size=500,  with_labels=True)

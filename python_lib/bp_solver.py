@@ -5,7 +5,7 @@ class BP_solver():
         self.J = model_.J
         self.J_interaction = model_.J_interaction
         self.H = model_.H
-        self.beta = model_.beta
+        #self.beta = model_.beta
         self.N = model_.N
         
         # matrix of message (represent +1 probability)
@@ -41,22 +41,20 @@ class BP_solver():
         self.F_ij = 0
 
             
-    def factor_ij(self, i, j, s_i, s_j):
+    def factor_ij(self, i, j, s_i, s_j, beta):
         n_neigh_i = self.num_neighs[i]
         n_neigh_j = self.num_neighs[j]
         hi = self.H[i] / n_neigh_i
         hj = self.H[j] / n_neigh_j
         j_v = self.J[i][j]
-        beta = self.beta
         factor_temp = np.exp(beta * ( s_i * hi + s_j * hj))
         factor_temp *= np.exp(beta * j_v * s_j * s_i)
         return  factor_temp
     
-    def BP_update(self):
+    def BP_update(self, beta):
         old_M = self.M.copy()
         neighs = self.neighs
         factor_ij = self.factor_ij
-        beta = self.beta
         for i in range(len(neighs)):
             z_i_p = 1
             z_i_m = 1
@@ -69,10 +67,10 @@ class BP_solver():
                         prod_p *= self.M[k][i]
                         prod_m *= (1. - self.M[k][i])
                         
-                M_p_p = factor_ij(i, j, 1, 1) * prod_p
-                M_m_p = factor_ij(i, j, -1, 1) * prod_m
-                M_p_m = factor_ij(i, j, 1, -1) * prod_p
-                M_m_m = factor_ij(i, j, -1, -1) * prod_m
+                M_p_p = factor_ij(i, j, 1, 1, beta) * prod_p
+                M_m_p = factor_ij(i, j, -1, 1, beta) * prod_m
+                M_p_m = factor_ij(i, j, 1, -1, beta) * prod_p
+                M_m_m = factor_ij(i, j, -1, -1, beta) * prod_m
                 
                 self.Z_ij_p[i][j] = prod_p
                 self.Z_ij_m[i][j] = prod_m
@@ -92,9 +90,8 @@ class BP_solver():
             #print(np.exp(-beta*H[i]) * z_i_p + np.exp(beta*H[i]) * z_i_l)
         return np.sum(np.abs(old_M - self.M))
     
-    def free_energy(self, print_=False):
+    def free_energy(self, beta, print_=False):
         F_i = 0
-        beta = self.beta
         Z_ij_p = self.Z_ij_p
         Z_ij_m = self.Z_ij_m
         F_ij = 0
@@ -112,25 +109,24 @@ class BP_solver():
             for j in neighs[i][neighs[i] != -2]:
                 if j > i:
                     Z_ij_temp = 0
-                    Z_ij_temp += factor_ij(i, j, 1, 1) * Z_ij_p[i][j] * Z_ij_p[j][i]
-                    Z_ij_temp += factor_ij(i, j, 1, -1) * Z_ij_p[i][j] * Z_ij_m[j][i]
-                    Z_ij_temp += factor_ij(i, j, -1, 1) * Z_ij_m[i][j] * Z_ij_p[j][i]
-                    Z_ij_temp += factor_ij(i, j, -1, -1)  * Z_ij_m[i][j] * Z_ij_m[j][i]
+                    Z_ij_temp += factor_ij(i, j, 1, 1, beta) * Z_ij_p[i][j] * Z_ij_p[j][i]
+                    Z_ij_temp += factor_ij(i, j, 1, -1, beta) * Z_ij_p[i][j] * Z_ij_m[j][i]
+                    Z_ij_temp += factor_ij(i, j, -1, 1, beta) * Z_ij_m[i][j] * Z_ij_p[j][i]
+                    Z_ij_temp += factor_ij(i, j, -1, -1, beta)  * Z_ij_m[i][j] * Z_ij_m[j][i]
                     F_ij += np.log(Z_ij_temp)
                     #print(Z_ij_temp,  factor_ij(i, j, 1, 1) * Z_ij_p[i][j] * Z_ij_p[j][i])
         #print(Z_ij)
         self.Z_ij = np.exp(F_ij)
-        self.F =  -1./self.beta * (F_ij + F_i) * (1./self.N)
+        self.F =  -1. / beta * (F_ij + F_i) * (1./self.N)
         if print_:
             print("free energy: ", self.F)
-        print("...", self.energy())
+        #print("...", self.energy())
         return self.F
     
     def magnetization(self, print_=False):
         M_i = 0
         H = self.H
         J = self.J
-        beta = self.beta
         for i in range(self.N):
             #num_neigh = len(self.neighs[i][self.neighs[i] != -2])
             M_i_temp = self.Z_i_p[i] - self.Z_i_m[i]
@@ -141,9 +137,8 @@ class BP_solver():
             print("M: {0:.3}".format(self.M_mean))
         return self.M_mean
     
-    def entropy(self, print_=False):
+    def entropy(self, beta, print_=False):
         S_i = 0
-        beta = self.beta
         factor_ij = self.factor_ij
 
         for i in range(self.N):
@@ -162,10 +157,10 @@ class BP_solver():
             for j in neighs[i][neighs[i] != -2]:
                 if j > i:
                     S_ij_temp = 0
-                    p_p = factor_ij(i, j, 1, 1) * Z_ij_p[i][j] * Z_ij_p[j][i]
-                    p_m = factor_ij(i, j, 1, -1)  * Z_ij_p[i][j] * Z_ij_m[j][i]
-                    m_p = factor_ij(i, j, -1, 1)  * Z_ij_m[i][j] * Z_ij_p[j][i]
-                    m_m = factor_ij(i, j, -1, -1)  * Z_ij_m[i][j] * Z_ij_m[j][i]
+                    p_p = factor_ij(i, j, 1, 1, beta) * Z_ij_p[i][j] * Z_ij_p[j][i]
+                    p_m = factor_ij(i, j, 1, -1, beta)  * Z_ij_p[i][j] * Z_ij_m[j][i]
+                    m_p = factor_ij(i, j, -1, 1, beta)  * Z_ij_m[i][j] * Z_ij_p[j][i]
+                    m_m = factor_ij(i, j, -1, -1, beta)  * Z_ij_m[i][j] * Z_ij_m[j][i]
                     norm_ij = p_p + p_m + m_p + m_m
                     S_ij_temp += (p_p / norm_ij) * np.log(p_p / norm_ij)
                     S_ij_temp += (p_m / norm_ij) * np.log(p_m / norm_ij)
@@ -173,15 +168,14 @@ class BP_solver():
                     S_ij_temp += (m_m / norm_ij) * np.log(m_m / norm_ij)
                     S_ij += S_ij_temp
         
-        self.S = -(1./beta)*(S_i + S_ij) / self.N
+        self.S = - (S_i + S_ij) / self.N
         if print_:
             print("S: {0:.3}".format( self.S))
         return self.S
     
-    def energy(self, print_=False):
+    def energy(self, beta, print_=False):
         E_i = 0
         E_ij = 0
-        beta = self.beta
         H = self.H
         J = self.J
         Z_ij_p = self.Z_ij_p
@@ -200,10 +194,10 @@ class BP_solver():
             for j in neighs[i][neighs[i] != -2]:
                 if j > i:
                     E_ij_temp = 0
-                    p_p = factor_ij(i, j, 1, 1) * Z_ij_p[i][j] * Z_ij_p[j][i]
-                    p_m = factor_ij(i, j, 1, -1)  * Z_ij_p[i][j] * Z_ij_m[j][i]
-                    m_p = factor_ij(i, j, -1, 1)  * Z_ij_m[i][j] * Z_ij_p[j][i]
-                    m_m = factor_ij(i, j, -1, -1)  * Z_ij_m[i][j] * Z_ij_m[j][i]
+                    p_p = factor_ij(i, j, 1, 1, beta) * Z_ij_p[i][j] * Z_ij_p[j][i]
+                    p_m = factor_ij(i, j, 1, -1, beta)  * Z_ij_p[i][j] * Z_ij_m[j][i]
+                    m_p = factor_ij(i, j, -1, 1, beta)  * Z_ij_m[i][j] * Z_ij_p[j][i]
+                    m_m = factor_ij(i, j, -1, -1, beta)  * Z_ij_m[i][j] * Z_ij_m[j][i]
                     E_ij_temp += - J[i][j] * p_p
                     E_ij_temp += J[i][j] * p_m
                     E_ij_temp += J[i][j] * m_p
@@ -219,18 +213,17 @@ class BP_solver():
 
     
     
-    def converge(self, error = 1e-6, max_iter = 10000):
+    def converge(self, beta, error = 1e-10, max_iter = 10000):
         err_temp = error + 1
         iter_ = 0
         while err_temp > error and iter_ < max_iter:
-            err_temp = self.BP_update()
+            err_temp = self.BP_update(beta)
             iter_ += 1
             print("\r iter:{1},  err: {0:.3f} free_energy {2:.2f}".format(
                 err_temp, iter_,
-                self.free_energy()), end="")
-        print("\nend \ntot_iter: {1},  error: {0:.3f} free_energy: {2:.2f}".format(
-                err_temp, iter_,
-                self.free_energy()))
-        self.energy(print_=True)
-        self.magnetization(print_=True)
-        self.entropy(print_=True)
+                self.free_energy(beta, print_=False)), end="")
+        E = self.energy(beta, print_=False)
+        M = self.magnetization(print_=False)
+        S = self.entropy(beta, print_=False)
+        fe = self.F
+        print("\n bp \n fe: {0:.3f}, ener: {1:.3f}, M: {2:.3f}".format(fe, E, M))
