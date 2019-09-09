@@ -1,5 +1,7 @@
 import bp_solver
 import bp_nn
+import numpy as np
+import matplotlib.pyplot as plt
 
 def bp_sol(model, betas, error = 1e-6):
     fe_bp = []
@@ -18,10 +20,10 @@ def bp_sol(model, betas, error = 1e-6):
     
     return {
         "betas":betas,
-        "fe":"fe_bp",
-        "E":ener_bp,
-        "M":m_bp,
-        "M_i":m_i_bp
+        "fe":np.array(fe_bp),
+        "E": np.array(ener_bp),
+        "M": np.array(m_bp),
+        "M_i": np.array(m_i_bp)
     }
 
 def nn_sol(model, betas, bias = True, z2 = False, x_hat_clip = False,
@@ -61,10 +63,58 @@ def nn_sol(model, betas, bias = True, z2 = False, x_hat_clip = False,
         ener_nn.append(E)
         m_nn.append(M)
         m_i_nn.append(M_i)
-        print("\nfree_energy: {0:.3f},  std_fe: {1:.5f}, mag_mean: {2:.3f}, entropy: {3:.3f} energy: {4:.3f}".format(F,
+        #print("\r", end="")
+        print("\rfe: {0:.3f} std_fe: {1:.2E} M: {2:.3f} S: {3:.3f} E: {4:.3f}".format(F,
                                                     F_std,
                                                     M,
                                                     S,
-                                                    E,
-                                                        ), end="")
+                                                    E,),)
+    return {
+        "betas": betas,
+        "fe": np.array(fe_nn),
+        "E": np.array(ener_nn),
+        "M": np.array(m_nn),
+        "M_i": np.array(m_i_nn)
+    }
 
+def exact_sol(model, betas):
+    fe_ex = []
+    ener_ex = []
+    m_ex = []
+    m_i_ex = []
+    for beta in betas:
+        model.exact(beta)
+        fe_ex.append(model.free_energy)
+        ener_ex.append(model.E_mean)
+        m_ex.append(model.M_mean)
+        m_i_ex.append(model.M_i_mean)
+    return {
+        "betas": betas,
+        "fe": np.array(fe_ex),
+        "E": np.array(ener_ex),
+        "M": np.array(m_ex),
+        "M_i": np.array(m_i_ex)
+    }
+
+        
+def plot_quantity(label, res_ex, others):
+    plt.figure(figsize=(10,5))
+    ax1 = plt.subplot(121,)
+    plt.plot(res_ex["betas"], res_ex[label], label = "exact")
+    for other in others:
+        plt.plot(other["betas"], other[label],"o", label=other["name"],)
+
+    ax2 = plt.subplot(122)
+    for other in others:
+        plt.plot(other["betas"], other[label] - res_ex[label], "o",
+                 label=other["name"])
+    plt.legend()
+    return plt
+
+def plot_quantity_sum(label, res_ex, others):
+    plt.figure(figsize=(10,5))
+
+    for other in others:
+        plt.plot(other["betas"], abs(other[label] - res_ex[label]).sum(axis=1)/len(other[label]), "o",
+                 label=other["name"])
+    return plt
