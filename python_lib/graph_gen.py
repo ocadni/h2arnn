@@ -12,7 +12,7 @@ def fixed_value(val = 1):
     return lambda : val
 
 def spin_glass():
-    return lambda : 2.*(random.random()-0.5)
+    return lambda : 2. * (random.random()-0.5)
 
 def tree_interaction(d, h, rand=False):
     G = nx.balanced_tree(d-1, h)
@@ -43,6 +43,14 @@ def tree_interaction(d, h, rand=False):
     assert adiacency_matrix.size == num_nodes * num_nodes
     return num_nodes, adiacency_matrix
 
+def plot_matrix_graph(J):
+    G=nx.from_numpy_matrix(J)
+    pos = graphviz_layout(G, prog='twopi', args='')
+    plt.figure(figsize=(8, 8))
+    nx.draw(G, pos, node_size=500,  with_labels=True)
+    plt.axis('equal')
+    plt.show()
+    
 def grid_2d_interaction(n, m, periodic=False):
     G = nx.grid_2d_graph(n,m, periodic=periodic)
     pos = graphviz_layout(G, prog='neato', args='')

@@ -124,15 +124,17 @@ class BP_solver():
         return self.F
     
     def magnetization(self, print_=False):
-        M_i = 0
+        M = 0
         H = self.H
         J = self.J
+        M_i = np.zeros(self.N)
         for i in range(self.N):
             #num_neigh = len(self.neighs[i][self.neighs[i] != -2])
             M_i_temp = self.Z_i_p[i] - self.Z_i_m[i]
-            M_i += M_i_temp/(self.Z_i_p[i] + self.Z_i_m[i])
-        
-        self.M_mean = M_i / self.N
+            M += M_i_temp/(self.Z_i_p[i] + self.Z_i_m[i])
+            M_i[i] =  M_i_temp/(self.Z_i_p[i] + self.Z_i_m[i])
+        self.M_mean = M / self.N
+        self.M_i = M_i
         if print_:
             print("M: {0:.3}".format(self.M_mean))
         return self.M_mean
@@ -222,8 +224,9 @@ class BP_solver():
             print("\r iter:{1},  err: {0:.3f} free_energy {2:.2f}".format(
                 err_temp, iter_,
                 self.free_energy(beta, print_=False)), end="")
+        print("\r", end="")
         E = self.energy(beta, print_=False)
         M = self.magnetization(print_=False)
         S = self.entropy(beta, print_=False)
         fe = self.F
-        print("\n bp \n fe: {0:.3f}, ener: {1:.3f}, M: {2:.3f}".format(fe, E, M))
+        print("fe: {0:.3f}, ener: {1:.3f}, M: {2:.3f}, iter {iter_}".format(fe, E, M, iter_ = iter_))
