@@ -47,8 +47,9 @@ class BP_solver():
         hi = self.H[i] / n_neigh_i
         hj = self.H[j] / n_neigh_j
         j_v = self.J[i][j]
-        factor_temp = np.exp(beta * ( s_i * hi + s_j * hj))
-        factor_temp *= np.exp(beta * j_v * s_j * s_i)
+        val = s_i * hi + s_j * hj + j_v * s_j * s_i
+        val *= beta
+        factor_temp = np.exp(val)
         return  factor_temp
     
     def BP_update(self, beta):
@@ -86,8 +87,7 @@ class BP_solver():
 
             self.Z_i_p[i] = z_i_p
             self.Z_i_m[i] = z_i_m
-            #print(i, self.Z_i[i], z_i_p, z_i_l, np.exp(-beta*H[i]), np.exp(beta*H[i]))
-            #print(np.exp(-beta*H[i]) * z_i_p + np.exp(beta*H[i]) * z_i_l)
+            #print(self.M)
         return np.sum(np.abs(old_M - self.M))
     
     def free_energy(self, beta, print_=False):
@@ -213,9 +213,47 @@ class BP_solver():
             print("Energy: {:.3}".format(self.E_mean))
         return self.E_mean
 
+    def corr(self, beta):
+        E_ij = 0
+        H = self.H
+        J = self.J
+        Corr = np.zeros(J.shape)
+        Z_ij_p = self.Z_ij_p
+        Z_ij_m = self.Z_ij_m
+        neighs = self.neighs
+        factor_ij = self.factor_ij
+        self.magnetization(print_=False)
+                
+        for i in range(len(neighs)):
+            z_i_p = 1
+            z_i_m = 1
+            for j in neighs[i][neighs[i] != -2]:
+                #if j > i:
+                C_ij_temp = 0
+                p_p = factor_ij(i, j, 1, 1, beta) * Z_ij_p[i][j] * Z_ij_p[j][i]
+                p_m = factor_ij(i, j, 1, -1, beta)  * Z_ij_p[i][j] * Z_ij_m[j][i]
+                m_p = factor_ij(i, j, -1, 1, beta)  * Z_ij_m[i][j] * Z_ij_p[j][i]
+                m_m = factor_ij(i, j, -1, -1, beta)  * Z_ij_m[i][j] * Z_ij_m[j][i]
+                C_ij_temp = (p_p - p_m - m_p +  m_m) / (p_p + p_m + m_p +  m_m)
+                Corr[i][j] = C_ij_temp
+                #print(i,j)
+                #print("{0:.3f}, {1:.3f}, {2:.3f}, {3:.3f} {4:.3f}".format(C_ij_temp, p_p, p_m, m_p,  p_p))
+        self.Corr = Corr - np.outer(self.M_i, self.M_i)
+        #print(self.M_i, np.outer(self.M_i, self.M_i))
+        return self.Corr
+
     
+    def small_rand(self, val = 1):
+        M_small = (np.random.random(self.M.shape) * 2 - 1) * val * self.M
+        self.M += M_small
+        self.M[self.M > 1] = 1.
+        return self.M
     
-    def converge(self, beta, error = 1e-10, max_iter = 10000):
+    def converge(self, beta, error = 1e-10, 
+                 max_iter = 1000, 
+                 rand_init = True, val_rand=0.1):
+        if rand_init:
+            self.small_rand(val = val_rand)
         err_temp = error + 1
         iter_ = 0
         while err_temp > error and iter_ < max_iter:
@@ -228,5 +266,6 @@ class BP_solver():
         E = self.energy(beta, print_=False)
         M = self.magnetization(print_=False)
         S = self.entropy(beta, print_=False)
+        Corr = self.corr(beta)
         fe = self.F
         print("fe: {0:.3f}, ener: {1:.3f}, M: {2:.3f}, iter {iter_}".format(fe, E, M, iter_ = iter_))

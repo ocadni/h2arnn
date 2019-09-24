@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 type_default = torch.float64
-device = "cpu"
+
 class myLayer(nn.Linear):
     def __init__(self, n, J_interaction, bias, diagonal=-1, identity=False, init_zero = False):
         super(myLayer, self).__init__( n, n, bias)
@@ -27,64 +27,12 @@ class myLayer(nn.Linear):
     def forward(self, x):
         return nn.functional.linear(x, self.mask * self.weight, self.bias)
 
-class myLayer_rand(nn.Linear):
-    def __init__(self, n, J_interaction, bias, diagonal=-1, identity=False):
-        super(myLayer_rand, self).__init__( n, n, bias)
-        self.n = n
-
-        self.register_buffer('mask', torch.ones([self.n] * 2))
-        self.mask = 1 - torch.triu(self.mask)
-                
-        self.weight.data *= self.mask
-
-        # Correction to Xavier initialization
-        self.weight.data *= torch.sqrt(self.mask.numel() / self.mask.sum())
-
-    def forward(self, x):
-        return nn.functional.linear(x, self.mask * self.weight, self.bias)
-
-class myLayer_out_diag(nn.Linear):
-    def __init__(self, n, J_interaction, bias, diagonal=-1, identity=False):
-        super(myLayer_out_diag, self).__init__( n, n, bias)
-        self.n = n
-        diag_ = torch.diag(torch.ones(n-1), diagonal=-1, out=None)
-        self.register_buffer('mask', diag_)
-                
-        self.weight.data *= self.mask
-
-        # Correction to Xavier initialization
-        self.weight.data *= torch.sqrt(self.mask.numel() / self.mask.sum())
-
-    def forward(self, x):
-        return nn.functional.linear(x, self.mask * self.weight, self.bias)
-    
-class myLinear(nn.Linear):
-    def __init__(self, J_interaction, bias):
-        super(myLinear, self).__init__(J_interaction.shape[1],
-                                       J_interaction.shape[0], 
-                                       bias)
-
-        self.register_buffer('mask', torch.Tensor(J_interaction))
-        #self.register_buffer('mask_bias', torch.Tensor(bias))
-        self.weight.data *= self.mask
-        #self.bias.data *= self.mask_bias
-        # Correction to Xavier initialization
-        self.weight.data *= torch.sqrt(self.mask.numel() / self.mask.sum())
-        
-        
-    def forward(self, x):
-        return nn.functional.linear(x, self.mask * self.weight, self.bias)
-        
-        
-    def forward(self, x):
-        return nn.functional.linear(x, self.mask * self.weight, self.bias)
-
     
 default_dtype_torch = torch.float64
 
-class bp_nn(nn.Module):
+class plaq_nn(nn.Module):
     def __init__(self, n, model, bias, diagonal=-1, identity=False, z2=False, x_hat_clip=False, init_zero=False):
-        super(bp_nn, self).__init__()
+        super(plaq_nn  , self).__init__()
         self.n = n
         self.epsilon = 1e-10
         self.model = model
@@ -169,25 +117,18 @@ class bp_nn(nn.Module):
             log_prob = self.log_prob(sample).double()
             energy = self.model.energy(sample.double())
             loss = log_prob + beta * energy
-            
             free_energy_mean = loss.mean() / beta / self.n
             free_energy_std = loss.std() / beta / self.n
             entropy_mean = -log_prob.mean() / self.n
             energy_mean = energy.mean() / self.n
             mag = sample.mean(dim=0)
             mag_mean = mag.mean()
-            
             self.F = free_energy_mean
             self.M = mag_mean
             self.E = energy_mean
             self.S = entropy_mean
             self.M_i = mag.numpy()
             self.F_std = free_energy_std
-            self.Corr = torch.zeros(self.J_interaction.shape)
-            for s in sample:
-                self.Corr += torch.ger(s,s)
-            self.Corr /= batch_size
-            self.Corr -= torch.ger(mag,mag)
             if print_:
                 print("\nfree_energy: {0:.3f},  std_fe: {1:.5f}, mag_mean: {2:.3f}, entropy: {3:.3f} energy: {4:.3f}".format(free_energy_mean.double(),
                                                     free_energy_std,
@@ -266,7 +207,7 @@ class bp_nn(nn.Module):
             mag_mean = mag.mean()
             B1 = (self.net[0].bias.data[0] if "data" in self.net[0].bias else "none")
             B2 = (self.net[0].bias.data[1] if "data" in self.net[0].bias else "none")
-            print("\r {beta:.2f} {step} fe: {0:.3f} +- {1:.5f} E: {E:.3f}, S: {S:.3f}, M: {2:.3}".format(
+            print("\r {beta:.2f} {step} fe: {0:.3f} +- {1:.5f} E: {E:.3f}, S: {S:.3f}, M: {2:.3}, W: {W1:.6}, {W2:.6}, Bias: {B1:.6f} - {B2:.6f}".format(
                 free_energy_mean.double(),
                                                 free_energy_std,
                                                 mag_mean,
@@ -325,7 +266,7 @@ class bp_nn_normed(bp_nn):
             optimizer.zero_grad()
             #with torch.no_grad():
             sample, p_sample = self.sample(batch_size)
-            #<v bcassert not sample.requires_grad
+            #assert not sample.requires_grad
             #assert not x_hat.requires_grad
             
             if self.x_hat_clip:
@@ -439,4 +380,24 @@ class bp_nn_out_diag(bp_nn):
         layers.append(nn.Sigmoid())
         self.net = nn.Sequential(*layers)
 
+    
+class bp_nn2(bp_nn):
+    def __init__(self, n, model, bias):
+        super(bp_nn2, self).__init__(n, model, bias)
+        num_edges = int(self.J_interaction.sum()/2)
+        nodes_edges = []
+        bias_layer1 = []
+        for r_i, row in enumerate(self.J_interaction):
+            for c_i, val in enumerate(row):
+                if c_i < r_i and val != 0:
+                    inter_e = [0] * n
+                    inter_e[c_i] = 1
+                    #print(r_i,c_i, val, inter_e)
+                    nodes_edges.append(inter_e)
+                    bias_layer1.append(1)
+        nodes_edges = np.array(nodes_edges)
+        layer1 = myLayer_rand(nodes_edges, bias)
+        layer2 = myLinear(np.transpose(nodes_edges), bias)
+        layers = [layer1, layer2, nn.Sigmoid()]
+        self.net = nn.Sequential(*layers)
     

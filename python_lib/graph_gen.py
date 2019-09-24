@@ -11,8 +11,35 @@ import random
 def fixed_value(val = 1):
     return lambda : val
 
-def spin_glass():
-    return lambda : 2. * (random.random()-0.5)
+def spin_glass(mu=0, sigma=1):
+    
+    return lambda : random.gauss(mu, sigma)
+
+def spin_glass_one():
+    return lambda : 1 if random.random() < 0.5 else -1
+
+def BA_interaction(n, m, rand=False):
+    G = nx.barabasi_albert_graph(n,m)
+
+    pos = graphviz_layout(G, prog='twopi', args='')
+    plt.figure(figsize=(8, 8))
+    nx.draw(G, pos, node_size=500,  with_labels=True)
+    plt.axis('equal')
+    plt.show()
+    adiacency_dict = {}
+    for n, nbrdict in G.adjacency():
+        adiacency_dict[n] = nbrdict.keys()
+        
+    num_nodes = len(adiacency_dict)
+    adiacency_matrix = np.zeros((num_nodes, num_nodes))
+    for n in range(num_nodes):
+        for n_n in range(num_nodes):
+            is_there = n_n in adiacency_dict[n]
+            if n_n in adiacency_dict[n]:
+                adiacency_matrix[n][n_n] = 1
+    assert adiacency_matrix.size == num_nodes * num_nodes
+    return num_nodes, adiacency_matrix
+
 
 def tree_interaction(d, h, rand=False):
     G = nx.balanced_tree(d-1, h)
@@ -75,13 +102,13 @@ def grid_2d_interaction(n, m, periodic=False):
     return num_nodes, adiacency_matrix
 
 
-def set_J(J, value_func):
-    J = J.copy()
+def set_J(J_inter, value_func):
+    J = np.zeros(J_inter.shape)
     for i in range(len(J)):
-        for j in range(len(J)):
-            if J[i][j] != 0:
+        for j in range(i):
+            if J_inter[i][j] != 0:
                 J[i][j] = value_func()
-    J = 0.5*(J + J.transpose())            
+    J = (J + J.transpose())            
     
     return J
 
