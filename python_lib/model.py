@@ -66,10 +66,12 @@ class model():
         print("\r", end="")
         self.free_energy = -(1/beta) * math.log((Z).numpy()) *(1./ self.N)
         self.E_mean = (E_mean / (Z * self.N)).numpy()
-        self.M_mean = (M_mean / (Z * self.N)).numpy()
         self.S_mean = (S_mean/ (Z * self.N) - beta * self.free_energy).numpy()
         self.M_i_mean = (M_i_mean / Z.numpy())
+        self.M_mean = abs(self.M_i_mean).mean()
         self.Corr = Corr / Z.numpy() - np.outer(self.M_i_mean, self.M_i_mean)
+        self.Corr_neigh = self.J_interaction * self.Corr
+        self.Z = Z
         #Corr -= torch.ger(M_i_mean,M_i_mean)   
         print("beta: {2:.1f}, Fe: {0:.3f}".format(self.free_energy, 
                                                   self.E_mean - (1./beta)*self.S_mean, beta)
@@ -93,3 +95,10 @@ class model():
             m, self.N, 1)).squeeze()
         field = -(samples.view(m, 1, self.N) @ self.H_torch.view(self.N, 1)).squeeze()
         return (inter + field)
+    
+    def prob_sample(self, beta, samples):
+        if self.Z:
+            return torch.exp(- beta * self.energy(samples)) / self.Z
+        else:
+            print("compute model.exact() frist")
+            return 0

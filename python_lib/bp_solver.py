@@ -131,9 +131,9 @@ class BP_solver():
         for i in range(self.N):
             #num_neigh = len(self.neighs[i][self.neighs[i] != -2])
             M_i_temp = self.Z_i_p[i] - self.Z_i_m[i]
-            M += M_i_temp/(self.Z_i_p[i] + self.Z_i_m[i])
+            #M += M_i_temp/(self.Z_i_p[i] + self.Z_i_m[i])
             M_i[i] =  M_i_temp/(self.Z_i_p[i] + self.Z_i_m[i])
-        self.M_mean = M / self.N
+        self.M_mean = abs(M_i).mean()
         self.M_i = M_i
         if print_:
             print("M: {0:.3}".format(self.M_mean))
@@ -239,6 +239,7 @@ class BP_solver():
                 #print(i,j)
                 #print("{0:.3f}, {1:.3f}, {2:.3f}, {3:.3f} {4:.3f}".format(C_ij_temp, p_p, p_m, m_p,  p_p))
         self.Corr = Corr - np.outer(self.M_i, self.M_i)
+        self.Corr_neigh = self.J_interaction * self.Corr
         #print(self.M_i, np.outer(self.M_i, self.M_i))
         return self.Corr
 

@@ -70,9 +70,12 @@ def tree_interaction(d, h, rand=False):
     assert adiacency_matrix.size == num_nodes * num_nodes
     return num_nodes, adiacency_matrix
 
-def plot_matrix_graph(J):
+def plot_matrix_graph(J, type_="any"):
     G=nx.from_numpy_matrix(J)
-    pos = graphviz_layout(G, prog='twopi', args='')
+    if type_ == "grid":
+        pos = nx.spring_layout(G, iterations=100)
+    else:
+        pos = graphviz_layout(G, prog='neato', args='')
     plt.figure(figsize=(8, 8))
     nx.draw(G, pos, node_size=500,  with_labels=True)
     plt.axis('equal')
@@ -81,10 +84,10 @@ def plot_matrix_graph(J):
 def grid_2d_interaction(n, m, periodic=False):
     G = nx.grid_2d_graph(n,m, periodic=periodic)
     pos = graphviz_layout(G, prog='neato', args='')
-    plt.figure(figsize=(8, 8))
-    nx.draw(G, pos, node_size=500,  with_labels=True)
-    plt.axis('equal')
-    plt.show()
+    #plt.figure(figsize=(8, 8))
+    #nx.draw(G, pos, node_size=500,  with_labels=True)
+    #plt.axis('equal')
+    #plt.show()
     adiacency_dict = {}
     for index, nbrdict in G.adjacency():
         pos_n = index[0] * n + index[1]
@@ -99,6 +102,7 @@ def grid_2d_interaction(n, m, periodic=False):
             if n_n in adiacency_dict[index]:
                 adiacency_matrix[index][n_n] = 1
     assert adiacency_matrix.size == num_nodes * num_nodes
+    plot_matrix_graph(adiacency_matrix, type_="grid")
     return num_nodes, adiacency_matrix
 
 
@@ -116,3 +120,62 @@ def set_H(H, value_func):
     for i in range(len(H)):
         if H[i] != 0:
             H[i] = value_func()
+
+            
+def order_rand(N, J_interaction, H, num_swap=1):
+    swaps = []
+    nodes = list(range(N))
+    for n in range(num_swap):
+        ss_temp = random.sample(nodes, 2)
+        swaps.append(ss_temp)
+        #print(ss_temp)
+        nodes.remove(ss_temp[0])
+        nodes.remove(ss_temp[1])
+
+    print(swaps)
+
+    J_interaction_rand = J_interaction.copy()
+    H_rand = H.copy()
+
+    for w in swaps:
+        rev = list(reversed(w))
+        J_interaction_rand[w] = J_interaction_rand[rev] 
+        J_interaction_rand[:,w] = J_interaction_rand[:,rev] 
+        H_rand[w] = H_rand[rev]
+    return J_interaction_rand, H_rand
+
+from collections import defaultdict
+def map_reorder_graph(J_interaction, root = 0):
+    map_nodes = {}
+    root = 0
+    counter = 0
+    visited = {}
+    to_visit = [root]
+    while len(to_visit) != 0:
+        node = to_visit.pop(0)
+        neighs = J_interaction[node]
+        map_nodes[node] = counter
+        counter += 1
+        #print(to_visit, map_nodes)
+        for neigh, is_neigh in enumerate(neighs):
+            if is_neigh:
+                if neigh not in to_visit and neigh not in map_nodes:
+                    to_visit.append(neigh)
+    return map_nodes
+
+def reorder_graph(J_interaction, root = 0):
+    map_node = map_reorder_graph(J_interaction, root = 0)
+    adiacent_list = defaultdict(list)
+    for node, neighs in enumerate(J_interaction):
+        for neigh, is_neigh in enumerate(neighs):
+            if is_neigh:
+                adiacent_list[node].append(neigh)
+    adiacent_list
+    new_adiacent_list = defaultdict(list)
+    new_J_interaction = np.zeros(J_interaction.shape)
+    for node, neighs in enumerate(J_interaction):
+        for neigh, is_neigh in enumerate(neighs):
+            if is_neigh:
+                new_J_interaction[map_node[node]][map_node[neigh]] = 1
+
+    return new_J_interaction
