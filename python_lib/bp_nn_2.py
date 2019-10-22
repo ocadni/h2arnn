@@ -7,6 +7,59 @@ type_default = torch.float64
 
 default_dtype_torch = torch.float64
 
+class myLayer_rand(nn.Linear):
+    def __init__(self, n, J_interaction, bias, diagonal=-1, identity=False):
+        super(myLayer_rand, self).__init__( n, n, bias)
+        self.n = n
+
+        self.register_buffer('mask', torch.ones([self.n] * 2))
+        self.mask = 1 - torch.triu(self.mask)
+                
+        self.weight.data *= self.mask
+
+        # Correction to Xavier initialization
+        self.weight.data *= torch.sqrt(self.mask.numel() / self.mask.sum())
+
+    def forward(self, x):
+        return nn.functional.linear(x, self.mask * self.weight, self.bias)
+
+class myLayer_out_diag(nn.Linear):
+    def __init__(self, n, J_interaction, bias, diagonal=-1, identity=False):
+        super(myLayer_out_diag, self).__init__( n, n, bias)
+        self.n = n
+        diag_ = torch.diag(torch.ones(n-1), diagonal=-1, out=None)
+        self.register_buffer('mask', diag_)
+                
+        self.weight.data *= self.mask
+
+        # Correction to Xavier initialization
+        self.weight.data *= torch.sqrt(self.mask.numel() / self.mask.sum())
+
+    def forward(self, x):
+        return nn.functional.linear(x, self.mask * self.weight, self.bias)
+    
+class myLinear(nn.Linear):
+    def __init__(self, J_interaction, bias):
+        super(myLinear, self).__init__(J_interaction.shape[1],
+                                       J_interaction.shape[0], 
+                                       bias)
+
+        self.register_buffer('mask', torch.Tensor(J_interaction))
+        #self.register_buffer('mask_bias', torch.Tensor(bias))
+        self.weight.data *= self.mask
+        #self.bias.data *= self.mask_bias
+        # Correction to Xavier initialization
+        self.weight.data *= torch.sqrt(self.mask.numel() / self.mask.sum())
+        
+        
+    def forward(self, x):
+        return nn.functional.linear(x, self.mask * self.weight, self.bias)
+        
+        
+    def forward(self, x):
+        return nn.functional.linear(x, self.mask * self.weight, self.bias)
+
+
 class bp_nn_2(bp_nn.bp_nn):
     def __init__(self, n, model, bias):
         
