@@ -17,7 +17,7 @@ def bp_sol(model, betas, error = 1e-6,
     for beta in betas:
 
         BP_tree.converge(beta, error = error,
-                         max_iter=max_iter, val_rand=0.1)
+                         max_iter=max_iter, val_rand=val_rand)
         fe_bp.append(BP_tree.F)
         ener_bp.append(BP_tree.E_mean)
         m_bp.append(BP_tree.M_mean)
@@ -37,6 +37,7 @@ def nn_sol(model, betas, bias = True, z2 = False, x_hat_clip = False,
           stats = 10000, lr = 0.01,
           max_step=1000,
           batch_size=1000,
+        std_fe_limit = 1e-5,
           opt = "adam", 
            nn_use = bp_nn.bp_nn,
           init_net = False,
@@ -56,7 +57,9 @@ def nn_sol(model, betas, bias = True, z2 = False, x_hat_clip = False,
 
         net.train(beta = beta, lr=lr, max_step=max_step, 
                   batch_size=batch_size,
-                 opt = opt)
+                 opt = opt,
+                  std_fe_limit = std_fe_limit
+                 )
         F = +1e100
         E = 0
         M = 0
@@ -240,14 +243,14 @@ def plot_quantity(label, res_ex, others, init_=0):
     plt.legend()
     ax2 = plt.subplot(222)
     for other in others:
-        plt.plot(other["betas"][init_:], (other[label][init_:] - res_ex[label][init_:]), "o",
+        plt.plot(other["betas"][init_:], (other[label][init_:] - res_ex[label][init_:]), "-o",
                  label=other["name"])
     plt.legend()
     ax2.set_title("absolute error")
 
     ax3 = plt.subplot(223)
     for other in others:
-        plt.plot(other["betas"][init_:], 100 * abs(other[label][init_:] - res_ex[label][init_:]) / abs(res_ex[label][init_:] +1e-6), "o",
+        plt.plot(other["betas"][init_:], 100 * abs(other[label][init_:] - res_ex[label][init_:]) / abs(res_ex[label][init_:] +1e-6), "-o",
                  label=other["name"])
     ax3.set_title("percentage error")
     plt.legend()
