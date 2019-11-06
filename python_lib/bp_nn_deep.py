@@ -4,51 +4,92 @@ import torch.nn.functional as F
 import numpy as np
 import random
 
-type_default = torch.float64
+type_default = torch.float32
 device = "cpu"
 
+def find_neigh(model_):
+    n = model_.N
+    neighs = []
+    num_neighs = []
+    for n_i in range(n):
+        num_n_less = 0
+        neighs.append([])
+        for neigh_i, val in enumerate(model_.J_interaction[n_i][0:n_i]):
+            if val:
+                num_n_less += 1
+                neighs[n_i].append(neigh_i)
+        num_neighs.append(num_n_less)
+    return neighs
+
+def find_neigh_neigh(model_):
+    n = model_.N
+    neighs = []
+    num_neighs = []
+    for n_i in range(n):
+        num_n_less = 0
+        neighs.append([])
+        for neigh_i, val in enumerate(model_.J_interaction[n_i][0:n_i]):
+            if val:
+                num_n_less += 1
+                neighs[n_i].append(neigh_i)
+        num_neighs.append(num_n_less)
+    #print()
+    neighs_neighs = []
+    for n_i in range(n):
+        #print(n_i, neighs[n_i])
+        neighs_neighs.append(set(neighs[n_i]))
+        #print(neighs_neighs)
+        for neigh_i in neighs[n_i]:
+            for n_n in neighs[neigh_i]:
+                if n_n < n_i:
+                    neighs_neighs[n_i].add(n_n)
+    neighs_neighs = [list(neighs_neighs[n_i]) for n_i in range(n)]
+    return neighs_neighs
 
 
-class bp_nn_more(nn.Module):
-    def __init__(self, model, bias, espilon = 1e-10):
-        super(bp_nn_more, self).__init__()
+class deep_linear(nn.Module):
+    def __init__(self, features, bias, in_func = nn.ReLU()):
+        super(deep_linear, self).__init__()
+        layers = []
+        for feat_i, feat in enumerate(features[:-1]):
+            in_feat = feat
+            out_feat = features[feat_i+1]
+            layers.append(nn.Linear(in_feat,out_feat, bias))
+            layers.append(in_func)
+        layers[-1] = nn.Sigmoid()
+        self.net = nn.Sequential(*layers)
+    def forward(self, x):
+        return self.net(x)
+    
+class bp_nn_deep(nn.Module):
+    def __init__(self, model, bias, in_out_layers, neighs,
+                 espilon = 1e-10,
+                in_func = nn.ReLU()):
+        super(bp_nn_deep, self).__init__()
         self.n = model.N
         self.epsilon = espilon
         self.model = model
         self.J_interaction = torch.from_numpy(model.J_interaction).to(type_default)
         self.bias = bias
-        # Force the first x_hat to be 0.5
-
+        self.in_out_layers = in_out_layers
+        self.neighs = [torch.tensor(x, dtype=torch.long) if x!=[] else torch.tensor([0]) for x in neighs]
         self.nn_one = []
-        self.num_n = []
-        for n in range(self.n):
-            num_n_less = sum(self.J_interaction[n][0:n])
-            num_n_less = 1 if num_n_less == 0 else int(num_n_less.item())
-            self.nn_one.append(nn.Linear(num_n_less,1, bias))
-            self.num_n.append(num_n_less)
+        
+        for n_i in range(self.n):
+            layer = deep_linear(in_out_layers[n_i], bias, in_func = in_func)
+            self.nn_one.append(layer)
         
     def forward(self, x):
         x = x.view(x.shape[0], -1)
         x_hat = torch.zeros(x.shape)
-        for n in range(self.n):
-            list_n = []
-            for n_n_i, n_n in enumerate(self.J_interaction[n][0:n]):
-                if n_n == 1:
-                    #print(list_n,list_n[cc],x,   cc, n_n_i)
-                    list_n.append(n_n_i)
-            if list_n != []:
-                list_n = torch.tensor(list_n)
-                input_x = torch.index_select(x,1,list_n)
-            else:
-                list_n = torch.tensor([0])
-                #print(n, list_n)
-                input_x = torch.index_select(x,1,list_n)
-                input_x*=0.
-                
+        x_hat[:,0] = self.nn_one[0](torch.zeros((x.shape[0],1))).t()
+        for n_i in range(1,self.n):
+            list_n = self.neighs[n_i]
+            input_x = torch.index_select(x,1,list_n)
             #print(input_x, self.nn_one[n])
-            x_hat[:,n] = self.nn_one[n](input_x).t()
+            x_hat[:,n_i] = self.nn_one[n_i](input_x).t()
                                  
-        return torch.sigmoid(x_hat)
+        return x_hat
     
     def prob_sample(self, sample, x_hat):
         with torch.no_grad():
@@ -90,11 +131,15 @@ class bp_nn_more(nn.Module):
     def sample(self, batch_size):
         sample = torch.zeros(
             [batch_size, self.n])
-        for i in range(self.n):
-            x_hat = self.forward(sample)
-            #print(x_hat)
-            sample[:, i] = torch.bernoulli(
-                    x_hat[:, i]) * 2 - 1
+        x_hat = torch.zeros(
+            [batch_size, self.n])
+
+        for n_i in range(self.n):
+            list_n = self.neighs[n_i]
+            input_x = torch.index_select(sample,1,list_n)
+            x_hat[:,n_i] = self.nn_one[n_i](input_x).t()
+            sample[:, n_i] = torch.bernoulli(
+                    x_hat[:, n_i]) * 2 - 1
             
         return sample, x_hat
 
@@ -175,14 +220,10 @@ class bp_nn_more(nn.Module):
             p_sample_nn = torch.exp(self._log_prob(sample, x_hat)).to(type_default)
             sampled_prob = torch.exp(self.log_prob(sample).double()) * len(sample)
             
-            #print(norm_sample, norm_ext)
-            #log_prob = self._log_prob(sample, x_hat).to(type_default)
-            #norm_ext = torch.exp(- beta * self.model.energy(sample)).sum()
             log_prob = torch.log(p_sample * sampled_prob).to(type_default)
-            #p_sample_loss = 1./len(sample)
             p_sample_loss = p_sample
             loss = p_sample_loss * (log_prob + beta * energy)
-            w_sample = torch.diag(p_sample) @ sample.to(type_default)
+            w_sample = torch.diag(p_sample).to(type_default) @ sample.to(type_default)
             free_energy_mean = loss.sum() / self.n / beta
             free_energy_std = loss.std() / beta / self.n
             entropy_mean = - (p_sample * log_prob).sum() / self.n
@@ -274,7 +315,7 @@ class bp_nn_more(nn.Module):
              random_zero = 0.5):
         params = []
         for n in range(self.n):
-            params.extend(list(self.nn_one[n].parameters()))
+            params.extend(self.nn_one[n].parameters())
         params = list(filter(lambda p: p.requires_grad, params))
         nparams = int(sum([np.prod(p.shape) for p in params]))
 
@@ -325,17 +366,13 @@ class bp_nn_more(nn.Module):
             energy_mean = energy.mean() / self.n
             mag = sample.mean(dim=0)
             mag_mean = abs(mag).mean()
-            B1 = (self.nn_one[0].bias.data[0] if self.bias else 0)
-            B2 = (self.nn_one[1].bias.data[0] if self.bias else 0)
-            print("\r {beta:.2f} {step} fe: {0:.3f} +- {1:.5f} E: {E:.3f}, S: {S:.3f}, M: {2:.3}, B1 = {B1:.3f}".format(
+            #B1 = (self.nn_one[0].bias.data[0] if self.bias else 0)
+            #B2 = (self.nn_one[1].bias.data[0] if self.bias else 0)
+            print("\r {beta:.2f} {step} fe: {0:.3f} +- {1:.5f} E: {E:.3f}, S: {S:.3f}, M: {2:.3}".format(
                 free_energy_mean.double(),
                                                 free_energy_std,
                                                 mag_mean,
                                                 step=step, beta=beta,
-                                                W1 = self.nn_one[1].weight.data[0][0],
-                                                W2 = self.nn_one[2].weight.data[0][0],
-                                                B1 = B1,
-                B2=B2,
                 E = energy_mean,
                 S = entropy_mean
             ), end="")

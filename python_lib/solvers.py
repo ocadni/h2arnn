@@ -1,9 +1,11 @@
 import bp_solver
 import bp_nn
+import bp_nn_deep
 import numpy as np
 import matplotlib.pyplot as plt
 import bp_nn_2
 import math 
+
 def bp_sol(model, betas, error = 1e-6,
            val_rand=0.1,
            max_iter = 1000):
@@ -102,6 +104,80 @@ def nn_sol(model, betas, bias = True, z2 = False, x_hat_clip = False,
         "C_ij": np.array(c_i_nn)
 
     }
+
+def nn_sol_deep(model, 
+                betas,
+                in_out_layers,
+                neighs,
+                bias = True,
+                stats = 10000, lr = 0.01,
+                max_step=1000,
+                batch_size=1000,
+                std_fe_limit = 1e-5,
+                opt = "adam", 
+                init_net = False,
+                i_sampling = False):
+    
+    nn_use = bp_nn_deep.bp_nn_deep
+    fe_nn = []
+    ener_nn = []
+    m_nn = []
+    m_i_nn = []
+    c_i_nn = []
+    net = nn_use(model, bias, in_out_layers, neighs)
+    
+    for beta in betas:
+        if init_net:
+            net = nn_use(model, bias, in_out_layers, neighs)
+
+        net.train(beta = beta, lr=lr, max_step=max_step, 
+                  batch_size=batch_size,
+                 opt = opt,
+                  std_fe_limit = std_fe_limit
+                 )
+        F = +1e100
+        E = 0
+        M = 0
+        M_i = 0
+        S = 0
+        F_std = 0
+        #for ss in range(stats):
+        if i_sampling:
+            net.compute_stat_is(beta, batch_size = stats, print_=False)
+        else:
+            net.compute_stat(beta, batch_size = stats, print_=False)
+            #if net.F < F:
+                #print(F, net.F)
+        F = net.F
+        E = net.E
+        M = net.M
+        M_i = net.M_i
+        S = net.S
+        F_std = net.F_std
+        #net.compute_stat(beta, batch_size = 10000, print_=True)
+        fe_nn.append(F)
+        ener_nn.append(E)
+        m_nn.append(M)
+        m_i_nn.append(M_i)
+        c_i_nn.append(net.Corr_neigh.numpy())
+
+        #print("\r", end="")
+        print("\rfe: {0:.3f} std_fe: {1:.2E} M: {2:.3f} S: {3:.3f} E: {4:.3f}".format(F,
+                                                    F_std,
+                                                    M,
+                                                    S,
+                                                    E,),)
+        #print()
+    return {
+        "betas": betas,
+        "fe": np.array(fe_nn),
+        "E": np.array(ener_nn),
+        "M": np.array(m_nn),
+        "M_i": np.array(m_i_nn),
+        "C_ij": np.array(c_i_nn)
+
+    }
+
 
 def nn_sol_2(model, betas, bias = True,
           stats = 10000, lr = 0.01,
