@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+import deep_linear
 import random
 
 type_default = torch.float32
@@ -46,21 +47,44 @@ def find_neigh_neigh(model_):
     neighs_neighs = [list(neighs_neighs[n_i]) for n_i in range(n)]
     return neighs_neighs
 
+def find_neigh_2d(model_, periodic=False):
+    print("not working yet")
+    n = model_.N
+    l = pow(n,0.5)
+    assert(int(l) == l)
+    print(n, l)
+    neighs = []
+    num_neighs = []
+    for n_i in range(n):
+        num_n_less = 0
+        neighs.append([])
+        if n_i % l != 0:
+            neighs.append(n_i-1)
+        for neigh_i, val in enumerate(model_.J_interaction[n_i][0:n_i]):
+            if val:
+                num_n_less += 1
+                neighs[n_i].append(neigh_i)
+        num_neighs.append(num_n_less)
+    #print()
+    neighs_neighs = []
+    for n_i in range(n):
+        #print(n_i, neighs[n_i])
+        neighs_neighs.append(set(neighs[n_i]))
+        #print(neighs_neighs)
+        for neigh_i in neighs[n_i]:
+            for n_n in neighs[neigh_i]:
+                if n_n < n_i:
+                    neighs_neighs[n_i].add(n_n)
+    neighs_neighs = [list(neighs_neighs[n_i]) for n_i in range(n)]
+    return neighs_neighs
 
-class deep_linear(nn.Module):
-    def __init__(self, features, bias, in_func = nn.ReLU()):
-        super(deep_linear, self).__init__()
-        layers = []
-        for feat_i, feat in enumerate(features[:-1]):
-            in_feat = feat
-            out_feat = features[feat_i+1]
-            layers.append(nn.Linear(in_feat,out_feat, bias))
-            layers.append(in_func)
-        layers[-1] = nn.Sigmoid()
-        self.net = nn.Sequential(*layers)
-    def forward(self, x):
-        return self.net(x)
-    
+def simplest_in_out(model_, neighs):
+    in_out_layers = []
+    for n_i in range(model_.N):
+        in_ = len(neighs[n_i]) if len(neighs[n_i]) else 0
+        in_out_layers.append([in_, 1])
+    return in_out_layers
+
 class bp_nn_deep(nn.Module):
     def __init__(self, model, bias, in_out_layers, neighs,
                  espilon = 1e-10,
@@ -72,18 +96,18 @@ class bp_nn_deep(nn.Module):
         self.J_interaction = torch.from_numpy(model.J_interaction).to(type_default)
         self.bias = bias
         self.in_out_layers = in_out_layers
-        self.neighs = [torch.tensor(x, dtype=torch.long) if x!=[] else torch.tensor([0]) for x in neighs]
+        self.neighs = [torch.tensor(x, dtype=torch.long) for x in neighs]
         self.nn_one = []
         
         for n_i in range(self.n):
-            layer = deep_linear(in_out_layers[n_i], bias, in_func = in_func)
+            layer = deep_linear.deep_linear(in_out_layers[n_i], bias, in_func = in_func)
             self.nn_one.append(layer)
         
     def forward(self, x):
         x = x.view(x.shape[0], -1)
         x_hat = torch.zeros(x.shape)
-        x_hat[:,0] = self.nn_one[0](torch.zeros((x.shape[0],1))).t()
-        for n_i in range(1,self.n):
+        #x_hat[:,0] = self.nn_one[0](torch.zeros((x.shape[0],1))).t()
+        for n_i in range(0,self.n):
             list_n = self.neighs[n_i]
             input_x = torch.index_select(x,1,list_n)
             #print(input_x, self.nn_one[n])
