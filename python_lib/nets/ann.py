@@ -5,6 +5,7 @@ import random
 
 
 def compute_stats(x, loss, log_prob, energy, beta, model, step=0, ifprint=True):
+    #x = x.to("cpu")
     with torch.no_grad():
         loss = loss.cpu().detach().numpy()
         log_prob = log_prob.cpu().detach().numpy()
@@ -20,7 +21,7 @@ def compute_stats(x, loss, log_prob, energy, beta, model, step=0, ifprint=True):
         q = torch.histogram((x@x.T).flatten()/N, bins=20)
         if ifprint:
             print(
-                f"\rstep: {step} {beta:.2f} fe: {free_energy_mean:.3f} +- {free_energy_std:.5f} E: {energy_mean:.3f}, S: {entropy_mean:.3f}, M: {mag_mean:.3}",
+                f"\rstep: {step} {beta:.5f} fe: {free_energy_mean:.3f} +- {free_energy_std:.5f} E: {energy_mean:.3f}, S: {entropy_mean:.3f}, M: {mag_mean:.3}",
                 end="",
             )
 
@@ -41,7 +42,7 @@ class ANN(nn.Module):
         self,
         model,
         net,
-        input_mask,
+        # input_mask,
         dtype=torch.float32,
         device="cpu",
         eps=1e-10,
@@ -51,7 +52,7 @@ class ANN(nn.Module):
         self.N = model.N
         self.model = model
         self.net = net
-        self.input_mask = input_mask
+        #self.input_mask = input_mask
         self.dtype = dtype
         self.device = device
         self.eps = eps
@@ -93,9 +94,9 @@ class ANN(nn.Module):
                             device=self.device, dtype=self.dtype)
         with torch.no_grad():
             for n_i in range(self.N):
-                mask_n_i = self.input_mask[n_i, :]
-                input_x = mask_n_i * x
-                x_hat[:, n_i] = self.forward(input_x)[:, n_i]
+                #mask_n_i = self.input_mask[n_i, :]
+                #input_x = mask_n_i * x
+                x_hat[:, n_i] = self.forward(x)[:, n_i]
                 x[:, n_i] = torch.bernoulli(x_hat[:, n_i]) * 2 - 1
         return x, x_hat
 
@@ -192,4 +193,4 @@ class ANN(nn.Module):
             if stats["free_energy_std"] < std_fe_limit:
                 break
 
-        return self.compute_stats(beta, batch_size=batch_size, print_=ifprint, batch_iter=batch_iter)
+        return stats

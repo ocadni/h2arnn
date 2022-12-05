@@ -12,6 +12,7 @@ def train_net(
     std_fe_limit=1e-4,
     suffix="",
     exact=False,
+    stats_step=1
 ):
     stats = []
     net2train.train(
@@ -22,6 +23,7 @@ def train_net(
         std_fe_limit=std_fe_limit,
         exact=exact,
     )
+    steps = 0
     for beta in betas:
         net2train.train(
             beta=beta,
@@ -33,7 +35,10 @@ def train_net(
             set_optim=False
         )
 
-        stats.append(net2train.compute_stats(
-            beta, batch_size=batch_size, batch_iter=batch_iter, print_=True))
+        if steps % stats_step == 0:
+            stats.append(net2train.compute_stats(
+                beta, batch_size=batch_size, batch_iter=batch_iter, print_=True))
+        steps += 1
+
     stats_pd = pd.DataFrame(stats)
     return stats_pd.add_suffix(suffix)

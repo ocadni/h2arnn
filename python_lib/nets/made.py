@@ -7,15 +7,16 @@ from python_lib.nets.ann import ANN
 
 
 class MaskedLinear(nn.Linear):
-    def __init__(self, in_channels, out_channels, n, bias, exclusive):
+    def __init__(self, in_channels, out_channels, n, bias, exclusive, device="cpu", dtype=torch.float32):
         super(MaskedLinear, self).__init__(in_channels * n, out_channels * n,
-                                           bias)
+                                           bias, device=device, dtype=dtype)
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.n = n
         self.exclusive = exclusive
 
-        self.register_buffer('mask', torch.ones([self.n] * 2))
+        self.register_buffer('mask', torch.ones(
+            [self.n] * 2, device=device, dtype=dtype))
         if self.exclusive:
             self.mask = 1 - torch.triu(self.mask)
         else:
@@ -74,19 +75,30 @@ class MADE(ANN):
                 1 if self.net_depth == 1 else self.net_width,
                 self.n,
                 self.bias,
-                exclusive=True))
+                exclusive=True,
+                device=device,
+                dtype=dtype))
         for count in range(self.net_depth - 2):
             layers.append(
-                self._build_simple_block(self.net_width, self.net_width))
+                self._build_simple_block(self.net_width, self.net_width, device=device, dtype=dtype))
         if self.net_depth >= 2:
-            layers.append(self._build_simple_block(self.net_width, 1))
+            layers.append(self._build_simple_block(
+                self.net_width, 1, device=device, dtype=dtype))
         layers.append(nn.Sigmoid())
         net = nn.Sequential(*layers)
         params = list(net.parameters())
         params = list(filter(lambda p: p.requires_grad, params))
         nparams = int(sum([np.prod(p.shape) for p in params]))
         #print(f'Total number of trainable parameters: {nparams}')
-        input_mask = torch.tril(J_interaction, diagonal=-1)
-        super(simple_layer, self).__init__(
-            model, net, input_mask, dtype=dtype, device=device, eps=eps)
+        super(MADE, self).__init__(
+            model, net, dtype=dtype, device=device, eps=eps)
         self.net.params = params
+
+    def _build_simple_block(self, in_channels, out_channels, device="cpu", dtype=torch.float32):
+        layers = []
+        layers.append(nn.PReLU(in_channels * self.n, init=0.5))
+        layers.append(
+            MaskedLinear(
+                in_channels, out_channels, self.n, self.bias, exclusive=False, device=device, dtype=dtype))
+        block = nn.Sequential(*layers)
+        return block

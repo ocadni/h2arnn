@@ -241,7 +241,8 @@ class list_nets(ANN):
             net.append(single_net(model, n_i, device=device,
                        dtype=dtype, dict_nets=dict_nets))
         super(list_nets, self).__init__(
-            model, net, input_mask.to(dtype=torch.bool), dtype=dtype, device=device, eps=eps)
+            model, net, dtype=dtype, device=device, eps=eps)
+        self.input_mask = input_mask.to(dtype=torch.bool)
 
     def parameters(self):
         params = []
