@@ -1,4 +1,3 @@
-
 import pandas as pd
 
 
@@ -12,7 +11,7 @@ def train_net(
     std_fe_limit=1e-4,
     suffix="",
     exact=False,
-    stats_step=1
+    stats_step=1,
 ):
     stats = []
     net2train.train(
@@ -33,7 +32,7 @@ def train_net(
             std_fe_limit=std_fe_limit,
             exact=exact,
             batch_iter=batch_iter,
-            set_optim=False
+            set_optim=False,
         )
 
         if steps % stats_step == 0:

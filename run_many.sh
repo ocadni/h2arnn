@@ -10,5 +10,6 @@ for N in 20 50 100 200
             sed "s/net_spec=.*/net_spec=$net_spec/"  temp0.sh > temp.sh
             sleep 0.02
             sbatch temp.sh
+            sleep 0.02
 	done
 done
