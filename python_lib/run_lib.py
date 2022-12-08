@@ -18,26 +18,26 @@ def train_net(
     net2train.train(
         beta=betas[0],
         lr=lr,
-        max_step=2000,
+        max_step=5000,
         batch_size=batch_size,
         std_fe_limit=std_fe_limit,
         exact=exact,
     )
     steps = 0
     for beta in betas:
-        net2train.train(
+        ss = net2train.train(
             beta=beta,
             lr=lr,
             max_step=max_step,
             batch_size=batch_size,
             std_fe_limit=std_fe_limit,
             exact=exact,
+            batch_iter=batch_iter,
             set_optim=False
         )
 
         if steps % stats_step == 0:
-            stats.append(net2train.compute_stats(
-                beta, batch_size=batch_size, batch_iter=batch_iter, print_=True))
+            stats.append(ss)
         steps += 1
 
     stats_pd = pd.DataFrame(stats)

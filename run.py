@@ -173,6 +173,12 @@ def main():
                 input_mask = input_mask.to(dtype=torch.bool)
                 net = list_nets.list_nets(
                     CW_model, one, input_mask, device=device)
+            elif net_spec == "CW_sign":
+                one = list_nets.CW_sign
+                input_mask = torch.tril(J_interaction, diagonal=-1)
+                input_mask = input_mask.to(dtype=torch.bool)
+                net = list_nets.list_nets(
+                    CW_model, one, input_mask, device=device)
             elif net_spec == "sum_exp":
                 list_n = list_nets.CW_net
                 input_mask = torch.tril(J_interaction, diagonal=-1)

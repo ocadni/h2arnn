@@ -125,6 +125,10 @@ class ANN(nn.Module):
                 stats = compute_stats(x, loss, log_prob,
                                       energy, beta, self.model, ifprint=print_)
                 stats_list.append(stats)
+            res_stats = self.avg_stats_(stats_list, batch_iter=batch_iter)
+        return res_stats
+
+    def avg_stats_(self, stats_list, batch_iter=1):
         keys_list = stats_list[0].keys()
         res_stats = {}
         for kk in keys_list:
@@ -137,7 +141,6 @@ class ANN(nn.Module):
             else:
                 res_stats[kk] = np.array([elem[kk]
                                          for elem in stats_list]).mean()
-
         return res_stats
 
     def train(
@@ -173,8 +176,9 @@ class ANN(nn.Module):
 
         optimizer = self.optimizer
         optimizer.zero_grad()
-
-        for step in range(0, max_step + 1):
+        stats_list = []
+        stats_iter_done = 0
+        for step in range(0, max_step + batch_iter):
             optimizer.zero_grad()
             with torch.no_grad():
                 samples, x_hat = self.sample(batch_size)
@@ -190,7 +194,11 @@ class ANN(nn.Module):
             optimizer.step()
             stats = compute_stats(samples, loss, log_prob, energy,
                                   beta, self.model, step=step, ifprint=ifprint)
-            if stats["free_energy_std"] < std_fe_limit:
+            if step >= max_step or stats["free_energy_std"] < std_fe_limit:
+                stats_list.append(stats)
+                stats_iter_done += 1
+            if stats["free_energy_std"] < std_fe_limit and stats_iter_done >= batch_iter:
                 break
-
-        return stats
+        #print(stats_list, step)
+        res_stats = self.avg_stats_(stats_list, batch_iter=batch_iter)
+        return res_stats

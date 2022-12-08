@@ -51,6 +51,29 @@ class one_var(nn.Module):
         return torch.sigmoid(res)
 
 
+class CW_sign(nn.Module):
+    def __init__(self,
+                 model,
+                 n_i,
+                 dict_nets={},
+                 dtype=torch.float32,
+                 device="cpu",
+                 ):
+        super().__init__()
+        N = model.N
+        weight = torch.zeros((2), device=device, dtype=dtype)
+        # nn.Parameter is a Tensor that's a module parameter.
+        self.weight = nn.Parameter(weight)
+
+        # initialize weights and biases
+        torch.nn.init.normal_(self.weight, mean=0.0, std=1/N)
+
+    def forward(self, x):
+        res = x.sum(-1) * self.weight[0] + \
+            self.weight[1] * torch.sign(x.sum(-1))
+        return torch.sigmoid(res)
+
+
 class CW_net(nn.Module):
     def __init__(self,
                  model,
@@ -122,7 +145,7 @@ class CW_net(nn.Module):
         N = N_i + n_i + 1
         #print(f"n_i={n_i}, N_i={N_i}, N={N}, beta={beta:.2f}, J_2N:{J_2N:.3} ")
         # if n_i > 0:
-        assert(N == model.N)
+        assert (N == model.N)
         JJ = beta * J_N
 
         for k in range(0, N_i+1):
