@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import numpy as np
 from python_lib.nets.ann import ANN
 import random
@@ -166,6 +167,84 @@ class CW_net(nn.Module):
         self.weight_0m[0] = - 1
 
 
+class SK_net_rs(nn.Module):
+    def __init__(self,
+                 model,
+                 n_i,
+                 dict_nets={"set_exact": True},
+                 dtype=torch.float32,
+                 device="cpu",
+                 learn_first_l=True
+                 ):
+        super().__init__()
+        N = model.N
+        N_i = N - n_i - 1
+        self.n_i = n_i
+        self.N_i = N_i
+        self.learn_first_l = not dict_nets["set_exact"]
+
+        if N_i > 0:
+            # first layer
+            # second layer
+            weight_p = torch.zeros((1, N_i), device=device, dtype=dtype)
+            weight_m = torch.zeros((1, N_i), device=device, dtype=dtype)
+            bias_p = torch.zeros((1, N_i), device=device, dtype=dtype)
+            bias_m = torch.zeros((1, N_i), device=device, dtype=dtype)
+            weight_0p = torch.zeros((1), device=device, dtype=dtype)
+            weight_0m = torch.zeros((1), device=device, dtype=dtype)
+
+            # nn.Parameter is a Tensor that's a module parameter.
+            self.weight_p = nn.Parameter(weight_p)
+            self.bias_p = nn.Parameter(bias_p)
+            self.weight_m = nn.Parameter(weight_m)
+            self.bias_m = nn.Parameter(bias_m)
+            self.weight_0p = nn.Parameter(weight_0p)
+            self.weight_0m = nn.Parameter(weight_0m)
+
+            # initialize weights and biases
+            torch.nn.init.normal_(self.weight_0p, mean=0.0, std=1/N)
+            torch.nn.init.normal_(self.weight_0m, mean=0.0, std=1/N)
+            torch.nn.init.normal_(self.weight_p, mean=0.0, std=1/N)
+            torch.nn.init.normal_(self.bias_p, mean=0.0, std=1/N)
+            torch.nn.init.normal_(self.weight_m, mean=0.0, std=1/N)
+            torch.nn.init.normal_(self.bias_m, mean=0.0, std=1/N)
+        else:
+            self.weight_p = torch.zeros((1, 1), device=device, dtype=dtype)
+            self.weight_m = torch.zeros((1, 1), device=device, dtype=dtype)
+            self.bias_p = torch.zeros((1, 1), device=device, dtype=dtype)
+            self.bias_m = torch.zeros((1, 1), device=device, dtype=dtype)
+            self.weight_0p = torch.zeros((1), device=device, dtype=dtype)
+            self.weight_0m = torch.zeros((1), device=device, dtype=dtype)
+
+        self.first_l = nn.Linear(n_i, N_i+1, False,
+                                 device=device, dtype=dtype)
+        self.first_l.requires_grad_(learn_first_l)
+        weight_0 = torch.zeros((1), device=device, dtype=dtype)
+        bias_0 = torch.zeros((1), device=device, dtype=dtype)
+        self.weight_0 = nn.Parameter(weight_0)
+        self.bias_0 = nn.Parameter(bias_0)
+
+        # initialize weights and biases
+        torch.nn.init.normal_(self.weight_0, mean=0.0, std=1/N)
+        torch.nn.init.normal_(self.bias_0, mean=0.0, std=1/N)
+
+    def forward(self, x):
+        m = self.first_l(x)
+        m_n_i = m[:, 1:]
+        m_i = m[:, 0]
+        res_p = self.bias_p + self.weight_p * m_n_i
+        res_p = self.weight_0p * F.logsigmoid(res_p)
+        res_m = self.bias_m + self.weight_m * m_n_i
+        res_m = self.weight_0m * F.logsigmoid(res_m)
+        res_0 = self.bias_0 + self.weight_0 * m_i
+        return torch.sigmoid(res_0 + res_p.sum(dim=1) + res_m.sum(dim=1))
+
+    def set_params_exact(self, model, beta):
+        n_i = self.n_i
+        self.first_l.requires_grad_(self.learn_first_l)
+        self.first_l.weight.data = model.J[n_i:, 0:n_i]
+
+
 class CW_net_sp(nn.Module):
     def __init__(self,
                  model,
@@ -257,15 +336,19 @@ class list_nets(ANN):
         dtype=torch.float32,
         device="cpu",
         eps=1e-10,
-        dict_nets={}
+        dict_nets={"set_exact": False},
     ):
         net = []
         for n_i in range(model.N):
             net.append(single_net(model, n_i, device=device,
                        dtype=dtype, dict_nets=dict_nets))
         super(list_nets, self).__init__(
-            model, net, dtype=dtype, device=device, eps=eps)
+            model, net, dtype=dtype, device=device, eps=eps, print_num_params=False)
         self.input_mask = input_mask.to(dtype=torch.bool)
+        if dict_nets["set_exact"]:
+            self.set_params_exact(model, 0.1)
+        self.print_num_params(train=True)
+        self.print_num_params(train=False)
 
     def parameters(self):
         params = []

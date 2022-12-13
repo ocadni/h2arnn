@@ -129,11 +129,16 @@ class model:
         confs_split = torch.split(all_conf_n, chunk)
         log_Zs = torch.zeros(
             len(confs_split), dtype=self.dtype, device=self.device)
+        Es_total = torch.zeros(
+            n_total, dtype=self.dtype, device=self.device)
 
         for confs_n_i, confs_n in enumerate(confs_split):
             x = binary(confs_n, N).to(dtype=self.dtype, device=self.device)
             x[x < 0.5] = -1
             Es = self.energy(x)
+            n_init = confs_n_i*chunk
+            n_end = n_init+len(Es)
+            Es_total[n_init:n_end] = Es
             log_Zs[confs_n_i] = torch.logsumexp(-beta * Es, dim=0)
             E_min_temp = torch.min(Es)
             if E_min_temp < E_min:
@@ -148,24 +153,27 @@ class model:
 
             if confs_n_i % 1 == 0:
                 print(
-                    "\r{} / {}({:.2%}), E = {:.3}, Z = {:.3}, F = {:.3}".format(
+                    "\r{} / {}({:.2%}), E = {:.3}, logZ = {:.3}, F = {:.3}".format(
                         confs_n_i * chunk,
                         n_total,
                         (confs_n_i * chunk) / n_total,
                         Es.mean(),
-                        torch.logsumexp(log_Zs[: confs_n_i + 1], dim=0),
-                        -(1 / beta)
-                        * torch.log(torch.logsumexp(log_Zs[: confs_n_i + 1], dim=0)),
+                        torch.logsumexp(
+                            log_Zs[: confs_n_i + 1], dim=0),
+                        -(1 / (beta*N))
+                        * torch.logsumexp(log_Zs[: confs_n_i + 1], dim=0),
                     ),
                     end="  ",
                 )
 
         print("\r", end="")
-        log_Z = torch.logsumexp(log_Zs, dim=0)
+        log_Z = torch.logsumexp(-beta * Es_total, dim=0)
         Z = torch.exp(log_Z)
+
         self.free_energy = -(1 / beta) * log_Z * (1.0 / self.N)
-        self.E_mean = E_mean / (Z * self.N)
-        self.S = self.E_mean - beta * self.free_energy
+        self.E_mean = (torch.sign(
+            Es_total) * torch.exp(-beta*Es_total + torch.log(torch.abs(Es_total)) - log_Z)).sum() / N
+        self.S = beta * (self.E_mean - self.free_energy)
         self.M_i_mean = M_i_mean / Z
         self.M_mean = self.M_i_mean.mean()
         self.M_abs_mean = M_abs_mean / Z
@@ -173,6 +181,8 @@ class model:
         # self.Corr_neigh = self.J_interaction * self.Corr
         self.Z = Z
         # Corr -= torch.ger(M_i_mean,M_i_mean)
+        log_Z = log_Z.cpu().numpy()
+
         print(
             "beta: {2:.1f}, Fe: {0:.3f}".format(
                 self.free_energy, self.E_mean - (1.0 / beta) * self.S, beta
@@ -188,11 +198,11 @@ class model:
         )
         return {
             "beta": beta,
-            "free_energy_mean": self.free_energy.cpu().numpy(),
+            "free_energy_mean": self.free_energy.cpu().item(),
             "free_energy_std": 0,
-            "entropy_mean": self.S.cpu().numpy(),
-            "energy_mean": self.E_mean.cpu().numpy(),
-            "mag": self.M_mean.cpu().numpy(),
+            "entropy_mean": self.S.cpu().item(),
+            "energy_mean": self.E_mean.cpu().item(),
+            "mag": self.M_mean.cpu().item(),
             "mag_mean": self.M_abs_mean.cpu().numpy(),
         }
 

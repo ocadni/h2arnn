@@ -46,6 +46,7 @@ class ANN(nn.Module):
         dtype=torch.float32,
         device="cpu",
         eps=1e-10,
+        print_num_params=True
     ):
         # print(model)
         super().__init__()
@@ -56,8 +57,9 @@ class ANN(nn.Module):
         self.dtype = dtype
         self.device = device
         self.eps = eps
-        self.print_num_params(train=True)
-        self.print_num_params(train=False)
+        if print_num_params:
+            self.print_num_params(train=True)
+            self.print_num_params(train=False)
 
     def print_num_params(self, train=True):
         num_p = self.num_params(train)
