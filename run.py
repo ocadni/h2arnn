@@ -268,7 +268,7 @@ def SK_case(args):
         stats = pd.DataFrame(stats)
         stats = stats.add_suffix(suffix)
     else:
-        if net_spec == "SK_net_rs":
+        if net_spec == "SK_net_rs_set":
             dict_nets = {"set_exact": True}
             list_n = list_nets.SK_net_rs
             input_mask = torch.tril(J_interaction, diagonal=-1)
@@ -276,10 +276,32 @@ def SK_case(args):
             net = list_nets.list_nets(
                 SK_model, list_n, input_mask, device=device, dict_nets=dict_nets)
 
-        elif net_spec == "SK_net_rs_set":
+        elif net_spec == "SK_net_rs":
             list_n = list_nets.SK_net_rs
             input_mask = torch.tril(J_interaction, diagonal=-1)
             input_mask = input_mask.to(dtype=torch.bool)
+            net = list_nets.list_nets(
+                SK_model, list_n, input_mask, device=device, dict_nets=dict_nets)
+
+        elif net_spec == "_SK_net_0rs":
+            list_n = list_nets.SK_net_krsb
+            learn = False
+            list_n.learn_first_l = learn
+            list_n.set_params_exact(SK_model, 0.1)
+            input_mask = torch.tril(J_interaction, diagonal=-1)
+            input_mask = input_mask.to(dtype=torch.bool)
+            dict_nets = {"k": 0, "set_exact": learn}
+            net = list_nets.list_nets(
+                SK_model, list_n, input_mask, device=device, dict_nets=dict_nets)
+
+        elif net_spec == "_SK_net_1rs":
+            list_n = list_nets.SK_net_krsb
+            learn = False
+            list_n.learn_first_l = learn
+            list_n.set_params_exact(SK_model, 0.1)
+            input_mask = torch.tril(J_interaction, diagonal=-1)
+            input_mask = input_mask.to(dtype=torch.bool)
+            dict_nets = {"k": 1, "set_exact": learn}
             net = list_nets.list_nets(
                 SK_model, list_n, input_mask, device=device, dict_nets=dict_nets)
 

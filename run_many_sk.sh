@@ -2,8 +2,9 @@
 for N in 50 100
 #for N in 20
 	do
-	for net_spec in "exact" "SK_net_rs" "SK_net_rs_set"  "SL" "MADE_21" "MADE_22"
+	#for net_spec in "exact" "SK_net_rs" "SK_net_rs_set"  "SL" "MADE_21" "MADE_22"
 	#for net_spec in "SK_net_rs_set"  "SL" "MADE_21" "MADE_22"
+	for net_spec in "_SK_net_0rs"  "_SK_net_1rs"
 		do
             echo $N
             echo $net_spec
