@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=run
-#SBATCH --time=24:00:00
+#SBATCH --time=12:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=2
 #SBATCH --output=run.log
 #SBATCH --mem=4GB
 #SBATCH --mail-type=ALL
@@ -11,8 +11,8 @@
 
 python="/home/biazzo/miniconda3/envs/sib/bin/python"
 script="/home/biazzo/git/pytorch_test/run.py"
-python="python"
-script="run.py"
+#python="python"
+#script="run.py"
 beta_init=0.1
 beta_end=2
 beta_step=39
