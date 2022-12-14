@@ -1,11 +1,12 @@
 import torch
 import torch.nn as nn
 import numpy as np
-import random
+import time
 
 
-def compute_stats(x, loss, log_prob, energy, beta, model, step=0, ifprint=True):
+def compute_stats(x, loss, log_prob, energy, beta, model, step=0, ifprint=True, times={}):
     #x = x.to("cpu")
+    tt = time.time()
     with torch.no_grad():
         loss = loss.cpu().detach().numpy()
         log_prob = log_prob.cpu().detach().numpy()
@@ -20,8 +21,12 @@ def compute_stats(x, loss, log_prob, energy, beta, model, step=0, ifprint=True):
         mag_mean = mag_mean.cpu().detach().numpy().item()
         q = torch.histogram((x@x.T).flatten()/N, bins=20)
         if ifprint:
+            str_p = f"\rstep: {step} {beta:.5f} fe: {free_energy_mean:.3f} +- {free_energy_std:.5f} E: {energy_mean:.3f}, S: {entropy_mean:.3f}, M: {mag_mean:.3}"
+            times["stats"] = time.time() - tt
+            for kk in times:
+                str_p += f" {kk} : {times[kk]:.2}"
             print(
-                f"\rstep: {step} {beta:.5f} fe: {free_energy_mean:.3f} +- {free_energy_std:.5f} E: {energy_mean:.3f}, S: {entropy_mean:.3f}, M: {mag_mean:.3}",
+                str_p,
                 end="",
             )
 
@@ -136,6 +141,10 @@ class ANN(nn.Module):
         for kk in keys_list:
             if kk == "q":
                 pass
+            if kk == "q":
+                pass
+            if kk == "q":
+                pass
             elif "std" in kk:
                 temp = np.array([elem[kk]*elem[kk]
                                 for elem in stats_list]).sum()
@@ -180,22 +189,32 @@ class ANN(nn.Module):
         optimizer.zero_grad()
         stats_list = []
         stats_iter_done = 0
+        fe_run = []
+        fe_std_run = []
+        times = {}
         for step in range(0, max_step + batch_iter):
             optimizer.zero_grad()
+            start_t = time.time()
             with torch.no_grad():
                 samples, x_hat = self.sample(batch_size)
-
+            times["sample_t"] = time.time() - start_t
             log_prob = self.log_prob(samples)
-
+            times["log_prob"] = time.time() - start_t - times["sample_t"]
             with torch.no_grad():
                 energy = self.model.energy(samples)
                 loss = log_prob + beta * energy
+            times["loss"] = time.time() - start_t - times["sample_t"] - \
+                times["log_prob"]
 
             loss_reinforce = torch.mean((loss - loss.mean()) * log_prob)
             loss_reinforce.backward()
             optimizer.step()
+            times["optimizer"] = time.time() - start_t - times["sample_t"] - \
+                times["log_prob"] - times["loss"]
             stats = compute_stats(samples, loss, log_prob, energy,
-                                  beta, self.model, step=step, ifprint=ifprint)
+                                  beta, self.model, step=step, ifprint=ifprint, times=times)
+            fe_run.append(stats["free_energy_mean"])
+            fe_std_run.append(stats["free_energy_std"])
             if step >= max_step or stats["free_energy_std"] < std_fe_limit:
                 stats_list.append(stats)
                 stats_iter_done += 1
@@ -203,4 +222,7 @@ class ANN(nn.Module):
                 break
         #print(stats_list, step)
         res_stats = self.avg_stats_(stats_list, batch_iter=batch_iter)
+        res_stats["fe_run"] = fe_run
+        res_stats["fe_std_run"] = fe_std_run
+
         return res_stats

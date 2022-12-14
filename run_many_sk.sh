@@ -1,9 +1,10 @@
 #!/bin/bash
 #for N in 20 50 100 200
-for N in 20
+for N in 50
 	do
 	#for net_spec in "exact" "SK_net_rs" "SK_net_rs_set"  "SL" "MADE_21" "MADE_22"
-	for net_spec in "SK_net_rs_set"  "SL" "MADE_21" "MADE_22"
+	#for net_spec in "SK_net_rs_set"  "SL" "MADE_21" "MADE_22"
+	for net_spec in "_SK_net_0rs"  "_SK_net_1rs"
 		do
             echo $N
             echo $net_spec
