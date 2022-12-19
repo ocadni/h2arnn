@@ -273,36 +273,28 @@ class SK_net_krsb(nn.Module):
         self.k = dict_nets["k"] if "k" in dict_nets else 0
         if N_i > 0:
             # K layers
-            weight_p = torch.zeros((self.k+1, N_i), device=device, dtype=dtype)
-            weight_m = torch.zeros((self.k+1, N_i), device=device, dtype=dtype)
+            weight_p = torch.zeros((self.k+2, N_i), device=device, dtype=dtype)
+            weight_m = torch.zeros((self.k+2, N_i), device=device, dtype=dtype)
             bias_p = torch.zeros((self.k+1, N_i), device=device, dtype=dtype)
             bias_m = torch.zeros((self.k+1, N_i), device=device, dtype=dtype)
-            weight_0p = torch.zeros((1), device=device, dtype=dtype)
-            weight_0m = torch.zeros((1), device=device, dtype=dtype)
 
             # nn.Parameter is a Tensor that's a module parameter.
             self.weight_p = nn.Parameter(weight_p)
             self.bias_p = nn.Parameter(bias_p)
             self.weight_m = nn.Parameter(weight_m)
             self.bias_m = nn.Parameter(bias_m)
-            self.weight_0p = nn.Parameter(weight_0p)
-            self.weight_0m = nn.Parameter(weight_0m)
 
             # initialize weights and biases
-            torch.nn.init.normal_(self.weight_0p, mean=0.0, std=1/N)
-            torch.nn.init.normal_(self.weight_0m, mean=0.0, std=1/N)
             torch.nn.init.normal_(self.weight_p, mean=0.0, std=1/N)
             torch.nn.init.normal_(self.bias_p, mean=0.0, std=1/N)
             torch.nn.init.normal_(self.weight_m, mean=0.0, std=1/N)
             torch.nn.init.normal_(self.bias_m, mean=0.0, std=1/N)
         else:
             self.k = 0
-            self.weight_p = torch.zeros((1, 1), device=device, dtype=dtype)
-            self.weight_m = torch.zeros((1, 1), device=device, dtype=dtype)
+            self.weight_p = torch.zeros((2, 1), device=device, dtype=dtype)
+            self.weight_m = torch.zeros((2, 1), device=device, dtype=dtype)
             self.bias_p = torch.zeros((1, 1), device=device, dtype=dtype)
             self.bias_m = torch.zeros((1, 1), device=device, dtype=dtype)
-            self.weight_0p = torch.zeros((1), device=device, dtype=dtype)
-            self.weight_0m = torch.zeros((1), device=device, dtype=dtype)
 
         weight_0 = torch.zeros((1), device=device, dtype=dtype)
         bias_0 = torch.zeros((1), device=device, dtype=dtype)
@@ -323,8 +315,8 @@ class SK_net_krsb(nn.Module):
             res_p = F.logsigmoid(self.bias_p[kk] + self.weight_p[kk] * res_p)
             res_m = F.logsigmoid(self.bias_m[kk] + self.weight_m[kk] * res_m)
 
-        res_p = self.weight_0p * F.logsigmoid(res_p)
-        res_m = self.weight_0m * F.logsigmoid(res_m)
+        res_p = self.weight_p[-1] * res_p
+        res_m = self.weight_m[-1] * res_m
         res_0 = self.bias_0 + self.weight_0 * m_i
 
         return torch.sigmoid(res_0 + res_p.sum(dim=1) + res_m.sum(dim=1))

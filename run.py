@@ -18,6 +18,7 @@ import python_lib.nets.simple_layer as simple_layer
 import python_lib.nets.made as made
 import python_lib.run_lib as run_lib
 import python_lib.nets.list_nets as list_nets
+import python_lib.nets.cw_net as cw_net
 
 
 def parse_args():
@@ -173,6 +174,14 @@ def CW_case(args):
                             net_depth=2,
                             net_width=2
                             )
+        elif net_spec == "one_new":
+            net = cw_net.one_var(CW_model,
+                                 device=device,
+                                 )
+        elif net_spec == "one_var_sign":
+            net = cw_net.one_var_sign(CW_model,
+                                      device=device,
+                                      )
         elif net_spec == "one":
             one = list_nets.one_var
             input_mask = torch.tril(J_interaction, diagonal=-1)
@@ -283,7 +292,7 @@ def SK_case(args):
             net = list_nets.list_nets(
                 SK_model, list_n, input_mask, device=device, dict_nets=dict_nets)
 
-        elif net_spec == "_SK_net_0rs":
+        elif net_spec == "_SK_net_0rs_fixed":
             list_n = list_nets.SK_net_krsb
             learn = False
             list_n.learn_first_l = learn
@@ -294,7 +303,7 @@ def SK_case(args):
             net = list_nets.list_nets(
                 SK_model, list_n, input_mask, device=device, dict_nets=dict_nets)
 
-        elif net_spec == "_SK_net_1rs":
+        elif net_spec == "_SK_net_1rs_fixed":
             list_n = list_nets.SK_net_krsb
             learn = False
             list_n.learn_first_l = learn
