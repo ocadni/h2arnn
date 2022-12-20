@@ -5,6 +5,7 @@ import pandas as pd
 import torch
 import pandas as pd
 import time
+import os
 
 import sys
 import time
@@ -21,6 +22,17 @@ import python_lib.nets.list_nets as list_nets
 import python_lib.nets.cw_net as cw_net
 
 
+def file_name(args, net=False):
+    if args.save_net == "yes":
+        if not os.path.exists(args.save_dir+"nets/"):
+            os.makedirs(args.save_dir+"nets/")
+
+    if net:
+        return args.save_dir + "nets/" + f"N{args.N}_seed{args.seed}_model{args.model}_net_spec{args.net_spec}_J{args.J:.2}_h{args.h:.2}_lr{args.lr:.2}_max_step{args.max_step}_batch_size{args.batch_size}_std_fe_limit{args.std_fe_limit:.2}"
+    else:
+        return args.save_dir + f"N{args.N}_seed{args.seed}_model{args.model}_net_spec{args.net_spec}"
+
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Train Autoregressive neural networks")
@@ -35,10 +47,13 @@ def parse_args():
         "--file_name",
         type=str,
         default="data",
-        help="name of the file in which the marginals will be saved",
+        help="name of the file in which the results will be saved",
     )
     parser.add_argument(
         "--model", type=str, default="CW", help="Ising models: implemented so far [CW, SK]"
+    )
+    parser.add_argument(
+        "--save_net", type=str, default="yes", help="Save net. String: yes or no"
     )
     parser.add_argument(
         "--net_spec", type=str, default="SL", help="Ising model"
@@ -106,7 +121,6 @@ def CW_case(args):
     batch_iter = args.batch_iter
     suffix = args.suffix if args.suffix != None else net_spec
     stats_step = args.stats_step
-
     H = torch.ones(N)
     J_interaction = torch.ones(N, N)
     J = torch.ones(N, N)
@@ -225,7 +239,9 @@ def CW_case(args):
                                   std_fe_limit=std_fe_limit,
                                   suffix=suffix,
                                   batch_iter=batch_iter,
-                                  stats_step=stats_step
+                                  stats_step=stats_step,
+                                  save_net=args.save_net == "yes",
+                                  namefile_net=file_name(args, net=True),
                                   )
         stats["num_params"] = net.num_params(train=False)
         stats["num_train_params"] = net.num_params(train=True)
@@ -277,22 +293,15 @@ def SK_case(args):
         stats = pd.DataFrame(stats)
         stats = stats.add_suffix(suffix)
     else:
-        if net_spec == "SK_net_rs_set":
-            dict_nets = {"set_exact": True}
+        if net_spec == "SK_rs_learn":
+            dict_nets = {"set_exact": False}
             list_n = list_nets.SK_net_rs
             input_mask = torch.tril(J_interaction, diagonal=-1)
             input_mask = input_mask.to(dtype=torch.bool)
             net = list_nets.list_nets(
                 SK_model, list_n, input_mask, device=device, dict_nets=dict_nets)
 
-        elif net_spec == "SK_net_rs":
-            list_n = list_nets.SK_net_rs
-            input_mask = torch.tril(J_interaction, diagonal=-1)
-            input_mask = input_mask.to(dtype=torch.bool)
-            net = list_nets.list_nets(
-                SK_model, list_n, input_mask, device=device, dict_nets=dict_nets)
-
-        elif net_spec == "_SK_net_0rs_fixed":
+        elif net_spec == "SK_0rsb":
             list_n = list_nets.SK_net_krsb
             learn = False
             list_n.learn_first_l = learn
@@ -303,7 +312,7 @@ def SK_case(args):
             net = list_nets.list_nets(
                 SK_model, list_n, input_mask, device=device, dict_nets=dict_nets)
 
-        elif net_spec == "_SK_net_1rs_fixed":
+        elif net_spec == "SK_1rsb":
             list_n = list_nets.SK_net_krsb
             learn = False
             list_n.learn_first_l = learn
@@ -314,7 +323,7 @@ def SK_case(args):
             net = list_nets.list_nets(
                 SK_model, list_n, input_mask, device=device, dict_nets=dict_nets)
 
-        elif net_spec == "_SK_net_2rs":
+        elif net_spec == "SK_2rsb":
             list_n = list_nets.SK_net_krsb
             learn = False
             list_n.learn_first_l = learn
@@ -353,7 +362,9 @@ def SK_case(args):
                                   std_fe_limit=std_fe_limit,
                                   suffix=suffix,
                                   batch_iter=batch_iter,
-                                  stats_step=stats_step
+                                  stats_step=stats_step,
+                                  save_net=args.save_net == "yes",
+                                  namefile_net=file_name(args, net=True),
                                   )
         stats["num_params"] = net.num_params(train=False)
         stats["num_train_params"] = net.num_params(train=True)
@@ -380,11 +391,9 @@ def main():
         #print(ff, vars(args)[ff])
         stats[str(ff)] = str(vars(args)[ff])
 
-    timestr = time.strftime("%Y%m%d-%H%M%S") + "_" + \
-        str(time.time())[-5:]
-    file_name = f"_model{args.model}_net_spec{args.net_spec}_N{args.N}_J{args.J:.2}_h{args.h:.2}"
-    file_name = timestr + file_name + ".gzip"
-    stats.to_pickle(args.save_dir + file_name)
+    timestr = time.strftime("%Y%m%d_%H%M%S")
+    file_name_str = file_name(args, net=False) + "_" + timestr + ".gzip"
+    stats.to_pickle(file_name_str)
 
     return True
 

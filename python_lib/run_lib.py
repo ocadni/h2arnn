@@ -1,4 +1,5 @@
 import pandas as pd
+import torch
 
 
 def train_net(
@@ -12,6 +13,8 @@ def train_net(
     suffix="",
     exact=False,
     stats_step=1,
+    save_net=False,
+    namefile_net="net"
 ):
     stats = []
     net2train.train(
@@ -37,7 +40,10 @@ def train_net(
 
         if steps % stats_step == 0:
             stats.append(ss)
-        steps += 1
+            if save_net:
+                torch.save(net2train, namefile_net +
+                           f"_beta{beta:.2f}" + ".pt")
 
+        steps += 1
     stats_pd = pd.DataFrame(stats)
     return stats_pd.add_suffix(suffix)

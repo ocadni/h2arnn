@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --job-name=run
-#SBATCH --time=12:00:00
+#SBATCH --time=34:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --output=run.log
-#SBATCH --mem=4GB
+#SBATCH --mem=3GB
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=indaco.biazzo@epfl.ch
 
@@ -24,8 +24,10 @@ std_fe_limit=1e-4
 batch_iter=20
 stats_step=1
 save_dir="./results/SK/data/"
-N=500
-net_spec="SK_net_rs_set"
+N=20
+net_spec="SK_net_0rsb"
 model="SK"
 device="cpu"
-$python $script --model $model --N $N --beta_range $beta_init $beta_end $beta_step --net_spec $net_spec --num_threads $num_threads --lr $lr --max_step $max_step --batch_size $batch_size --std_fe_limit $std_fe_limit --batch_iter $batch_iter --stats_step $stats_step --save_dir $save_dir --device $device
+save_net="yes"
+seed=0
+$python $script --model $model --N $N --beta_range $beta_init $beta_end $beta_step --net_spec $net_spec --num_threads $num_threads --lr $lr --max_step $max_step --batch_size $batch_size --std_fe_limit $std_fe_limit --batch_iter $batch_iter --stats_step $stats_step --save_dir $save_dir --device $device --save_net $save_net --seed $seed
