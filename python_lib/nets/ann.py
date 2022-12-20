@@ -19,7 +19,7 @@ def compute_stats(x, loss, log_prob, energy, beta, model, step=0, ifprint=True, 
         mag = x.mean(dim=0).cpu().detach().numpy()
         mag_mean = torch.abs(x.mean(dim=1)).mean(dim=0)
         mag_mean = mag_mean.cpu().detach().numpy().item()
-        q = torch.histogram((x@x.T).flatten()/N, bins=20)
+        q = torch.histogram((x@x.T).flatten()/N, bins=100, range=(-1, 1))[0]
         if ifprint:
             str_p = f"\rstep: {step} {beta:.5f} fe: {free_energy_mean:.3f} +- {free_energy_std:.5f} E: {energy_mean:.3f}, S: {entropy_mean:.3f}, M: {mag_mean:.3}"
             times["stats"] = time.time() - tt
@@ -140,11 +140,8 @@ class ANN(nn.Module):
         res_stats = {}
         for kk in keys_list:
             if kk == "q":
-                pass
-            if kk == "q":
-                pass
-            if kk == "q":
-                pass
+                temp = [elem[kk] for elem in stats_list]
+                res_stats[kk] = torch.stack(temp).mean(dim=0)
             elif "std" in kk:
                 temp = np.array([elem[kk]*elem[kk]
                                 for elem in stats_list]).sum()
