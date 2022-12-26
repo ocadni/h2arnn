@@ -86,6 +86,9 @@ def parse_args():
         "--max_step", type=int, default=100, help="Max number of steps for each value of beta",
     )
     parser.add_argument(
+        "--init_steps", type=int, default=5000, help="Number of learning steps at the beginnig of annealing",
+    )
+    parser.add_argument(
         "--batch_size", type=int, default=1000, help="Batch size in the learning process",
     )
     parser.add_argument(
@@ -164,6 +167,7 @@ def CW_case(args):
                                   batch_iter=batch_iter,
                                   stats_step=stats_step,
                                   exact=True,
+                                  init_steps=args.init_steps
                                   )
         stats["num_params"] = net.num_params(train=False)
         stats["num_train_params"] = net.num_params(train=True)
@@ -242,6 +246,7 @@ def CW_case(args):
                                   stats_step=stats_step,
                                   save_net=args.save_net == "yes",
                                   namefile_net=file_name(args, net=True),
+                                  init_steps=args.init_steps
                                   )
         stats["num_params"] = net.num_params(train=False)
         stats["num_train_params"] = net.num_params(train=True)
@@ -365,6 +370,7 @@ def SK_case(args):
                                   stats_step=stats_step,
                                   save_net=args.save_net == "yes",
                                   namefile_net=file_name(args, net=True),
+                                  init_steps=args.init_steps
                                   )
         stats["num_params"] = net.num_params(train=False)
         stats["num_train_params"] = net.num_params(train=True)

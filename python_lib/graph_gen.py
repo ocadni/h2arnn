@@ -4,7 +4,6 @@ from collections import defaultdict
 import math
 import torch
 import matplotlib.pyplot as plt
-import pygraphviz
 from networkx.drawing.nx_agraph import graphviz_layout
 import random
 

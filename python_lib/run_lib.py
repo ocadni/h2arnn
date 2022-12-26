@@ -14,13 +14,14 @@ def train_net(
     exact=False,
     stats_step=1,
     save_net=False,
-    namefile_net="net"
+    namefile_net="net",
+    init_steps = 5000
 ):
     stats = []
     net2train.train(
         beta=betas[0],
         lr=lr,
-        max_step=5000,
+        max_step=init_steps,
         batch_size=batch_size,
         std_fe_limit=std_fe_limit,
         exact=exact,
