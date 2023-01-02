@@ -154,7 +154,7 @@ and we defined $h_i^{\pm}[\mathbf{x}_{<i}] = h\pm\frac{J}{N}+\frac{J}{N}\sum_{s=
  First, in the following,  we derive the exact expression of the this conditional probability and how it can be expressed as a feed forward neural network, then the limit to $n\rightarrow N$ we derive a new architecture with smaller number of parameters.\\
 
 
- \subsubsection{Exact expression of the conditional probability of Curie-Weiss model}
+ \subsubsection{Exact expression of the conditional probability of the Curie-Weiss model}
  The integral in the equation \ref{eq:rho_last_exact} can be computed the following way :
 
  \begin{eqnarray*}
@@ -162,13 +162,13 @@ and we defined $h_i^{\pm}[\mathbf{x}_{<i}] = h\pm\frac{J}{N}+\frac{J}{N}\sum_{s=
  \sum_{k=0}^{N-i} \binom{N-i}{k} e^{(N-i-2k)*(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t)}\\
  &=& \sum_{k=0}^{N-i} \binom{N-i}{k} \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} 
   e^{(N-i-2k)*(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t)}\\
-&=& \sum_{k=0}^{N-i} \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\beta h_i^{\pm}[\mathbf{x}_{<i}]\frac{\beta J}{N}\right)} e^{\frac{\beta J}{N}\left(N-i-2k\right) \sum_s x_s} \\
+&=& \sum_{k=0}^{N-i} \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\beta h \pm \frac{\beta J}{N}\right)} e^{\frac{\beta J}{N}\left(N-i-2k\right) \sum_s x_s} \\
 &=& \sum_{k=0}^{N-i} e^{a_{i,k}^{\pm} + b_{i,k}^{\pm} \sum_s x_s} 
 \end{eqnarray*}
 where we defined:
 \begin{eqnarray}
 \label{eq:params}
-e^{b_{i,k}^{\pm}} & = & \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\beta h_i^{\pm}[\mathbf{x}_{<i}]\frac{\beta J}{N}\right)}\\
+e^{b_{i,k}^{\pm}} & = & \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\beta h \pm \frac{\beta J}{N}\right)}\\
 e^{\omega_{i,k}^{\pm}} & = & e^{\frac{\beta J}{N}\left(N-i-2k\right)}.
 \end{eqnarray}
 The the final feed-forward architecture of the neural network is:
@@ -193,30 +193,35 @@ The total number of parameters of all conditional probability distribution scale
 
 
 \subsubsection{Saddle point method}
-Now we derive a new neural network architecture in the limit of $N \gg 1$. Consider the following variables: $\rho_i = \frac{N-i}{N}$, $m_i = -\frac{N-i-2k}{N}$. We can write:
+Now we derive a new neural network architecture in the limit of $N \gg 1$. For simplicity the $h=0$ case is considered. Introducing the following variables: $\rho_i = \frac{N-i}{N}$, $m_i = -\frac{N-i-2k}{N}$, we can write:
  \begin{align*}
- \rho_i^{\pm} &= \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} 
- \sum_{k=0}^{N-i} \binom{N-i}{k} e^{(N-i-2k)*(\beta h_i^{\pm} + t)}\\
- &= \sum_{k=0}^{N-i} \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\beta h\pm\frac{\beta J}{N}\right)} e^{\frac{\beta J}{N}\left(N-i-2k\right) \sum_q x_q} \\
- &= \sum_{m_i=-\rho_i}^{\rho_i} \binom{N\rho_i}{\frac{N(m_i+\rho_i)}{2}} e^{\frac{N \beta J}{2}m_i^{2} \mp \beta J m_i } e^{N \rho_i \beta J \frac{\sum_q x_q}{N-i}}
+ \rho_i^{\pm}[\mathbf{x}_{<i}] &= \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} 
+ \sum_{k=0}^{N-i} \binom{N-i}{k} e^{(N-i-2k)*(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t)}\\
+ &= \sum_{k=0}^{N-i} \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\pm\frac{\beta J}{N}\right)} e^{\frac{\beta J}{N}\left(N-i-2k\right) \sum_s x_s} \\
+ &= \sum_{m_i=-\rho_i}^{\rho_i} \binom{N\rho_i}{\frac{N(m_i+\rho_i)}{2}} e^{\frac{N \beta J}{2}m_i^{2} \mp \beta J m_i } e^{N \rho_i \beta J \frac{\sum_s x_s}{N-i}}
 \end{align*}
 In the limit $N \gg 1$, and using the Stirling approximation for the binomial factor we obtain:
  \begin{align*}
  \rho_i^{\pm} &= 
-  \int_{-\rho_i}^{\rho_i} \binom{N\rho_i}{\frac{N(m_i+\rho_i)}{2}} e^{\frac{N \beta J}{2}m_i^{2} \mp \beta J m_i } e^{N \rho_i \beta J \frac{\sum_q x_q}{N-i}} dm_i \\
-& =  \int_{-\rho_i}^{\rho_i} \exp\left\{-N\rho\left( -\frac{1+\frac{m_i}{\rho_i}}{2} \log\frac{1+\frac{m_i}{\rho_i}}{2} - \frac{1-\frac{m_i}{\rho_i}}{2} \log\frac{1-\frac{m_i}{\rho_i}}{2}   - \frac{\beta m_i^2}{2 \rho_i} + \beta m_i \frac{\sum_q x_q}{N-i}\right) \right\} e^{\mp \beta J m_i}
+  \int_{-\rho_i}^{\rho_i} \binom{N\rho_i}{\frac{N(m_i+\rho_i)}{2}} e^{\frac{N \beta J}{2}m_i^{2} \mp \beta J m_i } e^{N \rho_i \beta J \frac{\sum_s x_s}{N-i}} dm_i \\
+& =  \int_{-\rho_i}^{\rho_i} \exp\left\{-N\rho\left( -\frac{1+\frac{m_i}{\rho_i}}{2} \log\frac{1+\frac{m_i}{\rho_i}}{2} - \frac{1-\frac{m_i}{\rho_i}}{2} \log\frac{1-\frac{m_i}{\rho_i}}{2}   - \frac{\beta m_i^2}{2 \rho_i} + \beta m_i \frac{\sum_s x_s}{N-i}\right) \right\} e^{\mp \beta J m_i}
 \end{align*}
 Now we use the saddle point method to evaluate this integrals, computing the extremes of the function inside the curly brackets. Deriving by $m_i$ we obtain that the extremes should satisfy the following equation:
-\[
-\frac{m_i}{\rho_i} = \tanh \left( \beta(\frac{m_i}{\rho_i} - \frac{\sum_q x_q}{N-i}) \right)
+\begin{equation}
+\frac{m_i}{\rho_i} = \tanh \left( \beta(\frac{m_i}{\rho_i} - \frac{\sum_s x_s}{N-i}) \right)
 \label{eq:extrem_i}
-\]
-In the $N$ large limit, and for a typical sample, weast datatype dataframe
-can assume that: $\frac{\sum_q x_q}{N-i} \approx |\tilde{m}_{\beta}| \text{sign}(\sum_q x_q)$, where the $\tilde{m}_{\beta}$ is the magnetization of the Curie-Weiss system at inverse temperature $\beta$ and $\text{sign(x)} = \frac{|x|}{x}$ is the sign function.
-We can distinguish two cases when the magnetization of the system is zero or different from zero. In the first case also the solution of equation \ref{eq:extrem_i} is zero, and $\log(\rho_i^{+}) - \log(\rho_i^{-})=0$ because the only term that depends on the sign vanish. When instead the system acquire a magnetization $\tilde{m}_{\beta}$ different from zero, the equation \ref{eq:extrem_i} admit one solution, that depends on the two possible symmetric values of $\frac{\sum_q x_q}{N-i})\approx |\tilde{m}_{\beta}| \text{sign}(\sum_q x_q)$. The solution of eq.\ref{eq:extrem_i}, $\pm \tilde{m}_{\text{extrem}}$ depending again on $\text{sign}(\sum_q x_q)$. Once again we can write the extreme solution as $\tilde{m}_{i}=|\tilde{m}_i| \text{sign}(\sum_q x_q)$. Easily we obtain that $\log(\rho_i^{+}) - \log(\rho_i^{-}) = -\beta J|\tilde{m}_i| \text{sign}(\sum_q x_q)$. We can use a trial function in this form:
+\end{equation}
+In the $N$ large limit, and for a typical sample, we assume that: $\frac{\sum_s x_s}{N-i} \approx |\tilde{m}_{\beta}| \text{sign}(\sum_s x_s)$, where the $\tilde{m}_{\beta}$ is the magnetization of the Curie-Weiss system at inverse temperature $\beta$ and $\text{sign(x)} = \frac{|x|}{x}$ is the sign function.
+We can distinguish two cases when the magnetization of the system is zero or different from zero. 
+In the first case, when $\beta\leq1$, the solution of eq.\ref{eq:extrem_i} is zero as well, and $\log(\rho_i^{+}) - \log(\rho_i^{-})=0$ because the only term that depends on the sign, $\mp \beta J m_i$, vanish.\\ 
+When instead the system acquire a magnetization $\tilde{m}_{\beta}$ different from zero, the eq.\ref{eq:extrem_i} admit one maximum, that depends on the two possible symmetric values of $\frac{\sum_s x_s}{N-i}\approx |\tilde{m}_{\beta}| \text{sign}(\sum_q x_q)$. 
+The solution of eq.\ref{eq:extrem_i}, $\pm \tilde{m}_{\text{extrem}}$ depends again on $\text{sign}(\sum_s x_s)$. 
+Once again we can write the maximum solution as $\tilde{m}_{i}=|\tilde{m}_i| \text{sign}(\sum_s x_s)$. 
+Easily we obtain that $\log(\rho_i^{+}) - \log(\rho_i^{-}) = -2\beta J|\tilde{m}_i| \text{sign}(\sum_s x_s)$. 
+We can use a trial function in this form:
 \begin{eqnarray}\
 \label{eq:curie_weiss_cond2}
-Q^{\Theta}\left(x_{i}=+1|\mathbf{x}_{<i}\right) & = & \text{sigma}\left(\omega_{i}^0\sum_{q=1}^{i-1}x_{q} + \omega_i^1 \text{sign}(\sum_{q=1}^{i-1}x_{q})\right).
+Q^{\Theta}\left(x_{i}=+1|\mathbf{x}_{<i}\right) & = & \text{sigma}\left(\omega_{i}^0\sum_{s=1}^{i-1}x_{s} + \omega_i^1 \text{sign}(\sum_{s=1}^{i-1}x_{s})\right).
 \end{eqnarray}
 where $\omega_i^{1,2}$ are free parameters to be trained. The number of parameters in this case scale as $O(N)$.
 
