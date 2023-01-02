@@ -29,6 +29,9 @@
 \tableofcontents
 
 \section{Introduction}
+
+\section{Materials and Methods}
+\subsection{Pair-wise Ising model in autoregressive conditional probability form}
 Consider a generic Hamiltonian $H[\underline{x}]$ that depends on a set $N$ of binary variable $\underline{x}$. The Boltzmann distribution at inverse temperature $\beta$ is:
 \begin{equation}
 P\left(\mathbf{x}\right)=\frac{e^{-\beta H\left(\mathbf{x}\right)}}{\sum_{\left\{ x\right\} }e^{-\beta H\left(\mathbf{x}\right)}}.
@@ -49,13 +52,14 @@ D_{KL}\left(P|Q^{\Theta}\right) & = & \sum_{\left\{ x\right\} }Q^{\Theta}\left(\
  & \approx & \sum_{x\sim Q^{\Theta}}\left[\ln\left(Q^{\Theta}\left(\left\{ x\right\} \right)\right)-\ln\left(P\left(\left\{ x\right\} \right)\right)\right]
 \end{eqnarray*}
 where we substituted the sum over all $\{x\}$ configurations with a set of configurations extracted, thanks to the ancestral sampling, from the autoregressive trial functions.
-Up to here the approach seems clear. What is less clear, is what architecture of the neural networks we have to use for each problem.
+Up to here the approach seems clear. 
+What is less clear, is what architecture of the neural networks we have to use for each problem.
 There is a large number of systems where the analytic form of the Boltzmann distribution is known, at least in some limits (for instance $N\rightarrow \infty$). 
 In this work we want to find neural network architectures that could precisely represent solvable statistical physics systems. 
 Then, these architectures could be used as an ansatz for more complex systems or in different limits (for instance at finite $N$).
 
 
-\section{Conditionals}
+\subsubsection{Conditionals}
 The autoregressive probability distribution has this form:
 \begin{equation}
 P\left(\mathbf{x}\right)=\prod_{i}P\left(x_{i}|\mathbf{x}_{<i}\right)
@@ -86,83 +90,106 @@ We consider a generic fully connected two body interaction Hamiltonian of binary
 \begin{equation}
     H = -\sum_{i<j} J_{ij} x_i x_j - \sum_{i} h_i x_i
 \end{equation}
-Considering a generic variable $i$, we rewrite the Hamiltonian splitting the contributions that come from variables with index lower and larger than $i$ (in the following we label $q$ and $p$ the variables with index, respectively, lower and larger than $i$):
+Considering a generic variable $i$, we rewrite the Hamiltonian splitting the contributions that come from variables with index smaller and larger than $i$, labelled, respectively, $s$ and $l$ :
 \begin{equation}
-    H = H_{qq} + H_{qi} + H_{ip} + H_{qp} + H_{pp}
+    H = H_{ss} + H_{si} + H_{il} + H_{sl} + H_{ll}
 \end{equation}
 We have defined:
 \begin{eqnarray}
-    H_{qq} & = & - \sum_{q=1}^{i-1}\sum_{q'=q+1}^{i-1} J_{qq'} x_q x_{q'} - \sum_{q} h_q x_q \\
-    H_{qi}[x_i = \pm 1] & = & \mp \left(h_i + \sum_{q=1}^{i-1} J_{qi} x_q\right)\\
-    H_{ip}[x_i = \pm 1] & = & \mp \sum_{p=i+1}^{N} J_{ip} x_p \\
-    H_{qp} & = & - \sum_{p=i+1}^{N}\sum_{q=1}^{i-1} J_{qp} x_q x_p\\
-    H_{pp} & = & - \sum_{p=i+1}^{N}\sum_{p'=p+1}^{N} J_{pp'} x_p x_{p'} + \sum_{p=i+1}^N h_p x_p\\
+    H_{ss} & = & - \sum_{s=1}^{i-1}\sum_{s'=s+1}^{i-1} J_{ss'} x_s x_{s'} - \sum_{s} h_s x_s \\
+    H_{si}[x_i = \pm 1] & = & \mp \left(h_i + \sum_{s=1}^{i-1} J_{si} x_s\right)\\
+    H_{il}[x_i = \pm 1] & = & \mp \sum_{l=i+1}^{N} J_{il} x_l \\
+    H_{sl} & = & - \sum_{l=i+1}^{N}\sum_{s=1}^{i-1} J_{sl} x_s x_l\\
+    H_{ll} & = & - \sum_{l=i+1}^{N}\sum_{l'=l+1}^{N} J_{ll'} x_l x_{l'} + \sum_{l=i+1}^N h_l x_l\\
 \end{eqnarray}
 Substituting tho above terms, of a generic two body interaction Hamiltonian, in eq.\ref{eq:sigma_log} we obtain:
 \begin{equation}
 P\left(x_{i}=1|\mathbf{x}_{<i}\right) = \sigma\left( 
- 2 \beta H_{qi}[x_i = +1] +\log(\rho_i^+) - \log(\rho_i^-)
+ 2 \beta H_{si}[x_i = +1] +\log(\rho_i^+) - \log(\rho_i^-)
 \right),
 \end{equation}
 where:
 \begin{eqnarray}
 \rho_i^{\pm}[\mathbf{x}_{<i}] &=& \sum_{x_{i+1}\dots x_{N}} e^{-\beta \left(
-H_{pi}[x_i = \pm 1] + H_{qp} + H_{pp}\right)} \\
+H_{li}[x_i = \pm 1] + H_{sl} + H_{ll}\right)} \\
 & = & \sum_{x_{i+1}\dots x_{N}} \exp\left\{
-\beta\sum_{p=i+1}^{N}\left( \pm J_{ip} + \sum_{q=1}^{i-1} J_{qp} x_q + h_p \right) x_p + \beta\sum_{p=i+1}^{N}\sum_{p'=p+1}^{N} J_{pp'} x_p x_{p'}
+\beta\sum_{l=i+1}^{N}\left( \pm J_{il} + \sum_{s=1}^{i-1} J_{sl} x_s + h_l \right) x_l + \beta\sum_{l=i+1}^{N}\sum_{l'=l+1}^{N} J_{ll'} x_l x_{l'}
 \right\}
 \end{eqnarray}
 The terms $H_{qq}$ cancel out.
-The computational cost of the sum over all the configuration of spins labelled $p$ grows exponentially with the systems size making it unfeasible after a few number of spins the explicit computations. The idea is to find feed-forward neural network architectures representing these functions with a polynomial number of free parameters.   
+The computational cost of the sum over all the configuration of spins labelled with $l$ grows exponentially with the systems size making it unfeasible after a few number of spins the explicit computations. The idea is to find feed-forward neural network architectures representing these functions with a polynomial number of free parameters.   
 In the following we will explore, on known and solvable statistical physic systems, if it is possible to find neural network architectures or functional forms to compact represent (not exponentially in N) this conditional probability. We start considering the Curie-Weiss model, then moving to more complex systems, the random field Ising model and Sherrington–Kirkpatrick model.
 
-\section{Curie-Weiss model}
+\subsection{Models}
+\subsubsection{Curie-Weiss model}
 
-Consider the Hamiltonian of a uniform fully-connected Ising model with $N$ spins:
+The Curie-Weiss model is a uniform fully-connected Ising model. Its Hamiltonian, with $N$ spins, is:
 
 \begin{equation}
 H\left(\mathbf{x}\right)=-h\sum_{i=1}^{N}x_{i}-\frac{J}{N}\sum_{i<j}x_{i}x_{j}
 \doteq -h\sum_{i=1}^{N} S - \frac{J}{2N}S^2 - \frac{J}{2}
 \end{equation}
- where we have defined $S=\sum_{i=1}^{N}x_{i}$.
-Defining $S_i=\sum_{p=i+1}^{N}x_{p}$, we can compute:
+ where we have defined $S=\sum_{i=1}^{N}x_{i}$.\\
+ The conditional probability of a spin $i$ to be up, given the configuration of the other smaller spins $s$:
+\begin{equation}
+P\left(x_{i}=1|\mathbf{x}_{<i}\right) = \sigma\left( 
+ 2 \beta h + 2 \beta \frac{J}{N}\sum_{s=1}^{i-1}x_s +\log(\rho_i^+[\mathbf{x}_{<i}]) - \log(\rho_i^-[\mathbf{x}_{<i}])
+\right),
+\end{equation}
+where:
 \begin{equation*}
-\rho_i^{\pm} = \sum_{x_{i+1}\dots 
-x_{N}}e^{\beta \left(h\pm\frac{J}{N}+\frac{J}{N}\sum_{q=1}^{i-1}x_{q}\right)S_{i}+\frac{\beta J}{2N}S_{i}^{2}} = 
-\sum_{x_{i+1}\dots x_{N}} e^{\beta h_i^{\pm}S_i +\frac{\beta J}{2N}S_{i}^{2}}
+\rho_i^{\pm}[\mathbf{x}_{<i}] = \sum_{x_{i+1}\dots 
+x_{N}}e^{\beta \left(h\pm\frac{J}{N}+\frac{J}{N}\sum_{s=1}^{i-1}x_{s}\right)S_{i}+\frac{\beta J}{2N}S_{i}^{2}} = 
+\sum_{x_{i+1}\dots x_{N}} e^{\beta h_i^{\pm}[\mathbf{x}_{<i}]S_i +\frac{\beta J}{2N}S_{i}^{2}},
 \end{equation*}
-where we defined $h_i^{\pm} = h\pm\frac{J}{N}+\frac{J}{N}\sum_{q=1}^{i-1}x_{q}$. The computations can be carried on easily:
+and we defined $h_i^{\pm}[\mathbf{x}_{<i}] = h\pm\frac{J}{N}+\frac{J}{N}\sum_{s=1}^{i-1}x_{s}$ and $S_i=\sum_{l=i+1}^{N}x_{l}$. The sums over the configurations of the spins $l$ can be carried on easily:
 \begin{eqnarray*}
- \rho_i^{\pm} & = & \sum_{x_{i+1}\dots x_{N}} e^{\beta h_i^{\pm}S_i +\frac{\beta J}{2N}S_{i}^{2}}
-  = \sqrt{\frac{N}{2\pi \beta J}}\sum_{x_{i+1}\dots x_{N}}e^{\beta h_i^{\pm} S_{i}}\int e^{-\frac{N}{2J \beta}t^{2}+t S_{i}} dt\\
- & = & \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} \sum_{x_{i+1}\dots x_{N}}e^{(\beta h_i^{\pm} + t) S_{i}}  
- =  \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} \left(e^{\beta h_i^{\pm} + t} + e^{ (-\beta h_i^{\pm} - t)} \right)^{N-i} \\
+ \rho_i^{\pm}[\mathbf{x}_{<i}] & = & \sum_{x_{i+1}\dots x_{N}} e^{\beta h_i^{\pm}[\mathbf{x}_{<i}]S_i +\frac{\beta J}{2N}S_{i}^{2}}
+  = \sqrt{\frac{N}{2\pi \beta J}}\sum_{x_{i+1}\dots x_{N}}e^{\beta h_i^{\pm}[\mathbf{x}_{<i}] S_{i}}\int e^{-\frac{N}{2J \beta}t^{2}+t S_{i}} dt\\
+ & = & \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} \sum_{x_{i+1}\dots x_{N}}e^{(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t) S_{i}}  
+ =  \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} \left(e^{\beta h_i^{\pm}[\mathbf{x}_{<i}] + t} + e^{ (-\beta h_i^{\pm}[\mathbf{x}_{<i}] - t)} \right)^{N-i}  \\ 
+ \label{eq:rho_last_exact}
  \end{eqnarray*}
- \subsubsection{Curie Weiss exact derivation}
+ whwre we used the Hubbard–Stratonovich (HS) transformation to get the second equality.\\
+ First, in the following,  we derive the exact expression of the this conditional probability and how it can be expressed as a feed forward neural network, then the limit to $n\rightarrow N$ we derive a new architecture with smaller number of parameters.\\
+
+
+ \subsubsection{Exact expression of the conditional probability of Curie-Weiss model}
+ The integral in the equation \ref{eq:rho_last_exact} can be computed the following way :
+
  \begin{eqnarray*}
- \rho_i^{\pm} &=& \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} 
- \sum_{k=0}^{N-i} \binom{N-i}{k} e^{(N-i-2k)*(\beta h_i^{\pm} + t)}\\
+ \rho_i^{\pm}[\mathbf{x}_{<i}] &=& \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} 
+ \sum_{k=0}^{N-i} \binom{N-i}{k} e^{(N-i-2k)*(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t)}\\
  &=& \sum_{k=0}^{N-i} \binom{N-i}{k} \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} 
-  e^{(N-i-2k)*(\beta h_i^{\pm} + t)}\\
-&=& \sum_{k=0}^{N-i} \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\beta h\pm\frac{\beta J}{N}\right)} e^{\frac{\beta J}{N}\left(N-i-2k\right) \sum_q x_q} \\
-&=& \sum_{k=0}^{N-i} e^{a_i^{\pm} + b_i \sum_q x_q} 
+  e^{(N-i-2k)*(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t)}\\
+&=& \sum_{k=0}^{N-i} \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\beta h_i^{\pm}[\mathbf{x}_{<i}]\frac{\beta J}{N}\right)} e^{\frac{\beta J}{N}\left(N-i-2k\right) \sum_s x_s} \\
+&=& \sum_{k=0}^{N-i} e^{a_{i,k}^{\pm} + b_{i,k}^{\pm} \sum_s x_s} 
 \end{eqnarray*}
-we defined:
+where we defined:
 \begin{eqnarray}
 \label{eq:params}
-e^{b_{i}^{k\pm}} & = & \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\beta h\pm\frac{\beta J}{N}\right)}\\
-e^{\omega_{i}^{k\pm}} & = & e^{\frac{\beta J}{N}\left(N-i-2k\right)}.
+e^{b_{i,k}^{\pm}} & = & \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\beta h_i^{\pm}[\mathbf{x}_{<i}]\frac{\beta J}{N}\right)}\\
+e^{\omega_{i,k}^{\pm}} & = & e^{\frac{\beta J}{N}\left(N-i-2k\right)}.
 \end{eqnarray}
-So we can consider the following ansatz:
+The the final feed-forward architecture of the neural network is:
 \begin{eqnarray}\
 \label{eq:curie_weiss_cond}
-Q^{\Theta}\left(x_{i}=+1|\mathbf{x}_{<i}\right) & = & \text{sigma}\left(b_{i}+\omega_{i}\sum_{q=1}^{i-1}x_{q}-\log\left[\sum_{k=0}^{N-i}e^{b_{i}^{k+}+w_{i}^{k}\sum_{p=1}^{i-1}x_{p}}\right]+\log\left[\sum_{k=0}^{N-i}e^{b_{i}^{k-}+w_{i}^{k}\sum_{p=1}^{i-1}x_{p}}\right]\right).
+Q^{\Theta}\left(x_{i}=+1|\mathbf{x}_{<i}\right) & = &  \sigma \left(b_{i}+\omega_{i}\sum_{s=1}^{i-1}x_{s}-\log\left[\sum_{k=0}^{N-i}e^{b_{i,k}^{+}+w_{i,k}^{+}\sum_{s=1}^{i-1}x_{s}}\right]+\log\left[\sum_{k=0}^{N-i}e^{b_{i,k}^{-} + w_{i,k}^{-}\sum_{s=1}^{i-1}x_{s}}\right]\right).
 \end{eqnarray}
-where $b_i=2*\beta h$ and $\omega_i=\frac{2*\beta J}{N}$. 
+where $b_i=2\beta h$ and $\omega_i=\frac{2\beta J}{N}$. 
 \newline
-This function can be interpreted as a feed-forward neural network; see fig.\ref{fig:curie_weiss}. The parameters of this neural network have an analytic dependence from the parameters $J$ and $h$ of the Boltzmann distributions. But this neural network architecture can be think as an ansatz for different probability distributions and the ($b_i, b_i^{k\pm}, \omega_i, \omega_i^{k\pm}$) can be consider as free parameters trained to minimize the KL divergence with the true probability distribution. 
-The total number of parameters of all conditional probability distribution scale as $O(N^2)$.
+This function can be interpreted as a feed-forward neural network; see fig.\ref{fig:curie_weiss}. 
+The parameters of this neural network have an analytic dependence from the parameters $J$ and $h$ of the Boltzmann distributions. 
+The set of parameters ($b_i, b_i^{k\pm}, \omega_i, \omega_i^{k\pm}$) can be consider as free parameters trained to minimize the KL divergence with the true probability distribution. 
+It is interesting to note the number of parameters of each conditional probability distribution $i$ are $2+4(N-i)$; they decrease as $i$ increase as well as their number of variable in the input. This results is, somehow, the opposite on what usually the architecture should take care, meaning enlarging the number of input variables the number of parameters should increase as well to describe the complexity of the function to represent. Moreover the conditional probability neural network depends only of the sum of the input variables.
+The total number of parameters of all conditional probability distribution scale as $O(N^2)$. 
 
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=1\textwidth]{img/CW_res.pdf}
+    \caption{Results}
+    \label{fig:curie_weiss}
+\end{figure}
 
 
 \subsubsection{Saddle point method}
@@ -188,17 +215,11 @@ In the $N$ large limit, and for a typical sample, weast datatype dataframe
 can assume that: $\frac{\sum_q x_q}{N-i} \approx |\tilde{m}_{\beta}| \text{sign}(\sum_q x_q)$, where the $\tilde{m}_{\beta}$ is the magnetization of the Curie-Weiss system at inverse temperature $\beta$ and $\text{sign(x)} = \frac{|x|}{x}$ is the sign function.
 We can distinguish two cases when the magnetization of the system is zero or different from zero. In the first case also the solution of equation \ref{eq:extrem_i} is zero, and $\log(\rho_i^{+}) - \log(\rho_i^{-})=0$ because the only term that depends on the sign vanish. When instead the system acquire a magnetization $\tilde{m}_{\beta}$ different from zero, the equation \ref{eq:extrem_i} admit one solution, that depends on the two possible symmetric values of $\frac{\sum_q x_q}{N-i})\approx |\tilde{m}_{\beta}| \text{sign}(\sum_q x_q)$. The solution of eq.\ref{eq:extrem_i}, $\pm \tilde{m}_{\text{extrem}}$ depending again on $\text{sign}(\sum_q x_q)$. Once again we can write the extreme solution as $\tilde{m}_{i}=|\tilde{m}_i| \text{sign}(\sum_q x_q)$. Easily we obtain that $\log(\rho_i^{+}) - \log(\rho_i^{-}) = -\beta J|\tilde{m}_i| \text{sign}(\sum_q x_q)$. We can use a trial function in this form:
 \begin{eqnarray}\
-\label{eq:curie_weiss_cond}
+\label{eq:curie_weiss_cond2}
 Q^{\Theta}\left(x_{i}=+1|\mathbf{x}_{<i}\right) & = & \text{sigma}\left(\omega_{i}^0\sum_{q=1}^{i-1}x_{q} + \omega_i^1 \text{sign}(\sum_{q=1}^{i-1}x_{q})\right).
 \end{eqnarray}
 where $\omega_i^{1,2}$ are free parameters to be trained. The number of parameters in this case scale as $O(N)$.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\textwidth]{img/CW_res.pdf}
-    \caption{Results}
-    \label{fig:mesh1}
-\end{figure}
 
 
 \section{Random Field Ising Model}
@@ -588,13 +609,13 @@ we have made the following approximation for representing the Curie-Weiss model 
 The case of replica:
 \[
  \int dt e^{-\frac{Nt^2}{2K}}\log\cosh(K*h+t) \approx \left(\sum_{t \in \text{Extrem}^+}  b_i^t + c_i^t\log\cosh(d_i^t+e_i^t h)\right)
-\label{eq:CW_gauss_approx}
+\label{eq:CW_gauss_approx2}
 \]
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\textwidth]{img/RFIM_fit.pdf}
     \caption{Fit of eq.\ref{eq:CW_gauss_approx} at different values of $K=J\beta$. In the first row only one extreme is considered and two in the second row.}
-    \label{fig:mesh1}
+    \label{fig:gauss_approx}
 \end{figure}
 \end{document}
