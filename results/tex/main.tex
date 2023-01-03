@@ -18,7 +18,7 @@
     }
 \geometry{verbose,lmargin=2cm,rmargin=2cm}
 
-\title{Autoregressive MeanField}
+\title{Autoregressive neural network of spins system: the deepness of Mean-Field models}
 %\author{indaco biazzo and ...}
 \date{June 2022}
 
@@ -225,313 +225,178 @@ Q^{\Theta}\left(x_{i}=+1|\mathbf{x}_{<i}\right) & = & \text{sigma}\left(\omega_{
 \end{eqnarray}
 where $\omega_i^{1,2}$ are free parameters to be trained. The number of parameters in this case scale as $O(N)$.
 
-
-
-\section{Random Field Ising Model}
-The Hamiltonian:
-\begin{equation}
-H\left(\mathbf{x}\right)=-\sum_{i=1}^{N}h_ix_{i}-\frac{J}{N}\sum_{i<j}x_{i}x_{j}
-\end{equation}
-where the set of $\underline{h}$ are i.i.d. random variable extracted from a probability distribution $P(h)$. In this case 
-we assume that $N-i$ is large enough such that the following approximation is valid (self-averaging): 
-\[
-\log\rho_i^{\pm} \sim \mathbb{E}\left[  \log\rho_i^{\pm} \right] = \lim_{n\rightarrow 0} \frac{  \log(\mathbb{E}\left[(\rho_i^{\pm})^n \right])}{n}
-\]
-
-Where in the last line we use the replica trick. We compute now:
-\begin{eqnarray}
-\mathbb{E}_{\underline{h}_p}\left[(\rho_i^{\pm})^n \right] & = & 
-\mathbb{E}_{\underline{h}_p}\left[ 
-\sum_{\{\underline{x}\}_{i+1}^N} \prod_{\alpha}
-\exp\left\{
-\beta\sum_{p=i+1}^{N}\left( \pm \frac{J}{N} + \frac{J}{N} \sum_{q=1}^{i-1} x_q + h_p \right) x_p^{\alpha} + \beta \frac{J}{N} \sum_{p=i+1}^{N}\sum_{p'=p+1}^{N} x_p^{\alpha} x_{p'}^{\alpha} 
-\right\}
-\right]\\
-& = & 
-\mathbb{E}_{\underline{h_p}}\left[ 
-\sum_{\{\underline{x}\}_{i+1}^N} \prod_{\alpha}
-\exp\left\{
-\beta\sum_{p=i+1}^{N}\left( h_0^{\pm}+ h_p \right) x_p^{\alpha} + \beta \frac{J}{2N} (\sum_{p=i+1}^{N} x_p^{\alpha} )^2
-\right\}
-\right] 
-\end{eqnarray}
-where we defined $h_0^{\pm} = \pm \frac{J}{N} + \frac{J}{N} \sum_{q=1}^{i-1} x_q $. Using the Hubbard-Stratonovich transformation of the quadratic term we car write:
-\begin{eqnarray}
-\mathbb{E}_{\underline{h_p}}\left[(\rho_i^{\pm})^n \right] & = & \mathbb{E}_{\underline{h}_p}\left[ 
-\sum_{\{\underline{x}\}_{i+1}^N} \prod_{\alpha}
-\exp\left\{
-\beta\sum_{p=i+1}^{N}\left( h_0^{\pm}+ h_p \right) x_p^{\alpha} + \beta \frac{J}{2N} (\sum_{p=i+1}^{N} x_p^{\alpha} )^2
-\right\}
-\right] \\
-&=& 
-\left(\frac{N}{2\pi \beta J}\right)^{n/2}
-\mathbb{E}_{\underline{h}_p}\left[ \prod_{\alpha}
-\int dt_{\alpha} e^{ -\frac{N}{2\beta J} t_{\alpha}^2}
-\sum_{\{\underline{x}\}_{i+1}^N}
-\left( 
-e^{
-\sum_{p=i+1}^{N}\left(\beta h_0^{\pm}+\beta h_p +t_{\alpha}\right) x_p^{\alpha}
-}
-\right)
-\right] \\
-& = & 
-\left(\frac{N}{2\pi \beta J}\right)^{n/2}
-\int \prod_{\alpha} dt_{\alpha} e^{ -\frac{N}{2\beta J} t_{\alpha}^2}
-\prod_{p} \left\{
-\mathbb{E}_h\left[
-\prod_{\alpha} 2 \cosh \left( 
-\beta h_{0}^{\pm} + \beta h + t_{\alpha}
-\right)
-\right]
-\right\} \\
-& = &
-\left(\frac{N}{2\pi \beta J}\right)^{n/2}
-\int \prod_{\alpha} dt_{\alpha} e^{ -\frac{N}{2\beta J} t_{\alpha}^2}
-\left\{
-\mathbb{E}_h\left[
-\prod_{\alpha} 2 \cosh \left( 
-\beta h_{0}^{\pm} + \beta h + t_{\alpha}
-\right)
-\right]
-\right\}^{N-i} \\
-& = &
-\left(\frac{N}{2\pi \beta J}\right)^{n/2}
-\int \prod_{\alpha} dt_{\alpha} \exp \left\{ -\frac{N}{2\beta J} t_{\alpha}^2 +
-(N-i) \log \left(
-\mathbb{E}_h\left[
-\prod_{\alpha} 2 \cosh \left( 
-\beta h_{0}^{\pm} + \beta h + t_{\alpha}
-\right)
-\right]
-\right)
-\right\}
-\\
-\end{eqnarray}
-We now assume the replica symmetric hypothesis, where all $t_{\alpha} = t$,
-\begin{eqnarray}
-\mathbb{E}_{\underline{h}_p}\left[(\rho_i^{\pm})^n \right] & = & 
-\left(\frac{N}{2\pi \beta J}\right)^{n/2}
-\int dt \exp \left\{ -\frac{nN}{2\beta J} t^2 +
-(N-i) \log \left(
-\mathbb{E}_h\left[
-2^n \cosh^n \left( 
-\beta h_{0}^{\pm} + \beta h + t
-\right)
-\right]
-\right)
-\right\}\\
-& = & 
-\left(\frac{N}{2\pi \beta J}\right)^{n/2}
-\int dt \exp \left\{ -\frac{nN}{2\beta J} t^2 +
-n (N-i) \mathbb{E}_h\left[ \log \left(
-\cosh \left( 
-\beta h_{0}^{\pm} + \beta h + t
-\right)
-\right)
-\right]
-\right\}\\
-& \approx & 
-\left(\frac{N}{2\pi \beta J}\right)^{n/2}
-\int dt \exp \left\{ -\frac{nN}{2\beta J} t^2 +
-n (N-i)\left\{ [a^1_i + b^1_i \log \left(
-\cosh \left( a_i^0 + b_i^0 * (h_{0}^{\pm} + t)
-\right)
-\right)
-\right]
-\right\}\\
-& \approx & 
-\exp \left\{ -\frac{nN}{2\beta J} \tilde{t}^2 +
-n (N-i)\left\{ [a^1_i + b^1_i \log \left(
-\cosh \left(a_i^0 + b_i^0 * (h_{0}^{\pm} + \tilde{t})
-\right)
-\right)
-\right]
-\right\}\\
-\end{eqnarray}
-where we have approximated the integral over the randomness $h$ as a parametrized functions. The goodness of approximations is depicted in the SM.
-As in the Curie-Weiss case we can the approximate:
-\begin{eqnarray}
-\log\rho_i^{\pm} \sim \mathbb{E}\left[  \log\rho_i^{\pm} \right] = \lim_{n\rightarrow 0} \frac{  \log(\mathbb{E}\left[(\rho_i^{\pm})^n \right])}{n}
-& \approx &
-a^{0\pm}_i + b^{0\pm}_i \log
-\cosh \left(a_i^{1\pm} + b_i^{1\pm} \sum_{q}x_q
-\right)
-\end{eqnarray}
-having the same conditional variational feed-forward architecture of the Curie-Weiss model. 
-The $(a^{0\pm}_i,b^{0\pm}_i,a^{1\pm}_i, b^{1\pm}_i)$ are parameters to be determined. This a non-linear activation function. Where in the first layer we multiply the input by a factor and sum a bias. Then we apply the non linear function and we multiply again the result to another factor adding a new bias. This could be interpret as a second layer.
-\begin{eqnarray}
-P\left(x_{i}=1|\mathbf{x}_{<i}\right) & = & \sigma\left( 
--2 \beta H_{qi}[x_i = +1] +\log(\rho_i^-) - \log(\rho_i^+)
-\right) \\
-& = & \sigma\left( a_i + b_i\sum_q x_q +
- + c_i^{+}\log\cosh(d_i^{+}+e_i^{+}*\sum_q x_q) + c_i^{-}\log\cosh(d_i^{-}+e_i^{-}*\sum_q x_q)
-\right)
-\end{eqnarray}
-In the end we have three layer for each conditional probability.
-
-
 \section{spin glass}
-The Hamiltonian is:
+Consider the hamiltonian of a spin glass with zero external field for simplicity:
 \begin{equation}
-H\left(\mathbf{x}\right)=-h\sum_{i=1}^{N}x_{i}-\sum_{i<j}J_{ij}x_{i}x_{j}
+H\left(\mathbf{x}\right)=-\sum_{i<j}J_{ij}x_{i}x_{j}
 \end{equation}
-where the set of $\underline{J}$ are i.i.d. random variable extracted from a Gaussian probability distribution $P(J)=\sqrt{\frac{N}{2\pi}}\exp\left(\frac{-NJ^2}{2}  \right)$. In this case 
-we assume that $N-i$ is large enough such that the following approximation is valid (self-averaging): 
+where the set of $\underline{J}$ are i.i.d. random variable extracted from a Gaussian probability distribution $P(J)=\sqrt{\frac{N}{2\pi}}\exp\left(\frac{-NJ^2}{2} \right)$. \\
+To find a feed-forward representation of the conditional probability of the Sherrington-Kirkpatrick model we use the replica trick \cite{}. We assume that $N-i$ is large enough such that the following approximation is valid for the partial partition function $\rho_i$: 
 \[
 \log\rho_i^{\pm} \sim \mathbb{E}\left[  \log\rho_i^{\pm} \right] = \lim_{n\rightarrow 0} \frac{  \log(\mathbb{E}\left[(\rho_i^{\pm})^n \right])}{n}
 \]
 
-Where in the last passage we use the replica trick. We compute now:
+Where in the last passage we use the replica trick. We assume that the quantity $\log\rho_i^{\pm}$ is a self-averaged quantity on the $N-i$ variables. The replica computation can be carried on easly, finding:
 \begin{eqnarray}
-\mathbb{E}_{\underline{J}}\left[(\rho_i^{\pm}[\underline{x_q}])^n \right] & = & 
-\int \prod_{p<p'} dP_{J_{pp'}} \left[ 
+\mathbb{E}_{\underline{J}}\left[(\rho_i^{\pm}[\mathbf{x}_{<i}])^n \right] & = & 
+\int \prod_{l<l'} dP_{J_{ll'}} \left[ 
 \sum_{\{\underline{x}^{a}\}_{i+1}^N} \exp\left\{\beta \left[
-\sum_{p,a}\left( \pm J_{ip} + \sum_{q} J_{qp} x_q + h \right) x_p^{a} + \sum_{p,p', a} J_{pp'} x_p^{a} x_{p'}^{a}
+\sum_{l,a}\left( \pm J_{il} + \sum_{s} J_{sl} x_s \right) x_l^{a} + \sum_{l,l', a} J_{ll'} x_l^{a} x_{l'}^{a}
 \right]  \right\} 
 \right]\\
 \end{eqnarray}
-where, the sums over $(p,p')$, $q$ and $a$ run respectively over $(i+1,N)$, $(1,i-1)$ and $(1,n)$, and $dP_{J_{pp'}}=P(J_{pp'})dJ_{pp'}$. We defined $h_p^{\pm}[\underline{x_q}] =\pm J_{ip} + \sum_{q} J_{qp} x_q + h$ and carrying out the integrals over the disorder $\{P(J_{pp'})\}$ obtaining:
+where, the sums over $(l,l')$, $s$ and $a$ run respectively over $(i+1,N)$, $(1,i-1)$ and $(1,n)$, and $dP_{J_{ll'}}=P(J_{ll'})dJ_{ll'}$. We defined $h_l^{\pm}[\mathbf{x}_{<i}] =\pm J_{il} + \sum_{s=1}^{i-1} J_{sl} x_s$ and carrying out the integrals over the disorder variables $\{P(J_{ll'})\}$ yields:
 \begin{eqnarray}
-\mathbb{E}_{\underline{J}}\left[(\rho_i^{\pm}[\underline{x_q}])^n \right] & = & 
+\mathbb{E}_{\underline{J}}\left[(\rho_i^{\pm}[\mathbf{x}_{<i}])^n \right] & = & 
 \sum_{\{\underline{x}^{a}\}_{i+1}^N} 
 \exp\left\{\beta \left[
-\sum_{p} h_p^{\pm}[\underline{x_q}] \sum_{a} x_p^{a} +\frac{\beta}{2N} \sum_{p,p'} \sum_{a,b} x_p^{a} x_p^{b} x_{p'}^{a}x_{p'}^{b} \right]  \right\} \\
+\sum_{l} h_l^{\pm}[\mathbf{x}_{<i}] \sum_{a} x_l^{a} +\frac{\beta}{2N} \sum_{l,l'} \sum_{a,b} x_l^{a} x_l^{b} x_{l'}^{a}x_{l'}^{b} \right]  \right\} \\
 & = & e^{ \frac{(N-i) \beta^2}{4N}((N-i)n-n^2) } 
 \sum_{\{\underline{x}^{a}\}_{i+1}^N} 
 \exp\left\{\beta \left[
-\sum_{p} h_p^{\pm}[\underline{x_q}] \sum_{a} x_p^{a} +\frac{\beta}{2N} \sum_{a<b} \left( \sum_{p}  x_p^{a} x_p^{b} \right)^2 \right]  \right\}
+\sum_{l} h_l^{\pm}[\mathbf{x}_{<i}] \sum_{a} x_l^{a} +\frac{\beta}{2N} \sum_{a<b} \left( \sum_{l}  x_l^{a} x_l^{b} \right)^2 \right]  \right\}
 \end{eqnarray}
-Using the Hubbard-Stratonovich transformation of the quadratic term we car write:
+Using the Hubbard-Stratonovich transformation of the quadratic terms we car write:
 \begin{eqnarray}
-\mathbb{E}_{\underline{J}}\left[(\rho_i^{\pm})^n \right] & = & 
+\mathbb{E}_{\underline{J}}\left[(\rho_i^{\pm}[\mathbf{x}_{<i}])^n \right] & = & 
 c(n,N,i)
 \int \prod_{a<b} dQ_{ab} e^{-\frac{N}{2}\beta^2Q_{a,b}^2}
 \sum_{\{\underline{x}^{a}\}_{i+1}^N} 
 \exp\left\{\beta \left[
-\sum_{p} h_p^{\pm}[\underline{x_q}] \sum_{a} x_p^{a} +\beta \sum_{a<b} Q_{a,b} \sum_{p}  x_p^{a} x_p^{b} \right]  \right\} \\
+\sum_{l} h_l^{\pm}[\mathbf{x}_{<i}] \sum_{a} x_l^{a} +\beta \sum_{a<b} Q_{a,b} \sum_{l}  x_l^{a} x_l^{b} \right]  \right\} \\
 & = & 
 c(n,N,i)
 \int \prod_{a<b} dQ_{ab} e^{-\frac{N}{2}\beta^2Q_{a,b}^2}
-\prod_{p} \left[
-\sum_{\{\underline{x}^{a}_p\}} 
+\prod_{l} \left[
+\sum_{\{\underline{x}^{a}_l\}} 
 \exp\left\{\beta \left[
-h_p^{\pm}[\underline{x_q}] \sum_{a} x_p^{a} +\beta \sum_{a<b} Q_{a,b}  x_p^{a} x_p^{b} \right]  \right\}
+h_l^{\pm}[\mathbf{x}_{<i}] \sum_{a} x_l^{a} +\beta \sum_{a<b} Q_{a,b}  x_l^{a} x_l^{b} \right]  \right\}
 \right] \label{eq:before_ansaltz}
 \end{eqnarray}
-where we defined $c(n,N,i) = e^{ \frac{(N-i) \beta^2}{4N}((N-i)n-n^2) } \left(\frac{2\pi \beta^2}{N}\right)^{\frac{n(n-1)}{2}}$. 
+where we defined $c(n,N,i) = e^{ \frac{(N-i) \beta^2}{4N}((N-i)n-n^2) } \left(\frac{2\pi \beta^2}{N}\right)^{\frac{n(n-1)}{2}}$. The well know Parisi solutions of the SK model prescribe how to parametrize \cite{} the matrix of the overlaps $Q$. In the following we show how to obtain neural network architectures based on the the replica symmetric (RS) and k-replica symmetric broken symmetry (k-RSB) solutions.
+
 
 \subsection{Replica Symmetric solution (RS)}
-We assume that the overlap between the replicas symmetric under permutations, so:
+We assume that the overlap between the replicas symmetric under permutations, and the matrix of the overlaps between replicas is parametrize with only one variable $q$:
 $$
 Q_{a,b}=\begin{cases}
 			0, & \text{if $a=b$}\\
             q, & \text{otherwise}
 		 \end{cases}
 $$
-obtaining:
+Considering this ansatz we obtain:
 \begin{eqnarray}
-\mathbb{E}_{\underline{J}}\left[(\rho_i^{\pm, sym})^n \right] & = & 
+\mathbb{E}_{\underline{J}}\left[(\rho_i^{\pm, sym}[\mathbf{x}_{<i}])^n \right] & = & 
 c(n,N,i)
 \int dq e^{-\frac{n(n-1)N}{4}\beta^2 q^2}
-\prod_{p} \left[
-\sum_{\{\underline{x}^{a}_p\}} 
+\prod_{l} \left[
+\sum_{\{\underline{x}^{a}_l\}} 
 \exp\left\{\beta \left[
-h_p \sum_{a} x_p^{a} +\beta q \sum_{a<b} x_p^{a} x_p^{b} \right]  \right\} 
+h_l^{\pm}[\mathbf{x}_{<i}] \sum_{a} x_l^{a} +\beta q \sum_{a<b} x_l^{a} x_l^{b} \right]  \right\} 
 \right] \\
 & = &
 c(n,N,i)
 \int dq e^{-\frac{n(n-1)N}{4}\beta^2 q^2}
 e^{-\frac{nN\beta^2 q}{2}}
-\prod_{p} \left[
-\sum_{\{\underline{x}^{a}_p\}} 
-\exp\left\{\beta \left[
-h_p \sum_{a} x_p^{a} +\beta q \left(\sum_{a} x_p^{a} \right)^2 \right] \right\} 
+\prod_{l} \left[
+\sum_{\{\underline{x}^{a}_l\}} 
+e^{\beta \left[
+h_l^{\pm}[\mathbf{x}_{<i}] \sum_{a} x_l^{a} + \frac{\beta q}{2} \left(\sum_{a} x_l^{a} \right)^2 \right]} 
 \right]\\
 & = &
 c'(n,N,i)
 \int dq e^{-\frac{n(n-1)N}{4}\beta^2 q^2}
 e^{-\frac{nN\beta^2 q}{2}}
-\prod_{p} \left[\int dz_p e^{-z_p^2}
-\sum_{\{\underline{x}^{a}_p\}} 
+\prod_{l} \left[\int \frac{dz_l}{\sqrt{2\pi q}} e^{-\frac{z_l^2}{q}}
+\sum_{\{\underline{x}^{a}_l\}} 
 e^{\beta \left(
-h_p +\beta \sqrt{q}z_p \right) \sum_{a} x_p^{a}} 
+h_l^{\pm}[\mathbf{x}_{<i}] +\beta z_l \right) \sum_{a} x_l^{a}} 
 \right]\\
 & = &
 c'(n,N,i)
-\int dq e^{-\frac{n(n-1)N}{4}\beta^2 q^2}
-e^{-\frac{nN\beta^2 q}{2}}
-\prod_{p} \left[\int dz_p e^{-z_p^2}
+\int dq e^{-nN\left(\frac{(n-1)}{4}\beta^2 q^2 +\frac{\beta^2 q}{2}\right)}
+\prod_{l} \left[\int \frac{dz_l}{\sqrt{2\pi q}} e^{-\frac{z_l^2}{q}}
 2^n\cosh^n \left(\beta \left(
-h_p +\beta \sqrt{q}z_p \right)\right) 
+h_l^{\pm}[\mathbf{x}_{<i}] +\beta z_l \right)\right) 
 \right].\\
 \end{eqnarray}
 Using the limit that $n\rightarrow 0$ we can write:
 \begin{eqnarray}
-\int dz_p e^{-z_p^2}
+\int \frac{dz_l}{\sqrt{2\pi q}} e^{-\frac{z_l^2}{q}}
 2^n\cosh^n \left(\beta \left(
-h_p +\beta \sqrt{q}z_p \right)\right) = e^{n \int dz_p e^{-z_p^2}
+h_l^{\pm}[\mathbf{x}_{<i}] +\beta z_l \right)\right) = e^{n \int \frac{dz_l}{\sqrt{2\pi q}} e^{-\frac{z_l^2}{q}}
 \log 2\cosh \left(\beta \left(
-h_p +\beta \sqrt{q}z_p \right)\right)}.
+h_l^{\pm}[\mathbf{x}_{<i}] +\beta z_l \right)\right)}.
 \label{eq:gauss_n0}
 \end{eqnarray}
 And in the end we have:
 \begin{eqnarray}
-\log (\rho_i^{\pm, sym}) & = & 
+\log (\rho_i^{\pm, sym}[\mathbf{x}_{<i}]) & = & 
 \lim_{n\rightarrow 0} \frac{1}{n} \log \left( c'(n,N,i)
 \int dq e^{-\frac{n(n-1)N}{4}\beta^2 q^2}
 e^{-\frac{nN\beta^2 q}{2}}
-e^{n \sum_p 
-\int dz_p e^{-z_p^2}
+e^{n \sum_l 
+\int \frac{dz_l}{\sqrt{2\pi q}} e^{-\frac{z_l^2}{q}}
 \log 2\cosh \left(\beta \left(
-h_p +\beta \sqrt{q}z_p \right)\right)
+h_l^{\pm}[\mathbf{x}_{<i}] +\beta z_l \right)\right)
 } 
 \right)\\
 & = &
 \log(c''(N,i)) + 
-\text{Extr}_q \left( +\frac{N}{4}\beta^2 q^2 
--\frac{N\beta^2 q}{2}
-+ \sum_p 
-\int dz_p e^{-z_p^2}
+\left( +\frac{N}{4}\beta^2 q^2_0 
+-\frac{N\beta^2 q_0}{2}
++ \sum_l 
+\int \frac{dz_l}{\sqrt{2\pi q_0}} e^{-\frac{z_l^2}{q_0}}
 \log 2\cosh \left(\beta \left(
-h_p +\beta \sqrt{q}z_p \right)\right)
+h_l^{\pm}[\mathbf{x}_{<i}] +\beta z_l \right)\right)
 \right) \\
+& \doteq &  
+c(N,i, q_0) -
+\sum_l 
+\int \frac{dz_l}{\sqrt{2\pi q_0}} e^{-\frac{z_l^2}{q_0}}
+\log \sigma \left(\beta \left(
+2h_l^{\pm}[\mathbf{x}_{<i}] +2\beta z_l \right)\right)
+ \\
 \end{eqnarray}
-Where we assumed that the extreme values of $q$ do not depends from the set of $h_p$, and one extreme only.
-We can, after some manipulations obtain a more neural network friendly function:
-\begin{eqnarray}
-\log (\rho_i^{\pm, sym} [\underline{x_q}])^n] & \approx & 
-\text{Extr}_q \left( +\frac{N}{4}\beta^2 q^2 
--\frac{N\beta^2 q}{2}
-+ \sum_p 
-\int dz_p e^{-z_p^2}
-\log \cosh \left(\beta \left(
-h_p +\beta \sqrt{q}z_p \right)\right)
-\right) 
-\end{eqnarray}
+In the second line we use the saddle point methods to evaluate the integral over $q$, assuming tha the single maximum value $q_0$ doesn't depend from the input values $\mathbf{x}_{<i}$ in the set of $h_l^{\pm}[\mathbf{x}_{<i}]$. It is a strong assumption to be verified {\it a posteriori} on the goodness of the neural network architectures performances. In the third lines we simplify values that are the same between $\log(\rho^+)$ and $\log(\rho^-)$.
+
+% We can, after some manipulations, obtain a more neural network friendly function:
+% \begin{eqnarray}
+% \log (\rho_i^{\pm, sym} [\underline{x_l}])^n] & \approx & 
+% \text{Extr}_q \left( +\frac{N}{4}\beta^2 q^2 
+% -\frac{N\beta^2 q}{2}
+% + \sum_l 
+% \int dz_l e^{-z_l^2}
+% \log \cosh \left(\beta \left(
+% h_l +\beta \sqrt{q}z_l \right)\right)
+% \right) 
+% \end{eqnarray}
 Now we consider the following approximation of the following Gaussian convolution:
 \[
-\int dz_p e^{-z_p^2}
-\log \cosh \left(\beta \left(
-h_p +\beta \sqrt{q}z_p \right)\right) \sim a_1 + b_1*\log \cosh(a_2 + b_2 \sum_q J_{qp} x_q) 
+\int dz e^{-z^2}
+\log \sigma \left(\beta \left(
+h +\beta \sqrt{q}z \right)\right) \sim b_0 + w_0*\log \sigma(b_1 + w_1 h) 
 \]
-Where $(a_1, b_1, a_2, b_2)$ are free parameters to be determined. In SI \cite{} a numerical analysis of the correctness of this approximation is shown.  
+Where $(b_0, w_0, b_1,w_1)$ are free parameters to be determined. In SI \cite{} a numerical analysis of the correctness of this approximation is shown.  
 Putting together all the pieces we can parameterize the conditional probability as:
 \begin{eqnarray}
-P\left(x_{i}=1|\mathbf{x}_{<i}\right) & = & \sigma\left( 
--2 \beta H_{q}[x_i = +1] +\log(\rho_i^-) - \log(\rho_i^+)
+Q^{RS}\left(x_{i}=1|\mathbf{x}_{<i}\right) & = & \sigma\left( 
+-2 \beta H_{s}[x_i = +1] +\log(\rho_i^+) - \log(\rho_i^-)
 \right) \\
-& = & a_0^i + b_0^i\sum_q J_{qi} x_{qi} + \sum_{w \in \{+,-\}} c_0^{i,w} \sum_p \log\cosh(a_1^{i,w} + b_1^{i,w}\sum_{q} J_{qp} x_q) 
+& = & b_0^i + w_0^i\sum_q J_{si} x_{si} + \sum_{t \in \{+,-\}} w_0^{i,t} \sum_l \log\sigma(b_1^{i,t} + w_1^{i,t}\sum_{s} J_{sl} x_s) 
 \end{eqnarray}
-where the $(a,b,c)$ are free variational parameters to learn. The $\sum_w$ are the combinations of the plus and minus $\rho$ cases. 
+where the set of $(b,w)$ are free variational parameters to learn. The $\sum_t$ are the combinations of the plus and minus $\rho$ cases. 
 \\DO the image of the nets.
-\subsection{1 Replica symmetric breaking (1RSB)}
-Assuming that the replica symmetry is broken we can use the following ansatz called 1 replica symmetric breaking (1RSB), where the replicas are divided in $m$:
-$$
-Q_{a,b}=\begin{cases}
+
+
+\subsection{Finite Replica symmetric breaking (k-RSB)}
+Assuming that the replica symmetry is broken we can use the following ansatz called 1 replica symmetric breaking (1RSB), where the overlaps between replicas are divided in $m$ blocks:
+\begin{eqnarray}
+    Q_{a,b}=\begin{cases}
 			q_1, & \text{if $I(a/m)=I(b/m)$}\\
             q_0. & \text{if I(a/m) $\neq$ I(b/m)}
 		 \end{cases}
-$$
+\end{eqnarray}
 With the above ansatz we can compute the following quantities:
 \begin{eqnarray}
 \sum_{ab} Q_{ab} x_{a} x_{b} &=& \frac{1}{2} \left[ q_0 \left( \sum_{a}x_a\right)^2 + (q_1-q_0) \sum_{\text{blocks}} \left( \sum_{a \in \text{block}}x_a\right)^2  -nq_1\right] \\
@@ -542,60 +407,69 @@ The equation \ref{eq:before_ansaltz} becomes:
 \mathbb{E}_{\underline{J}} \left[(\rho_i^{\pm, 1RSB})^n \right] &=&  \\[1ex]
 \begin{split}
 & = c(n,N,i) \int dq_1 dq_0 e^{\frac{N}{2}\beta\left[n^2 q_0^2 + nm(q_1^2 - q_0^2) -n q_1^2\right]} 
-\prod_{p} \biggl[ \sum_{\{\underline{x}^{a}_p\}} \exp\biggl\{\beta \bigl[ \\ 
- & \qquad h_p^{\pm} \sum_{a} x_p^{a} +q_0 \left( \sum_{a} x_p^{a} \right)^2 + (q_1-q_0) \sum_{\text{blocks}} \left( \sum_{a \in \text{block}}x_p^{a}\right)^2  -nq_1 \bigl]  \biggr\}  \biggr] 
+\prod_{l} \biggl[ \sum_{\{\underline{x}^{a}_l\}} \exp\biggl\{\beta \bigl[ \\ 
+ & \qquad h_l^{\pm} \sum_{a} x_l^{a} +q_0 \left( \sum_{a} x_p^{a} \right)^2 + (q_1-q_0) \sum_{\text{blocks}} \left( \sum_{a \in \text{block}}x_l^{a}\right)^2  -nq_1 \bigl]  \biggr\}  \biggr] 
 \end{split}\\ 
 \begin{split}
 & = c(n,N,i) \int dq_1 dq_0 e^{\frac{N}{2}\beta\left[n^2 q_0^2 + nm(q_1^2 - q_0^2) -n q_1^2 -n q_1\right]} 
-\prod_{p} \biggl[ \sum_{\{\underline{x}^{a}_p\}} \int dP_{z_p} \prod_{k=1}^{n/m} \int dP{y_{pk}} \\ 
- &  \qquad  \exp\biggl\{\beta \bigl[h_p^{\pm} \sum_{a} x_p^{a} +  z_p \sum_{a}x_p^{a} + \sum_{\text{blocks}}  y_{pk} \sum_{a \in \text{block}}x_p^{a}\bigl]  \biggr\}  \biggr] 
+\prod_{l} \biggl[ \sum_{\{\underline{x}^{a}_l\}} \int dP_{z_l} \prod_{k=1}^{n/m} \int dP{y_{lk}} \\ 
+ &  \qquad  \exp\biggl\{\beta \bigl[h_l^{\pm} \sum_{a} x_l^{a} +  z_l \sum_{a}x_l^{a} + \sum_{\text{blocks}}  y_{lk} \sum_{a \in \text{block}}x_l^{a}\bigl]  \biggr\}  \biggr] 
 \end{split}\\ 
 \begin{split}
 & = c(n,N,i) \int dq_1 dq_0 e^{\frac{N}{2}\beta\left[n^2 q_0^2 + nm(q_1^2 - q_0^2) -n q_1^2 -n q_1\right]} 
-\prod_{p} \biggl[ \int dP_{z_p}  \prod_{k=1}^{n/m} \int dP_{y_{pk}}\\ 
- &  \qquad  \cosh^m\biggl(\beta \bigl[h_p^{\pm}+  z_p +y_{pk}\bigl]  \biggr)  \biggr]
+\prod_{l} \biggl[ \int dP_{z_l}  \prod_{k=1}^{n/m} \int dP_{y_{lk}}\\ 
+ &  \qquad  \cosh^m\biggl(\beta \bigl[h_l^{\pm}+  z_l +y_{lk}\bigl]  \biggr)  \biggr]
 \end{split}\\ 
 \begin{split}
 & = c'(n,N,i) + c(n,N,i) \int dq_1 dq_0 e^{\frac{N}{2}\beta\left[n^2 q_0^2 + nm(q_1^2 - q_0^2) -n q_1^2 -n q_1\right]} 
-\prod_{p} \int dP_{z_p}  \exp \biggl\{ \frac{n}{m} \log \biggl( \int dP_{y_{pk}}\\ 
- &  \qquad  \cosh^m\biggl(\beta \bigl[h_p^{\pm}+ z_p + y_{pk}\bigl]  \biggr)  \biggr) \biggr\}
+\prod_{p} \int dP_{z_l}  \exp \biggl\{ \frac{n}{m} \log \biggl( \int dP_{y_{l}}\\ 
+ &  \qquad  \cosh^m\biggl(\beta \bigl[h_l^{\pm}+ z_l + y_{l}\bigl]  \biggr)  \biggr) \biggr\}
 \end{split}\\ 
 \end{align}
 where we defined:
 \begin{align}
-    dP_{z_p} & = \frac{dz_p}{\sqrt{2\pi q_0}}e^{\frac{z^2}{2q_0}}\\
-    dP_{y_{pk}} & = \frac{dy_{pk}}{\sqrt{2\pi (q_1-q_0)}}e^{\frac{y_{pk}^2}{2 (q_i-q_0)}}
+    dP_{z_l} & = \frac{dz_l}{\sqrt{2\pi q_0}}e^{\frac{z^2}{2q_0}}\\
+    dP_{y_{lk}} & = \frac{dy_{lk}}{\sqrt{2\pi (q_1-q_0)}}e^{\frac{y_{lk}^2}{2 (q_i-q_0)}}
 \end{align}
 Considering $N \gg 1$ and $n\rightarrow 0$ to use the saddle point methods and the identity in eq.\ref{eq:gauss_n0}, we can write:
 \begin{align}
 \log (\rho_i^{\pm, 1RSB}) & = 
 \lim_{n\rightarrow 0} \frac{1}{n} \log \left(\mathbb{E}_{\underline{J}} \left[(\rho_i^{\pm, 1RSB})^n \right]  \right) \\
 & = c_i +  \text{Extr}_{q_0, q_1} \biggl[ c'_i(N,n,q_0, q_1) 
-+ \frac{1}{m} \sum_{p} \int dP_{z_p} \log \biggl( \int dP_{y_{pk}} \cosh^m\biggl(\beta \bigl[h_p^{\pm}+ z_p + y_{pk}\bigl]  \biggr)  \biggr)
++ \frac{1}{m} \sum_{l} \int dP_{z_l} \log \biggl( \int dP_{y_{l}} \cosh^m\biggl(\beta \bigl[h_l^{\pm}+ z_l + y_{l}\bigl]  \biggr)  \biggr)
 \biggr]
 \end{align}
-The following integrals can be computed in approximate way:
+The above integrals are computed in approximate way as in the following:
 \begin{align}
-& \int dP_{z_p} \log \biggl( \int dP_{y_{pk}}  \cosh^m\biggl(\beta \bigl[h_p^{\pm}+ z_p +  y_{pk}\bigl]  \biggr)  \biggr) 
+& \int dP_{z_l} \log \biggl( \int dP_{y_{l}}  \cosh^m\biggl(\beta \bigl[h_l^{\pm}+ z_l +  y_{l}\bigl]  \biggr)  \biggr) 
  = \\
-& \int dP_{z_p} \log \biggl( \int dP_{y_{pk}} e^{ m \log \cosh \left(\beta \left[h_p^{\pm}+  z_p +  y_{pk}\right]  \right) } \biggr) 
+& \int dP_{z_l} \log \biggl( \int dP_{y_{l}} e^{ m \log \cosh \left(\beta \left[h_l^{\pm}+  z_l +  y_{l}\right]  \right) } \biggr) 
  = \\
-& \beta h_{p}^{\pm} + \int dP_{z_p} \log \biggl( \int dP_{y_{pk}} e^{ y_{pk} - m \log \sigma \left(\beta \left[h_p^{\pm}+ z_p + y_{pk}\right]  \right) } \biggr) 
+& \beta h_{l}^{\pm} + \int dP_{z_l} \log \biggl( \int dP_{y_{l}} e^{ y_{l} - m \log \sigma \left(\beta \left[h_l^{\pm}+ z_l + y_{l}\right]  \right) } \biggr) 
 \end{align}
-\subsection{feed forward forms of K gaussian convolution}
-Recalling $h_p^{\pm}[\underline{x_q}] =\pm J_{ip} + \sum_{q} J_{qp} x_q + h$, we consider the function:
+We have two nested gaussian convolution. In order to make more easy to compute this non-linear operator we are going to use a sequence of approximation similar to those used previously for RS case. Recalling $h_l^{\pm}[\mathbf{x}_{<i}] =\pm J_{il} + \sum_{s} J_{sl} x_s$, we consider the approximation of the nested gaussian convolution:
 \begin{align}
-f(\underline{x_q}) = \int \frac{dz_p}{\sqrt{2\pi q_0}}e^{\frac{z^2}{2q_0}} \log \biggl( \int \frac{dy_{pk}}{\sqrt{2\pi (q_1-q_0)}}e^{\frac{y_{pk}^2}{2 (q_i-q_0)}} e^{ y_{pk} - m \log \sigma \left(\beta \left[\pm J_{ip} + \sum_{q} J_{qp} x_q + h + z_p + y_{pk}\right]  \right) } \biggr) 
+f(\mathbf{x}_{<i}) = \int \frac{dz_l}{\sqrt{2\pi q_0}}e^{\frac{z^2}{2q_0}} \log \biggl( \int \frac{dy_{l}}{\sqrt{2\pi (q_1-q_0)}}e^{\frac{y_{l}^2}{2 (q_i-q_0)}} e^{ y_{l} - m \log \sigma \left(\beta \left[\pm J_{il} + \sum_{s} J_{sl} x_s + h + z_l + y_{l}\right]  \right) } \biggr) 
 \end{align}
-Fixed the parameters of the model $(\{J_{pq}\}, h, \beta)$, this is a function that depends from three free parameters $(q_0, q_1, m)$. I approximate the integrals with a feed forward scheme, enlarging the number of free parameters in order to have a feed forward function without integrals. First we consider the following map:
+Fixed the parameters of the model $(\{J_{pq}\}, h, \beta)$, this is a function that depends from three free parameters $(q_0, q_1, m)$. I approximate the integrals with a feed forward scheme, enlarging the number of free parameters in order to have a feed forward function without integrals. First we consider the following maps:
 \begin{align}
-    \int dx e^{\frac{x^2}{a}} \log\sigma (h + x) = a_0 +b_0 \log \sigma (a_1 + b_1 h) 
+    \int dx e^{\frac{x^2}{a} + x + b \log\sigma (h + x)} &\approx a_0 (1 + e^{a_1 + b_1 \log \sigma (a_2 + b_2 h) }) = a_0 \sigma^{-1}(a_1 + b_1 \log \sigma (a_2 + b_2 h) )\\
+    \int dx e^{\frac{x^2}{a}} \log\sigma (a_1 + b_1 \log \sigma (a_2 + b_2 (h+x))) &\approx a_0 +b_0 \log \sigma (a'_1 + b'_1 \log \sigma (a'_2 + b'_2 (h))) 
 \end{align}
-where the $a=q$. The set $(a_0, a_1, b_0, b_1)$ are free parameters to be determined by the learning procedures. The for the 1RSB we have to map:
-\begin{align}
-    \int dx e^{\frac{x^2}{a} + x + b \log\sigma (h + x)} = a_0 (1 + e^{a_1 + b_1 \log \sigma (a_2 + b_2 h) }) = a_0 \sigma^{-1}(a_1 + b_1 \log \sigma (a_2 + b_2 h) )
-\end{align}
-where the $a=2(q_1-q_0)$ and $b=m$. The set $(a_0, a_1, a_2, b_1, b_2)$ are free parameters to be determined by the learning procedures.
+where the set of parameters $(a_0, a_1, a_2, b_1, b_2)$ are free parameters to be determined by the learning procedures. The for the 1RSB we use the following architecture:
+\begin{eqnarray}
+    Q^{1RSB}\left(x_{i}=1|\mathbf{x}_{<i}\right) & = & \sigma\left( 
+    -2 \beta H_{s}[x_i = +1] +\log(\rho_i^+) - \log(\rho_i^-)
+    \right) \\
+    & = & b_0^i + w_0^i\sum_q J_{si} x_{si} + \sum_{t \in \{+,-\}} w_0^{i,t} \sum_l \log\sigma(b_1^{i,t} + w_1^{i,t}\log\sigma(b_2^{i,t} + w_2^{i,t}\sum_{s} J_{sl} x_s))
+    \end{eqnarray}
+The genralization of the above procedure for K-RSB is straightforward. For instance for 2-RSB we have:
+\begin{eqnarray}
+    &Q^{2RSB}\left(x_{i}=1|\mathbf{x}_{<i}\right)  =  \sigma\left( 
+    -2 \beta H_{s}[x_i = +1] +\log(\rho_i^+) - \log(\rho_i^-)
+    \right) \\
+    & =  b_0^i + w_0^i\sum_q J_{si} x_{si} + \sum_{t \in \{+,-\}} w_0^{i,t} \sum_l \log\sigma(b_1^{i,t} + w_1^{i,t}\log\sigma(b_2^{i,t} + w_2^{i,t}\log\sigma(b_3^{i,t} + w_3^{i,t}\sum_{s} J_{sl} x_s))) 
+    \end{eqnarray}
 
 \section{Numerical evidence of Gaussian convolution approximations}
 \paragraph{Curie Weiss model}
