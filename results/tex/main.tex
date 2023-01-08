@@ -149,9 +149,16 @@ and we defined $h_i^{\pm}[\mathbf{x}_{<i}] = h\pm\frac{J}{N}+\frac{J}{N}\sum_{s=
  & = & \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} \sum_{x_{i+1}\dots x_{N}}e^{(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t) S_{i}}  
  =  \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} \left(e^{\beta h_i^{\pm}[\mathbf{x}_{<i}] + t} + e^{ (-\beta h_i^{\pm}[\mathbf{x}_{<i}] - t)} \right)^{N-i}  \\ 
  \label{eq:rho_last_exact}
- \end{eqnarray*}
+ \end{eqnarray*} 
  whwre we used the Hubbard–Stratonovich (HS) transformation to get the second equality.\\
  First, in the following,  we derive the exact expression of the this conditional probability and how it can be expressed as a feed forward neural network, then the limit to $n\rightarrow N$ we derive a new architecture with smaller number of parameters.\\
+
+ \begin{figure}[!h]
+    \centering 
+    \includegraphics[width=1\textwidth]{img/nn_img.pdf}
+    \caption{Neural network Architectures of conditional probability}
+    \label{fig:curie_weiss}
+\end{figure}
 
 
  \subsubsection{Exact expression of the conditional probability of the Curie-Weiss model}
@@ -274,6 +281,13 @@ h_l^{\pm}[\mathbf{x}_{<i}] \sum_{a} x_l^{a} +\beta \sum_{a<b} Q_{a,b}  x_l^{a} x
 \right] \label{eq:before_ansaltz}
 \end{eqnarray}
 where we defined $c(n,N,i) = e^{ \frac{(N-i) \beta^2}{4N}((N-i)n-n^2) } \left(\frac{2\pi \beta^2}{N}\right)^{\frac{n(n-1)}{2}}$. The well know Parisi solutions of the SK model prescribe how to parametrize \cite{} the matrix of the overlaps $Q$. In the following we show how to obtain neural network architectures based on the the replica symmetric (RS) and k-replica symmetric broken symmetry (k-RSB) solutions.
+
+\begin{figure}[!h]
+    \centering 
+    \includegraphics[width=1\textwidth]{img/SK_res.pdf}
+    \caption{Results}
+    \label{fig:curie_weiss}
+\end{figure}
 
 
 \subsection{Replica Symmetric solution (RS)}
