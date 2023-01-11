@@ -30,6 +30,29 @@
 
 \section{Introduction}
 
+1. Both Statistical physics and Machine learning deal with high dimensional input functions.\\
+2. In the last years the generative power on new neural network framework achieve astonish results in many different domains.\\
+3. The connections between statistical physics and Machine learning are been a lots during last years, producing important and fundamental results in both domains. FOr instance applications of ML technics in statistical physics range from quantum mechanics, to classical stastical physics to chemical physics and complex systems. On the other way around applications of statistical physics concept have be used to understand the ability of SGD algorithms to explore the space of parameters of the neural network during the training, or the generalization capability, and to develop new architecture (cite stable diffusion).\\
+4. In particular when we consider generative model, the autoregressive neural network connections become more close. Describe what are the autoregressive models, and what they allow and how are they used in statistical physics. Usually in statistical physics community the Machine learning architecture has been used. But the knowing of the model we want to sample from could be used to better shape the depp architecture of neural net. Moreover could be usefull to better understand why some architecture work better than other and in the end sheld light to the usual called black box of neural network underground model.\\
+5.In this work concentrate on classical spins systems with pairwise interacting hamiltonian.For those systems in this work is shown how to derive autoregressive neural network architecture directly from the hamiltonian, where all the parameters of the neural network are directly related to the hamiltonian parameters.\\
+6. In general the ANN architectures for these systems involve a exponentially growing with the number of spins in  systems. We derive for two mean field model, namely the Curie-Weiss model and the Sherrington-Kirkpatrick model, a new architecture where the number of params scale polinomially with N.\\
+7. Several interesting future can be derived that this derived architecture shared with common used architecture:
+      a. The solutions founded are deep.
+      b. They have residual connections.
+      c. They have skip connections (?).
+      d. they are recurrent by construction.
+      e. They are able to learn the hamiltonian parameters (?) [check].
+      f. teh first layer parameters are related to the hamiltonian parameters, and they are shared.
+
+      In this paper, we explore the connections between Statistical Physics and Machine Learning, specifically in the context of generative models. Both fields deal with high-dimensional input functions, and in recent years, the use of neural network-based frameworks in Machine Learning has achieved remarkable success in a variety of domains. The overlap between these fields has led to important and fundamental results in both domains, with applications of Machine Learning techniques in Statistical Physics spanning a wide range of areas, including quantum mechanics, classical statistical physics, chemical physics, and complex systems.
+
+      On the other hand, applying concepts from Statistical Physics has been used to shed light on the behavior of Machine Learning algorithms. For example, understanding how the space of parameters of a neural network is explored during training, or how well the model generalizes to new data can be aided by looking at the problem through the lens of statistical physics. Additionally, the application of statistical physics concepts can lead to the development of new neural network architectures.
+      
+      In this work, we focus on classical spin systems with pairwise interacting Hamiltonians. These systems are commonly studied in statistical physics, and our goal is to show how to derive autoregressive neural network architectures directly from the Hamiltonian of these systems. Autoregressive models are a type of generative model that predict the next element in a sequence given all previous elements. In our case, the sequence is the configuration of spins in the system, and the goal of the model is to learn to generate new configurations that are likely according to the Hamiltonian. By deriving the neural network architecture from the Hamiltonian, we can establish a direct link between the parameters of the Hamiltonian and the parameters of the neural network.
+      
+      In general, ANN architectures for these systems tend to involve an exponential growth in the number of parameters with the number of spins in the system. However, we derive new architectures for two mean-field models, namely the Curie-Weiss model and the Sherrington-Kirkpatrick model, where the number of parameters scales polynomially with the number of spins. This is a significant improvement, as it allows for the scalability of the model to large systems. Our derived architecture also shares several interesting properties with commonly used architectures, such as being deep, having residual and skip connections, being recurrent by construction, and being able to learn the Hamiltonian parameters. Additionally, the parameters of the first layer of the network are directly related to the Hamiltonian parameters and are shared among all the spins, which allows to take advantage of the underlying symmetry of the problem to learn more efficiently.
+            
+
 \section{Materials and Methods}
 \subsection{Pair-wise Ising model in autoregressive conditional probability form}
 Consider a generic Hamiltonian $H[\underline{x}]$ that depends on a set $N$ of binary variable $\underline{x}$. The Boltzmann distribution at inverse temperature $\beta$ is:
@@ -68,7 +91,7 @@ where the $\mathbf{x}_{<i}=\left(x_{1},x_{2}\dots x_{i-1}\right)$
 are the spins with index lower than $i$. We want to find a form of a generic $i$ conditional probability: 
 
 \begin{eqnarray}
-P\left(x_{i}|\mathbf{x}_{<i}\right) & = & \frac{\sum_{x_{i+1}\dots x_{N}}e^{-\beta H}}{\sum_{x_{i}\dots x_{N}}e^{-\beta H}} = \frac{f\left(x_{i},\mathbf{x}_{<i}\right)}{\sum_{x_{i}}f\left(x_{i},\mathbf{x}_{<i}\right)}
+P\left(x_{i}|\mathbf{x}_{<i}\right) = \frac{P\left(x_1,x_2,\dots x_{i}\right)}{P\left(x_1,x_2,\dots x_{i-1}\right)}  = \frac{\sum_{x_{i+1}\dots x_{N}}P\left(\mathbf{x}\right)}{\sum_{x_{i}\dots x_{N}}P\left(\mathbf{x}\right)} & = & \frac{\sum_{x_{i+1}\dots x_{N}}e^{-\beta H}}{\sum_{x_{i}\dots x_{N}}e^{-\beta H}} = \frac{f\left(x_{i},\mathbf{x}_{<i}\right)}{\sum_{x_{i}}f\left(x_{i},\mathbf{x}_{<i}\right)}
 \label{eq:chain}
 \end{eqnarray}
 as a feed forward neural network in known and solvable statistical physics systems. Without loss of generality we consider the conditional probability $P\left(x_{i}=1|\mathbf{x}_{<i}\right)$; we rewrite the term in the following way: 
@@ -120,6 +143,13 @@ The terms $H_{qq}$ cancel out.
 The computational cost of the sum over all the configuration of spins labelled with $l$ grows exponentially with the systems size making it unfeasible after a few number of spins the explicit computations. The idea is to find feed-forward neural network architectures representing these functions with a polynomial number of free parameters.   
 In the following we will explore, on known and solvable statistical physic systems, if it is possible to find neural network architectures or functional forms to compact represent (not exponentially in N) this conditional probability. We start considering the Curie-Weiss model, then moving to more complex systems, the random field Ising model and Sherrington–Kirkpatrick model.
 
+\begin{figure}[!h]
+    \centering 
+    \includegraphics[width=1\textwidth]{img/ann_img.pdf}
+    \caption{Neural network Architectures of conditional probability}
+    \label{fig:curie_weiss}
+\end{figure}
+
 \subsection{Models}
 \subsubsection{Curie-Weiss model}
 
@@ -153,16 +183,10 @@ and we defined $h_i^{\pm}[\mathbf{x}_{<i}] = h\pm\frac{J}{N}+\frac{J}{N}\sum_{s=
  whwre we used the Hubbard–Stratonovich (HS) transformation to get the second equality.\\
  First, in the following,  we derive the exact expression of the this conditional probability and how it can be expressed as a feed forward neural network, then the limit to $n\rightarrow N$ we derive a new architecture with smaller number of parameters.\\
 
- \begin{figure}[!h]
-    \centering 
-    \includegraphics[width=1\textwidth]{img/nn_img.pdf}
-    \caption{Neural network Architectures of conditional probability}
-    \label{fig:curie_weiss}
-\end{figure}
 
 
  \subsubsection{Exact expression of the conditional probability of the Curie-Weiss model}
- The integral in the equation \ref{eq:rho_last_exact} can be computed the following way :
+ The integral in the equation \ref{eq:rho_last_exact} can be computed the following way:
 
  \begin{eqnarray*}
  \rho_i^{\pm}[\mathbf{x}_{<i}] &=& \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} 
@@ -228,7 +252,7 @@ Easily we obtain that $\log(\rho_i^{+}) - \log(\rho_i^{-}) = -2\beta J|\tilde{m}
 We can use a trial function in this form:
 \begin{eqnarray}\
 \label{eq:curie_weiss_cond2}
-Q^{\Theta}\left(x_{i}=+1|\mathbf{x}_{<i}\right) & = & \text{sigma}\left(\omega_{i}^0\sum_{s=1}^{i-1}x_{s} + \omega_i^1 \text{sign}(\sum_{s=1}^{i-1}x_{s})\right).
+Q^{\Theta}\left(x_{i}=+1|\mathbf{x}_{<i}\right) & = & \sigma \left(\omega_{i}^0\sum_{s=1}^{i-1}x_{s} + \omega_i^1 \text{sign}(\sum_{s=1}^{i-1}x_{s})\right).
 \end{eqnarray}
 where $\omega_i^{1,2}$ are free parameters to be trained. The number of parameters in this case scale as $O(N)$.
 
