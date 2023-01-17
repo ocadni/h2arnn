@@ -1,4 +1,19 @@
-\documentclass{article}
+\documentclass[aps,physrev,10pt,floatfix,longbibliography,nofootinbib,reprint]{revtex4-2}
+
+\usepackage{graphicx}% Include figure files
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+\usepackage{hyperref}% add hypertext capabilities
+\usepackage[mathlines]{lineno}% Enable numbering of text and display math
+%\linenumbers\relax % Commence numbering lines
+
+\usepackage[%Uncomment any one of the following lines to test 
+scale=0.7, marginratio={1:1, 2:3}, ignoreall,% default settings
+text={7in,10in},centering,
+%%margin=1.5in,
+%%total={6.5in,8.75in}, top=1.2in, left=0.9in, includefoot,
+%%height=10in,a5paper,hmargin={3cm,0.8in},
+]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amstext}
@@ -16,14 +31,31 @@
     pdftitle={Overleaf Example},
     pdfpagemode=FullScreen,
     }
-\geometry{verbose,lmargin=2cm,rmargin=2cm}
-
-\title{Autoregressive neural network of spins system: the deepness of Mean-Field models}
-%\author{indaco biazzo and ...}
-\date{June 2022}
+%\geometry{verbose,lmargin=2cm,rmargin=2cm}
 
 \begin{document}
 
+\title{Autoregressive neural network of spins system: the deepness of Mean-Field models}
+\author{Biazzo, Indaco}
+ \altaffiliation[Also at ]{Physics Department, XYZ University.}%Lines break automatically or can be forced with \\
+
+\date{\today}
+
+\begin{abstract}
+    An article usually includes an abstract, a concise summary of the work
+    covered at length in the main body of the article. 
+    \begin{description}
+    \item[Usage]
+    Secondary publications and information retrieval purposes.
+    \item[Structure]
+    You may use the \texttt{description} environment to structure your abstract;
+    use the optional argument of the \verb+\item+ command to give the category of each item. 
+    \end{description}
+    \end{abstract}
+    
+    %\keywords{Suggested keywords}%Use showkeys class option if keyword
+                                  %display desired
+    
 \maketitle
 
 \tableofcontents
@@ -31,8 +63,8 @@
 \section{Introduction}
 
 1. Both Statistical physics and Machine learning deal with high dimensional input functions.\\
-2. In the last years the generative power on new neural network framework achieve astonish results in many different domains.\\
-3. The connections between statistical physics and Machine learning are been a lots during last years, producing important and fundamental results in both domains. FOr instance applications of ML technics in statistical physics range from quantum mechanics, to classical stastical physics to chemical physics and complex systems. On the other way around applications of statistical physics concept have be used to understand the ability of SGD algorithms to explore the space of parameters of the neural network during the training, or the generalization capability, and to develop new architecture (cite stable diffusion).\\
+2. In the last years the generative power on new neural network frameworks achieve astonish results in many different domains.\\
+3. The connections between statistical physics and Machine learning are a lots during last years, producing important and fundamental results in both domains. FOr instance applications of ML technics in statistical physics range from quantum mechanics, to classical stastical physics to chemical physics and complex systems. On the other way around applications of statistical physics concept have be used to understand the ability of SGD algorithms to explore the space of parameters of the neural network during the training, or the generalization capability, and to develop new architecture (cite stable diffusion).\\
 4. In particular when we consider generative model, the autoregressive neural network connections become more close. Describe what are the autoregressive models, and what they allow and how are they used in statistical physics. Usually in statistical physics community the Machine learning architecture has been used. But the knowing of the model we want to sample from could be used to better shape the depp architecture of neural net. Moreover could be usefull to better understand why some architecture work better than other and in the end sheld light to the usual called black box of neural network underground model.\\
 5.In this work concentrate on classical spins systems with pairwise interacting hamiltonian.For those systems in this work is shown how to derive autoregressive neural network architecture directly from the hamiltonian, where all the parameters of the neural network are directly related to the hamiltonian parameters.\\
 6. In general the ANN architectures for these systems involve a exponentially growing with the number of spins in  systems. We derive for two mean field model, namely the Curie-Weiss model and the Sherrington-Kirkpatrick model, a new architecture where the number of params scale polinomially with N.\\
@@ -44,7 +76,7 @@
       e. They are able to learn the hamiltonian parameters (?) [check].
       f. teh first layer parameters are related to the hamiltonian parameters, and they are shared.
 
-      In this paper, we explore the connections between Statistical Physics and Machine Learning, specifically in the context of generative models. Both fields deal with high-dimensional input functions, and in recent years, the use of neural network-based frameworks in Machine Learning has achieved remarkable success in a variety of domains. The overlap between these fields has led to important and fundamental results in both domains, with applications of Machine Learning techniques in Statistical Physics spanning a wide range of areas, including quantum mechanics, classical statistical physics, chemical physics, and complex systems.
+      In this paper, we explore the connections between Statistical Physics and Machine Learning, specifically in the context of generative models. Both fields deal with high-dimensional input functions. In recent years, using neural network-based frameworks in Machine Learning has achieved remarkable success in various domains. The overlap between these fields has led to fundamental results, with applications of Machine Learning techniques in Statistical Physics spanning a wide range of areas, including quantum mechanics, classical statistical physics, chemical physics, and complex systems.
 
       On the other hand, applying concepts from Statistical Physics has been used to shed light on the behavior of Machine Learning algorithms. For example, understanding how the space of parameters of a neural network is explored during training, or how well the model generalizes to new data can be aided by looking at the problem through the lens of statistical physics. Additionally, the application of statistical physics concepts can lead to the development of new neural network architectures.
       
@@ -53,114 +85,136 @@
       In general, ANN architectures for these systems tend to involve an exponential growth in the number of parameters with the number of spins in the system. However, we derive new architectures for two mean-field models, namely the Curie-Weiss model and the Sherrington-Kirkpatrick model, where the number of parameters scales polynomially with the number of spins. This is a significant improvement, as it allows for the scalability of the model to large systems. Our derived architecture also shares several interesting properties with commonly used architectures, such as being deep, having residual and skip connections, being recurrent by construction, and being able to learn the Hamiltonian parameters. Additionally, the parameters of the first layer of the network are directly related to the Hamiltonian parameters and are shared among all the spins, which allows to take advantage of the underlying symmetry of the problem to learn more efficiently.
             
 
-\section{Materials and Methods}
-\subsection{Pair-wise Ising model in autoregressive conditional probability form}
-Consider a generic Hamiltonian $H[\underline{x}]$ that depends on a set $N$ of binary variable $\underline{x}$. The Boltzmann distribution at inverse temperature $\beta$ is:
+%\section{Materials and Methods}
+\section{Pair-wise Ising model in autoregressive conditional probability form}
+Consider a generic Hamiltonian $H[\mathbf{x}]$ that depends on a set of $N$ binary variables $\mathbf{x}=\{x_1, x_2,...x_N\}$. The Boltzmann distribution at inverse temperature $\beta$ is:
 \begin{equation}
 P\left(\mathbf{x}\right)=\frac{e^{-\beta H\left(\mathbf{x}\right)}}{\sum_{\left\{ x\right\} }e^{-\beta H\left(\mathbf{x}\right)}}.
 \end{equation}
-In general it is difficult to compute marginals and to average quantities when $N$ is large, and on several systems sampling from this distributions is difficult. If we are able to rewrite the Boltzmann distribution in autoregressive form:
+It is generally challenging to compute marginals and average quantities when $N$ is large, and sampling from these distributions is difficult on frustrated systems. I defined the sets of variables $\mathbf{x}_{<i}=\left(x_{1},x_{2}\dots x_{i-1}\right)$ and $\mathbf{x}_{>i}=\left(x_{i+1},x_{i+2}\dots x_{N}\right)$ respectively with an index lower and larger than $i$, then if we can rewrite the Boltzmann distribution in the autoregressive form:
 \begin{equation}
 P\left(\mathbf{x}\right)=\prod_{i}P\left(x_{i}|\mathbf{x}_{<i}\right)
 \end{equation}
-then it would be very easy to produce independent samples from it thanks to the ancestral sampling procedure. It has been proposed to use a variational approach to approximate the Boltzmann distribution with a trial probability distribution that has this autoregressive form and each conditional probability is represented by a feed forward neural network with set a of parameters ${\theta}$:
+then it would be straightforward to produce independent samples from it, thanks to the ancestral sampling procedure. It has been proposed to use a variational approach to approximate the Boltzmann distribution with trial probability distributions that have this autoregressive form where each conditional probability is represented by a feed-forward neural network with a set of parameters ${\theta}$:
 \begin{equation}
 Q^{\theta}\left(\mathbf{x}\right)=\prod_{i}Q^{\theta_i}\left(x_{i}|\mathbf{x}_{<i}\right)
 \end{equation}
-The parameters ${\theta}$ can be learn minimizing the Kullback-Liebler divergence $D_{KL}$,
+The parameters ${\theta}$ can be learn minimizing the Kullback-Leibler divergence $D_{KL}$,
 with the true probability function:
-
-\begin{eqnarray*}
-D_{KL}\left(P|Q^{\Theta}\right) & = & \sum_{\left\{ x\right\} }Q^{\Theta}\left(\left\{ x\right\} \right)\ln\left(\frac{Q^{\Theta}\left(\left\{ x\right\} \right)}{P\left(\left\{ x\right\} \right)}\right)\\
- & \approx & \sum_{x\sim Q^{\Theta}}\left[\ln\left(Q^{\Theta}\left(\left\{ x\right\} \right)\right)-\ln\left(P\left(\left\{ x\right\} \right)\right)\right]
-\end{eqnarray*}
-where we substituted the sum over all $\{x\}$ configurations with a set of configurations extracted, thanks to the ancestral sampling, from the autoregressive trial functions.
-Up to here the approach seems clear. 
-What is less clear, is what architecture of the neural networks we have to use for each problem.
-There is a large number of systems where the analytic form of the Boltzmann distribution is known, at least in some limits (for instance $N\rightarrow \infty$). 
-In this work we want to find neural network architectures that could precisely represent solvable statistical physics systems. 
-Then, these architectures could be used as an ansatz for more complex systems or in different limits (for instance at finite $N$).
-
-
-\subsubsection{Conditionals}
-The autoregressive probability distribution has this form:
 \begin{equation}
-P\left(\mathbf{x}\right)=\prod_{i}P\left(x_{i}|\mathbf{x}_{<i}\right)
+\begin{split}
+& D_{KL}\left(P|Q^{\Theta}\right) =  \sum_{\left\{ x\right\} }Q^{\Theta}\left(\mathbf{x} \right)\ln\left(\frac{Q^{\Theta}\left(\mathbf{x} \right)}{P\left(\mathbf{x} \right)}\right)  \\
+& \approx \sum_{\mathbf{x}\sim Q^{\Theta}}\left[\ln\left(Q^{\Theta}\left(\mathbf{x} \right)\right)-\ln\left(P\left(\mathbf{x} \right)\right)\right]
+\end{split}    
 \end{equation}
-where the $\mathbf{x}_{<i}=\left(x_{1},x_{2}\dots x_{i-1}\right)$
-are the spins with index lower than $i$. We want to find a form of a generic $i$ conditional probability: 
+Thanks to the ancestral sampling, we substituted the sum over all possible configurations with a subset of configurations extracted from the autoregressive trial functions.
+In this framework, the choice of the architecture of the neural networks is crucial.
+In this work, we want to find neural network architectures that can represent solvable  mean-field statistical physics systems. 
+Then, these architectures could be used as an ansatz for more complex systems or in different limits (for instance, at finite $N$).
 
-\begin{eqnarray}
-P\left(x_{i}|\mathbf{x}_{<i}\right) = \frac{P\left(x_1,x_2,\dots x_{i}\right)}{P\left(x_1,x_2,\dots x_{i-1}\right)}  = \frac{\sum_{x_{i+1}\dots x_{N}}P\left(\mathbf{x}\right)}{\sum_{x_{i}\dots x_{N}}P\left(\mathbf{x}\right)} & = & \frac{\sum_{x_{i+1}\dots x_{N}}e^{-\beta H}}{\sum_{x_{i}\dots x_{N}}e^{-\beta H}} = \frac{f\left(x_{i},\mathbf{x}_{<i}\right)}{\sum_{x_{i}}f\left(x_{i},\mathbf{x}_{<i}\right)}
-\label{eq:chain}
-\end{eqnarray}
-as a feed forward neural network in known and solvable statistical physics systems. Without loss of generality we consider the conditional probability $P\left(x_{i}=1|\mathbf{x}_{<i}\right)$; we rewrite the term in the following way: 
-\begin{eqnarray}
-\label{eq:sigma_log}
-P\left(x_{i}=1|\mathbf{x}_{<i}\right) & = & \frac{f\left(x_{i}=1,\mathbf{x}_{<i}\right)}{\sum_{x_{i}}f\left(x_{i},\mathbf{x}_{<i}\right)}\\
-& = &\frac{f\left(x_{i}=1,\mathbf{x}_{<i}\right)}{f\left(x_{i}=1,\mathbf{x}_{<i}\right)+f\left(x_{i}=-1,\mathbf{x}_{<i}\right)}\\
-& = &\frac{1}{1+\frac{f\left(x_{i}=-1,\mathbf{x}_{<i}\right)}{f\left(x_{i}=1,\mathbf{x}_{<i}\right)}} = \frac{1}{1+e^{\log\left(f\left(x_{i}=-1,\mathbf{x}_{<i}\right)\right)-\log\left(f\left(x_{i}=1,\mathbf{x}_{<i}\right)\right)}}\\
-& = &\sigma\left(\log\left[f\left(x_{i}=1,\mathbf{x}_{<i}\right)\right]-\log\left[f\left(x_{i}=-1,\mathbf{x}_{<i}\right)\right]\right)
-\end{eqnarray}
 
-where $\sigma(x)=\frac{1}{1+e^{-x}}$. In this way the end of our feed-forward neural network is a sigma function that assure that the values is
-between 0 and 1. The terms:
+\subsection{Conditionals}
+ We want to find a form of a generic $i$-th conditional probability factor of the Boltzmann distribution as a feed-forward neural network. First, we can rewrite a generic conditional in this form: 
 \begin{equation}
-\log\left[f\left(x_{i}=\pm 1,\mathbf{x}_{<i}\right)\right] = \log \left[ \sum_{x_{i+1}\dots x_{N}}e^{-\beta H}\delta_{x_i, \pm1} \right] 
+    \label{eq:chain}
+    \begin{split}
+    & P\left(x_{i}|\mathbf{x}_{<i}\right)  = 
+    \frac{P\left(\mathbf{x}_{<i+1}\right)}{P\left(\mathbf{x}_{<i}\right)}  = 
+    \frac{\sum_{\mathbf{x}_{>i}}P\left(\mathbf{x}\right)}{\sum_{\mathbf{x}_{>i-1}}P\left(\mathbf{x}\right)} \\
+    &=\frac{\sum_{\mathbf{x}_{>i}}e^{-\beta H}}{\sum_{\mathbf{x}_{>i-1}}e^{-\beta H}}  = 
+    \frac{f\left(x_{i},\mathbf{x}_{<i}\right)}{\sum_{x_{i}}f\left(x_{i},\mathbf{x}_{<i}\right)}.
+    \end{split}
 \end{equation}
-are very close to the usual free entropy computed in statistical physics.
-We consider a generic fully connected two body interaction Hamiltonian of binary spin variables:
+where I defined: $f\left(x_{i}=\pm 1,\mathbf{x}_{<i}\right) = \sum_{x_{i+1}\dots x_{N}}e^{-\beta H}\delta_{x_i, \pm1}$. Usually, in the representation of the conditional probability $P\left(x_{i}=1|\mathbf{x}_{<i}\right)$ as a feed-forward neural network, the set of variable $\mathbf{x}_{<i}$ is the input, and the sigma function $\sigma(x)=\frac{1}{1+e^{-x}}$ is the last layer, assuring that the output is between $0$ and $1$. The probability $P\left(x_{i}=-1|\mathbf{x}_{<i}\right) = 1 - P\left(x_{i}=1|\mathbf{x}_{<i}\right)$ is straightforward to obtain. With simple algebraic manipulations, we can write: 
 \begin{equation}
-    H = -\sum_{i<j} J_{ij} x_i x_j - \sum_{i} h_i x_i
+    \label{eq:sigma_log}
+    \begin{split}
+    & P\left(x_{i}=1|\mathbf{x}_{<i}\right) = \frac{f\left(1,\mathbf{x}_{<i}\right)}{\sum_{x_{i}}f\left(x_{i},\mathbf{x}_{<i}\right)}\\
+    &= \sigma\left(\log\left[f\left(1,\mathbf{x}_{<i}\right)\right]-\log\left[f\left(-1,\mathbf{x}_{<i}\right)\right]\right)
+    \end{split}
 \end{equation}
-Considering a generic variable $i$, we rewrite the Hamiltonian splitting the contributions that come from variables with index smaller and larger than $i$, labelled, respectively, $s$ and $l$ :
+%Without loss of generality we consider the conditional probability $P\left(x_{i}=1|\mathbf{x}_{<i}\right)$; we rewrite the term in the following way: 
+% \begin{eqnarray}
+% \label{eq:sigma_log}
+% P\left(x_{i}=1|\mathbf{x}_{<i}\right) & = & \frac{f\left(x_{i}=1,\mathbf{x}_{<i}\right)}{\sum_{x_{i}}f\left(x_{i},\mathbf{x}_{<i}\right)}\\
+% & = &\frac{f\left(x_{i}=1,\mathbf{x}_{<i}\right)}{f\left(x_{i}=1,\mathbf{x}_{<i}\right)+f\left(x_{i}=-1,\mathbf{x}_{<i}\right)}\\
+% & = &\frac{1}{1+\frac{f\left(x_{i}=-1,\mathbf{x}_{<i}\right)}{f\left(x_{i}=1,\mathbf{x}_{<i}\right)}} = \frac{1}{1+e^{\log\left(f\left(x_{i}=-1,\mathbf{x}_{<i}\right)\right)-\log\left(f\left(x_{i}=1,\mathbf{x}_{<i}\right)\right)}}\\
+% & = &\sigma\left(\log\left[f\left(x_{i}=1,\mathbf{x}_{<i}\right)\right]-\log\left[f\left(x_{i}=-1,\mathbf{x}_{<i}\right)\right]\right)
+% \end{eqnarray}
+
+%where $\sigma(x)=\frac{1}{1+e^{-x}}$. In this way, the end of our feed-forward neural network is a sigma function that assures that the values are between 0 and 1. 
+%The terms:
+%\begin{equation}
+%\log\left[f\left(x_{i}=\pm 1,\mathbf{x}_{<i}\right)\right] = \log \left[ \sum_{x_{i+1}\dots x_{N}}e^{-\beta H}\delta_{x_i, \pm1} \right] 
+%\end{equation}
+%are very close to the usual free entropy computed in statistical physics.
+Consider a generic two-body interaction Hamiltonian of binary spin variables $x_i \in \{-1,1\}$, $H = -\sum_{i<j} J_{ij} x_i x_j - \sum_{i} h_i x_i$, where $J_{ij}$ are the interaction couplings and $h_i$ are the external fields. Substituting the generic two-body interaction Hamiltonian in eq.\ref{eq:sigma_log}, we obtain:
 \begin{equation}
-    H = H_{ss} + H_{si} + H_{il} + H_{sl} + H_{ll}
-\end{equation}
-We have defined:
-\begin{eqnarray}
-    H_{ss} & = & - \sum_{s=1}^{i-1}\sum_{s'=s+1}^{i-1} J_{ss'} x_s x_{s'} - \sum_{s} h_s x_s \\
-    H_{si}[x_i = \pm 1] & = & \mp \left(h_i + \sum_{s=1}^{i-1} J_{si} x_s\right)\\
-    H_{il}[x_i = \pm 1] & = & \mp \sum_{l=i+1}^{N} J_{il} x_l \\
-    H_{sl} & = & - \sum_{l=i+1}^{N}\sum_{s=1}^{i-1} J_{sl} x_s x_l\\
-    H_{ll} & = & - \sum_{l=i+1}^{N}\sum_{l'=l+1}^{N} J_{ll'} x_l x_{l'} + \sum_{l=i+1}^N h_l x_l\\
-\end{eqnarray}
-Substituting tho above terms, of a generic two body interaction Hamiltonian, in eq.\ref{eq:sigma_log} we obtain:
-\begin{equation}
-P\left(x_{i}=1|\mathbf{x}_{<i}\right) = \sigma\left( 
- 2 \beta H_{si}[x_i = +1] +\log(\rho_i^+) - \log(\rho_i^-)
-\right),
+    \begin{split}
+    & P\left(x_{i}=1|\mathbf{x}_{<i}\right) = \\
+    & \sigma\left( 2 \beta \left(h_i + \sum_{s=1}^{i-1} J_{si} x_s\right) +\log(\rho_i^+) - \log(\rho_i^-)
+    \right),   
+    \end{split}
+\label{eq:conditional_ghann}
 \end{equation}
 where:
 \begin{eqnarray}
+    \label{eq:rho_ghann}
 \rho_i^{\pm}[\mathbf{x}_{<i}] &=& \sum_{x_{i+1}\dots x_{N}} e^{-\beta \left(
 H_{li}[x_i = \pm 1] + H_{sl} + H_{ll}\right)} \\
-& = & \sum_{x_{i+1}\dots x_{N}} \exp\left\{
-\beta\sum_{l=i+1}^{N}\left( \pm J_{il} + \sum_{s=1}^{i-1} J_{sl} x_s + h_l \right) x_l + \beta\sum_{l=i+1}^{N}\sum_{l'=l+1}^{N} J_{ll'} x_l x_{l'}
-\right\}
+& = & \sum_{x_{i+1}\dots x_{N}} e^{
+\beta\sum_{l=i+1}^{N}\left( \pm J_{il} + \sum_{s=1}^{i-1} J_{sl} x_s + h_l \right) x_l + \beta\sum_{l=i+1}^{N}\sum_{l'=l+1}^{N} J_{ll'} x_l x_{l'} }
 \end{eqnarray}
-The terms $H_{qq}$ cancel out.
-The computational cost of the sum over all the configuration of spins labelled with $l$ grows exponentially with the systems size making it unfeasible after a few number of spins the explicit computations. The idea is to find feed-forward neural network architectures representing these functions with a polynomial number of free parameters.   
-In the following we will explore, on known and solvable statistical physic systems, if it is possible to find neural network architectures or functional forms to compact represent (not exponentially in N) this conditional probability. We start considering the Curie-Weiss model, then moving to more complex systems, the random field Ising model and Sherrington–Kirkpatrick model.
+% Considering a generic variable $i$, we rewrite the Hamiltonian, splitting the contributions that come from variables with an index smaller and larger than $i$, labelled, respectively, $s$ and $l$ :
+% \begin{equation}
+%     H = H_{ss} + H_{si} + H_{il} + H_{sl} + H_{ll}
+% \end{equation}
+% We have defined the following:
+% \begin{eqnarray}
+%     H_{ss} & = & - \sum_{s=1}^{i-1}\sum_{s'=s+1}^{i-1} J_{ss'} x_s x_{s'} - \sum_{s} h_s x_s \\
+%     H_{si}[x_i = \pm 1] & = & \mp \left(h_i + \sum_{s=1}^{i-1} J_{si} x_s\right)\\
+%     H_{il}[x_i = \pm 1] & = & \mp \sum_{l=i+1}^{N} J_{il} x_l \\
+%     H_{sl} & = & - \sum_{l=i+1}^{N}\sum_{s=1}^{i-1} J_{sl} x_s x_l\\
+%     H_{ll} & = & - \sum_{l=i+1}^{N}\sum_{l'=l+1}^{N} J_{ll'} x_l x_{l'} + \sum_{l=i+1}^N h_l x_l\\
+% \end{eqnarray}
+% Substituting the above terms of a generic two-body interaction Hamiltonian in eq.\ref{eq:sigma_log}, we obtain:
+
+The conditional probability, eq.\ref{eq:conditional_ghann}, can be interpreted as a feed-forward neural network. \\
+The first layer is composed of the following set of linear operators on the input $\omega_i(\mathbf{x}_{<i})=\sum_{s=1}^{i-1} J_{si} x_s$ and $\omega_{il}=\sum_{s=1}^{i-1} J_{sl} x_s$ with $i<l<=N$. 
+Then, a second layer acts on the set of $\omega_{il}$ (see fig.\ref{fig:arch}). Once again, it is a linear combination of the previous layer, with $2*2^{(N-i)}$ number of neurons. Then two non-linear operator, the $logsumexp(\mathbf{x}) = log(\sum_i e^{x_i})$, is applied to half of the neurons in the layer. The two outputs correspond to the two functions $\rho^{\pm}$ (see fig.\ref{fig:arch}). As the last layer, the two $\rho*{\pm}$ and $\omega_i$ are summed, and the sigma function is applied. The number of parameters scales exponentially with the system size for each conditional probability. This dependence on the size of the system appears reasonable because, otherwise, it could be possible to sample to whatever pairwise hamiltonian in polynomial time, and as long we assume that $P\neq NP$ it could not be possible. 
+The computational cost of the sum over all the configuration of spins $x_l$ grows exponentially with the system's size making it unfeasible, after a few spins, the explicit computations. The idea is to find feed-forward neural network architectures representing these functions with a polynomial number of free parameters. \\
+This imply finding simplified representions of $\rho_i^{\pm}$ eq.\ref{eq:rho_ghann}. Closely looking, it can be seen as very similar to the partition function of the system, where we sum over the spin configurations $\mathbf{x_l}$ and the values of the variables $x_s$ act like external fields on $x_l$.
+This map allows us to use technics derived for solving statistical mechanics systems to construct neural networks based on the physical solution of pairwise interaction systems. For example, in this work, we derive neural network architectures for two exact solvable models: the Curie-Weiss model (CW) and the Sherrington-Kirkpatrick model (SK) in the thermodynamical limit. These fully connected models are chosen due to their paradigmatic role in the history of statistical physics systems. The CW model, despite its straightforward hamiltonian, displays a second-order phase transition and, as shown after, has a deep architecture that scales as $O(N^2)$ to be sampled exactly at finite N. The SK model was one of the first models to describe the behavior of spin glasses successfully, and it provided a theoretical framework for understanding the complex behavior of these materials. The SK model is a mean-field model and it can be solved analytically \cite{}.  
+The computational cost of the sum over all the configuration of spins $x_l$ grows exponentially with the system's size making it unfeasible, after a few spins, the explicit computations. The idea is to find feed-forward neural network architectures representing these functions with a polynomial number of free parameters. \\
+This imply finding simplified representions of $\rho_i^{\pm}$ eq.\ref{eq:rho_ghann}. Closely looking, it can be seen as very similar to the partition function of the system, where we sum over the spin configurations $\mathbf{x_l}$ and the values of the variables $x_s$ act like external fields on $x_l$.
+
+In the following, we will explore, on known and solvable statistical physic systems, if it is possible to find neural network architectures or functional forms to compactly represent (not exponentially in N) this conditional probability. We start considering the Curie-Weiss model, then move to more complex systems, the Sherrington–Kirkpatrick model.
 
 \begin{figure}[!h]
     \centering 
     \includegraphics[width=1\textwidth]{img/ann_img.pdf}
     \caption{Neural network Architectures of conditional probability}
-    \label{fig:curie_weiss}
+    \label{fig:arch}
 \end{figure}
 
+\subsubsection{The recurrent inner structure of the hamiltonian autoregressive neural network}
+\label{sec:inner_recurrent}
+Consider the first layer of the GHANN, see figure \ref{fig:arch}.a. The first layer is composed of the following set of linear operators on the input $\omega_i(\mathbf{x}_{<i})=\sum_{s=1}^{i-1} J_{si} x_s$ and $\omega_{il}=\sum_{s=1}^{i-1} J_{sl} x_s$ with $i<l<=N$. The set of $\omega_{il}$ can be rewritten in recursive form observing that:
+\begin{equation}
+\omega_{il} = \omega_{i-1,l} + J_{i-1,l} x_{i-1}
+\end{equation}
+The neurons $\omega_{il}$ in the first layer of each conditional probability in the GHANN architecture depend on the $\omega_{i-1,l}$ of the previous conditional probability, lighting up the recurrent nature of the GHANN architecture. \\
 \subsection{Models}
 \subsubsection{Curie-Weiss model}
 
-The Curie-Weiss model is a uniform fully-connected Ising model. Its Hamiltonian, with $N$ spins, is:
+The Curie-Weiss model is a uniform, fully-connected Ising model. Its Hamiltonian, with $N$ spins, is:
 
 \begin{equation}
 H\left(\mathbf{x}\right)=-h\sum_{i=1}^{N}x_{i}-\frac{J}{N}\sum_{i<j}x_{i}x_{j}
-\doteq -h\sum_{i=1}^{N} S - \frac{J}{2N}S^2 - \frac{J}{2}
+\doteq -h\sum_{i=1}^{N} S - \frac{J}{2N}S^2 + \frac{J}{2}
 \end{equation}
  where we have defined $S=\sum_{i=1}^{N}x_{i}$.\\
- The conditional probability of a spin $i$ to be up, given the configuration of the other smaller spins $s$:
+ The conditional probability of a spin $i$ to be up, given the configuration of the other smaller spins $\mathbf{x}_{<i}$:
 \begin{equation}
 P\left(x_{i}=1|\mathbf{x}_{<i}\right) = \sigma\left( 
  2 \beta h + 2 \beta \frac{J}{N}\sum_{s=1}^{i-1}x_s +\log(\rho_i^+[\mathbf{x}_{<i}]) - \log(\rho_i^-[\mathbf{x}_{<i}])
@@ -202,7 +256,7 @@ where we defined:
 e^{b_{i,k}^{\pm}} & = & \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\beta h \pm \frac{\beta J}{N}\right)}\\
 e^{\omega_{i,k}^{\pm}} & = & e^{\frac{\beta J}{N}\left(N-i-2k\right)}.
 \end{eqnarray}
-The the final feed-forward architecture of the neural network is:
+The final feed-forward architecture of the neural network is:
 \begin{eqnarray}\
 \label{eq:curie_weiss_cond}
 Q^{\Theta}\left(x_{i}=+1|\mathbf{x}_{<i}\right) & = &  \sigma \left(b_{i}+\omega_{i}\sum_{s=1}^{i-1}x_{s}-\log\left[\sum_{k=0}^{N-i}e^{b_{i,k}^{+}+w_{i,k}^{+}\sum_{s=1}^{i-1}x_{s}}\right]+\log\left[\sum_{k=0}^{N-i}e^{b_{i,k}^{-} + w_{i,k}^{-}\sum_{s=1}^{i-1}x_{s}}\right]\right).
@@ -536,3 +590,4 @@ The case of replica:
     \label{fig:gauss_approx}
 \end{figure}
 \end{document}
+  
