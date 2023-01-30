@@ -1,4 +1,4 @@
-\documentclass[aps,physrev,10pt,floatfix,longbibliography,nofootinbib,reprint]{revtex4-2}
+\documentclass[aps,physrev,10pt,floatfix,reprint]{revtex4-2}
 
 \usepackage{graphicx}% Include figure files
 \usepackage{dcolumn}% Align table columns on decimal point
@@ -53,11 +53,11 @@ text={7in,10in},centering,
 \maketitle
 \tableofcontents
 \section{Introduction}
-The connection between machine learning and statistical physics spans decades of work, regarding the representation and learning of high-dimensional functions. 
-In particular, the development of deep neural network frameworks \cite{bengioNatureDeepLearning2015}, which have been applied to statistical physics problems \cite{RevModPhys.91.045002} spanning a wide range of domains, including quantum mechanics \cite{Carleo2017}, 
-classical statistical physics, chemical and biological physics \cite{noe2019boltzmann, jumper2021highly}, and complex inference problems.
+The cross fertilization among machine learning and statistical physics continues for decades.
+In particular, the development of deep neural network frameworks \cite{bengioNatureDeepLearning2015} have been applied to a long list of statistical physics problems \cite{RevModPhys.91.045002} spanning a wide range of domains, including quantum mechanics \cite{doi:10.1126/science.aag2302}, 
+classical statistical physics, chemical and biological physics \cite{noe2019boltzmann,jumper2021highly}, and complex inference problems.
 On the other hand, techniques borrowed from statistical physics have been used to shed light on the behavior of Machine Learning algorithms.
-Talk about generative models and transformers.\\
+Talk about generative models and transformers. \\
 In this work, neural network architectures of the Boltzmann distribution of statistical physics models are derived, specifically in the context of generative models.
 Here, I focus on classical spin systems with pairwise interacting Hamiltonians. These systems are commonly studied in statistical physics, and the goal is to show how to derive autoregressive neural network architectures directly from the system Hamiltonian. Autoregressive models are a type of generative model that predicts the next element in a sequence given all previous elements. In our case, the sequence is a subset of the configuration of spins of the system, and the goal of the model is to learn to generate new configurations that are likely according to the Hamiltonian. By deriving the neural network architecture from the Hamiltonian, we can establish a direct link between the parameters of the Hamiltonian and the parameters of the neural network.\\
 In general, ANN architectures for these systems tend to involve an exponential growth in the number of parameters with the number of spins in the system. However, we derive new architectures for two mean-field models, namely the Curie-Weiss model and the Sherrington-Kirkpatrick model, where the number of parameters scales polynomially with the number of spins. This is a significant improvement, as it allows for the scalability of the model to large systems. Our derived architecture also shares several interesting properties with commonly used architectures, such as being deep, having residual and skip connections, being recurrent by construction, and being able to learn the Hamiltonian parameters. Additionally, the parameters of the first layer of the network are directly related to the Hamiltonian parameters and are shared among all the spins, which allows to take advantage of the underlying symmetry of the problem to learn more efficiently.\\
@@ -345,7 +345,7 @@ The celebrated \cite{pippo2021} Parisi solutions of the SK model prescribe how t
     \centering 
     \includegraphics[width=0.5\textwidth]{img/SK_res.pdf}
     \caption{Results}
-    \label{fig:curie_weiss}
+    \label{fig:SK}
 \end{figure}
 
 
@@ -588,7 +588,6 @@ The case of replica:
     \caption{Fit of eq.\ref{eq:CW_gauss_approx} at different values of $K=J\beta$. In the first row only one extreme is considered and two in the second row.}
     \label{fig:gauss_approx}
 \end{figure}
-
 
 \bibliography{refs}% Produces the bibliography via BibTeX.
 
