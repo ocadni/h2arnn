@@ -38,7 +38,7 @@ text={7in,10in},centering,
 \begin{document}
 
 %\title{Autoregressive neural network of spins system: the deepness of Mean-Field models}
-\title{Autoregressive neural network architecture of the Boltzmann distribution: the cases of two body interacting systems and two mean-field models.}
+\title{Autoregressive neural network architecture of the Boltzmann distribution: the cases of pairwise interacting systems and two mean-field models.}
 \author{Biazzo, Indaco}
  \altaffiliation[Also at ]{Physics Department, XYZ University.}
  %Lines break automatically or can be forced with \\
@@ -177,13 +177,6 @@ The functions $\rho_i^{\pm}$ take into account the effect of the interactions am
 The $\rho_i^{\pm}$ function can be interpreted as the partition function of a system, where the variables are $\mathbf{x}_{>i}$ and external fields are determined by the values of the variables $x_{<i}$.
 Starting from that observation, in the following, I show how to use standard tools of statistical physics to derive deep AR-NN architecture that solves the exponential growth.  \\
 
-\begin{figure}[!h]
-    \centering 
-    \includegraphics[width=0.5\textwidth]{img/ann_img.pdf}
-    \caption{Neural network Architectures of conditional probability}
-    \label{fig:arch_old}
-\end{figure}
-
 \section{Models}
 \subsection{Curie-Weiss model}
 
@@ -218,14 +211,21 @@ b_{i,k}^{\pm} & = \log\left(\binom{N-i}{k}\right) + \frac{\beta J}{2N}\left(N-i-
 \omega_{i,k}^{\pm} & = \frac{\beta J}{N}\left(N-i-2k\right).
 \end{align}
 The final feed-forward architecture of the Curie-Weiss Autoregressive Neural Network (CW-ARNN) architecture is:
-\begin{multline}
-\label{eq:curie_weiss_cond}
+\begin{multline*}
+%\label{eq:curie_weiss_cond}
 P^{CW}\left(x_{i}=+1|\mathbf{x}_{<i}\right)  =   \sigma \bigg[b_{0}+\omega_{0}\sum_{s=1}^{i-1}x_{s}\\
 -\log\big(\sum_{k=0}^{N-i}e^{b_{i,k}^{+} + 
 w_{i,k}^{+}\sum_{s=1}^{i-1}x_{s}}\big)+\log\big(\sum_{k=0}^{N-i}e^{b_{i,k}^{-} + w_{i,k}^{-}\sum_{s=1}^{i-1}x_{s}}\big)\bigg],
-\end{multline}
+\end{multline*}
 where $b^0=2\beta h$, $\omega^0_i = \frac{2\beta J}{N}$ are the same, and so shared, among all the conditional probability functions, see fig.\ref{fig:curie_weiss}. Their parameters have an analytic dependence from the parameters $J$ and $h$ of the Hamiltonian of the systems. 
 %The set of parameters ($b_i, b_i^{k\pm}, \omega_i, \omega_i^{k\pm}$) can be consider as free parameters trained to minimize the KL divergence with the true probability distribution. 
+\begin{figure}[!h]
+    \centering 
+    \includegraphics[width=0.5\textwidth]{img/CW_arch.pdf}
+    \caption{Neural network Architectures of the conditional probability of the CW model.}
+    \label{fig:CW_arch}
+\end{figure}
+
 It is interesting to note the number of parameters of the CW-ARNN is $2+4(N-i)$; they decrease as $i$ increases. This result is, somehow, the opposite of what the neural network architecture usually should take care of, meaning increasing the number of input variables, the number of parameters should also increase to describe the complexity of the function. Still, it is compatible with what was derived for the general case, where the number of parameters needed for the $\rho^{\pm}$ decreases, in that case exponentially, with the index $i$. The CW-ARNN depends only on the sum of the input variables.
 The total number of parameters of all conditional probability distribution scales as $2N^2+ O(N)$. \\
 If we consider the thermodynamical limit, $N \gg 1$, the architecture of the CW model, $\text{CW}_{\infty}$, simplify:
@@ -291,6 +291,13 @@ Q_{a,b}=\begin{cases}
 $$
 Then a sequence of better approximations can be obtained by breaking, by step, the replica symmetry, from the 1-step replica symmetric breaking (1-RSB) to the infinite limit of the k-step replica symmetric breaking (k-RSB) solutions. 
 The sequence k-RSB approximations can be seen as nested non-linear operations \cite{Parisi_1980}, see Appendix for details. 
+\begin{figure}[!h]
+    \centering 
+    \includegraphics[width=0.5\textwidth]{img/SK_arch.pdf}
+    \caption{Neural network Architectures of the conditional probability of the SK model.}
+    \label{fig:SK_arch}
+\end{figure}
+
 Every k-step replica symmetric breaking solution leads to adding a gaussian integral and two more free variational parameters to the solutions of the $\rho^{\pm}$ functions. 
 In the following, we will use a feed-forward representation that enlarges the space of parameters, using a more computationally friendly non-linear operator. 
 Numerical evidence of the goodness of the approximation used is shown in the Appendix. 
