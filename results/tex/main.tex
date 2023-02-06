@@ -247,12 +247,12 @@ The SK hamiltonian, with zero external fields for simplicity, is given by:
 H\left(\mathbf{x}\right)=-\sum_{i<j}J_{ij}x_{i}x_{j}
 \end{equation}
 where the set of $\underline{J}$ are i.i.d. random variable extracted from a Gaussian probability distribution $P(J)=\sqrt{\frac{N}{2\pi}}\exp\left(\frac{-NJ^2}{2} \right)$. \\
-To find a feed-forward representation of conditional probability of its Boltzmann distribution, we use the replica trick \cite{10.1142/0271}, usually, used together with the average over the system's disorder. In our case, we work with a single instance of the set of $Js$, but we assume that $N-i$ is large enough such that the following approximation hold for $\rho_i^{\pm}$ functions: 
+To find a feed-forward representation of conditional probability of its Boltzmann distribution, we use the replica trick \cite{10.1142/0271} that, usually, it was used together with the average over the system's disorder. In our case, we work on a single instance of the set of $Js$, but I will assume that $N-i$ is large enough such that the following approximation hold for the $\rho_i^{\pm}$ functions: 
 \[
 \log\rho_i^{\pm} \sim \mathbb{E}\left[  \log\rho_i^{\pm} \right] = \lim_{n\rightarrow 0} \frac{  \log(\mathbb{E}\left[(\rho_i^{\pm})^n \right])}{n}
 \]
 In the last equality, we use the replica trick. 
-For each specific conditional probability, the average over the disorder $\mathbb{E}$ is taken on the coupling variables $J_{ll'}$ with $l,l'>i$. Implicitly, we assume that the quantities $\log\rho_i^{\pm}$ are a self-averaged quantity on the $\mathbf{x}_{i>}$ variables.
+For each specific conditional probability, the average over the disorder $\mathbb{E}$ is taken on the coupling parameteters $J_{ll'}$ with $l,l'>i$. Implicitly, we assume that the quantities $\log\rho_i^{\pm}$ are a self-averaged quantity on the $\mathbf{x}_{i>}$ variables.
  The replica computation can be carried on easily, finding:
 \begin{multline}
 \mathbb{E}_{\underline{J}}\left[(\rho_i^{\pm}[\mathbf{x}_{<i}])^n \right]  = 
@@ -342,7 +342,7 @@ Where $x_{i,l^{\pm}}^1(\mathbf{x}_{<i})$ is the output of the first layer of the
 
 %\include{Conclusions}
 
-\section{Appendix}
+%\section{Appendix}
 %\include{appendix}
 
 \bibliography{refs}% Produces the bibliography via BibTeX.

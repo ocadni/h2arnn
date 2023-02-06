@@ -1,6 +1,47 @@
+%\documentclass[aps,physrev,10pt,floatfix,reprint]{revtex4-2}
+\documentclass[preprint, 10pt]{revtex4-2}
+
+\usepackage{graphicx}% Include figure files
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+\usepackage{hyperref}% add hypertext capabilities
+\usepackage[mathlines]{lineno}% Enable numbering of text and display math
+%\linenumbers\relax % Commence numbering lines
+
+\usepackage[%Uncomment any one of the following lines to test 
+scale=0.7, marginratio={1:1, 2:3}, ignoreall,% default settings
+text={7in,10in},centering,
+%%margin=1.5in,
+%%total={6.5in,8.75in}, top=1.2in, left=0.9in, includefoot,
+%%height=10in,a5paper,hmargin={3cm,0.8in},
+]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amstext}
+\usepackage{graphicx}
+\usepackage{esint}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{amsfonts}
+\usepackage{nicefrac}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+%\geometry{verbose,lmargin=2cm,rmargin=2cm}
+
+\begin{document}
+
+\section*{Appendix}
+
 \subsection{AN-RR architecture of the Curie-Weiss model}
 
-The Curie-Weiss model (CW) is a uniform, fully-connected Ising model. The Hamiltonian of the Curie-Weiss model (CW) with $N$ spins, is $H\left(\mathbf{x}\right)=-h\sum_{i=1}^{N}x_{i}-\frac{J}{N}\sum_{i<j}x_{i}x_{j}$. Defining $M_{<i}[\mathbf{x}_{<i}]=\sum_{s=1}^{i-1}x_{s}$ and $M_{>i}=\sum_{l=i+1}^{N}x_{l}$, the conditional probability of a spin $i$, eq.\ref{eq:conditional_ghann}, of the CW model is:
+The Curie-Weiss model (CW) is a uniform, fully-connected Ising model. The Hamiltonian of the Curie-Weiss model (CW) with $N$ spins, is $H\left(\mathbf{x}\right)=-h\sum_{i=1}^{N}x_{i}-\frac{J}{N}\sum_{i<j}x_{i}x_{j}$. Defining $M_{<i}[\mathbf{x}_{<i}]=\sum_{s=1}^{i-1}x_{s}$ and $M_{>i}=\sum_{l=i+1}^{N}x_{l}$, the conditional probability of a spin $i$, see main text, of the CW model is:
 \begin{equation}
 %\begin{multline}
 P^{CW}\left(x_{i}=1|\mathbf{x}_{<i}\right) = 
@@ -20,16 +61,15 @@ where:
 Defining $h_i^{\pm}[\mathbf{x}_{<i}] =h\pm\frac{J}{N}+\frac{J}{N}M_{<i}[\mathbf{x}_{<i}]$, at given $\mathbf{x}_{<i}$, the eq. \ref{eq:rho_cw_0} is equivalent to the partition function of CW model, with $N-i$ spins and external fields $h_i^{\pm}$, as written in the main text. 
 The sums over the configurations of the spins $l$ can be carried on easily: 
 \begin{multline}
- \rho_i^{\pm}[\mathbf{x}_{<i}] = \sum_{x_{i+1}\dots x_{N}} e^{\beta h_i^{\pm}[\mathbf{x}_{<i}]M_{>i} +\frac{\beta J}{2N}M_{>i}^{2}} \\
-  = \sqrt{\frac{N}{2\pi \beta J}}\sum_{x_{i+1}\dots x_{N}}e^{\beta h_i^{\pm}[\mathbf{x}_{<i}] M_{>i}}\int e^{-\frac{N}{2J \beta}t^{2}+t M_{>i}} dt\\
-  = \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} \sum_{x_{i+1}\dots x_{N}}e^{(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t) M_{>i}}  \\
+ \rho_i^{\pm}[\mathbf{x}_{<i}] = \sum_{x_{i+1}\dots x_{N}} e^{\beta h_i^{\pm}[\mathbf{x}_{<i}]M_{>i} +\frac{\beta J}{2N}M_{>i}^{2}} = \sqrt{\frac{N}{2\pi \beta J}}\sum_{x_{i+1}\dots x_{N}}e^{\beta h_i^{\pm}[\mathbf{x}_{<i}] M_{>i}}\int e^{-\frac{N}{2J \beta}t^{2}+t M_{>i}} dt\\
+  = \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} \sum_{x_{i+1}\dots x_{N}}e^{(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t) M_{>i}}  
  =  \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} \left(e^{\beta h_i^{\pm}[\mathbf{x}_{<i}] + t} + e^{ (-\beta h_i^{\pm}[\mathbf{x}_{<i}] - t)} \right)^{N-i}  \\ 
  \label{eq:rho_last_exact}
  \end{multline} 
  where we used the Hubbard–Stratonovich (HS) transformation to obtain the second equality.\\
  First, in the following, we derive the exact feed-forward representation of eq.\ref{eq:conditional_cw} at finite $N$ number of variables, then in the limit to $N\rightarrow \infty$.\\
 
- \paragraph{Exact expression of the conditional probability of the CW model}
+ \subsubsection{Exact expression of the conditional probability of the CW model}
  The integral in the equation \ref{eq:rho_last_exact} can be computed the following way:
 
  \begin{eqnarray*}
@@ -40,27 +80,16 @@ The sums over the configurations of the spins $l$ can be carried on easily:
 &=& \sum_{k=0}^{N-i} \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\beta h \pm \frac{\beta J}{N}\right)} e^{\frac{\beta J}{N}\left(N-i-2k\right) \sum_s x_s} \\
 &=& \sum_{k=0}^{N-i} e^{a_{i,k}^{\pm} + b_{i,k}^{\pm} \sum_s x_s} 
 \end{eqnarray*}
-where we defined:
+where:
 \begin{eqnarray}
 \label{eq:params}
 e^{b_{i,k}^{\pm}} & = & \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\beta h \pm \frac{\beta J}{N}\right)}\\
-e^{\omega_{i,k}^{\pm}} & = & e^{\frac{\beta J}{N}\left(N-i-2k\right)}.
+e^{\omega_{i,k}^{\pm}} & = & e^{\frac{\beta J}{N}\left(N-i-2k\right)},
 \end{eqnarray}
-The final feed-forward architecture of the Curie-Weiss Autoregressive Neural Network (CuWANN) architecture is:
-\begin{multline}
-\label{eq:curie_weiss_cond}
-P^{CW}\left(x_{i}=+1|\mathbf{x}_{<i}\right)  =   \sigma \bigg[b_{i}+\omega_{i}\sum_{s=1}^{i-1}x_{s}\\
--\log\big(\sum_{k=0}^{N-i}e^{b_{i,k}^{+} + 
-w_{i,k}^{+}\sum_{s=1}^{i-1}x_{s}}\big)+\log\big(\sum_{k=0}^{N-i}e^{b_{i,k}^{-} + w_{i,k}^{-}\sum_{s=1}^{i-1}x_{s}}\big)\bigg].
-\end{multline}
-where $b_i=2\beta h$ and $\omega_i=\frac{2\beta J}{N}$, see fig.\ref{fig:curie_weiss}. Their parameters have an analytic dependence from the parameters $J$ and $h$ of the Hamiltonian of the systems. 
-%The set of parameters ($b_i, b_i^{k\pm}, \omega_i, \omega_i^{k\pm}$) can be consider as free parameters trained to minimize the KL divergence with the true probability distribution. 
-It is interesting to note the number of parameters of the CuWANN is $2+4(N-i)$; they decrease as $i$ increases. This result is, somehow, the opposite of what the neural network architecture usually should take care of, meaning increasing the number of input variables, the number of parameters should also increase to describe the complexity of the function. Still, it is compatible with what was derived for the general case, where the number of parameters needed for the $\rho^{\pm}$ decreases exponentially with the index $i$. The CuWANN depends only on the sum of the input variables.
-The total number of parameters of all conditional probability distribution scales as $2N^2+ O(N)$. 
+proving the equation shown in the main text.
 
-
-\paragraph{Thermodynamical limit of the conditional probability of the CW model}
-In the thermodynamical limit, the Curie-Weiss model admits an analytical solution. The order parameter of the system is the magnetization, $m_{\beta}=\frac{1}{N Z}\sum_{\mathbf{x}}\sum_i x_i e^{-\beta H}$ with $Z = \sum_{\mathbf{x}}\sum_i e^{-\beta H}$. At high temperatures, with zero external fields $h=0$, the magnetization, $m_{\beta}$, is zero up to a critical temperature $\beta_c=1$, where a phase transition occurs, and a non-zero magnetization is observed. Considering the following variables: $\rho_i = \frac{N-i}{N}$, $m_i = -\frac{N-i-2k}{N}$, and for simplicity, the $h=0$ case, we can rewrite the expression, eq.\ref{eq:rho_last_exact}, as:
+\subsubsection{Thermodynamical limit of the conditional probability of the CW model}
+In the thermodynamical limit, the Curie-Weiss model admits an analytical solution. The order parameter of the system is the magnetization, $m_{\beta}=\frac{1}{N Z}\sum_{\mathbf{x}}\sum_i x_i e^{-\beta H}$ with $Z = \sum_{\mathbf{x}} e^{-\beta H}$. At high temperatures, with zero external fields $h=0$, the magnetization, $m_{\beta}$, is zero up to a critical temperature $\beta_c=1$, where a phase transition occurs, and a non-zero magnetization is observed \cite{kadanoff2000statistical}. Considering the following variables: $\rho_i = \frac{N-i}{N}$, $m_i = -\frac{N-i-2k}{N}$, and for simplicity, the $h=0$ case, we can rewrite the expression, eq.\ref{eq:rho_last_exact}, as:
 \begin{widetext}
     \begin{align*}
     \rho_i^{\pm}[\mathbf{x}_{<i}] &= \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} 
@@ -85,47 +114,26 @@ Solving the above integral using the saddle point method is possible by computin
 \frac{m_i}{\rho_i} = \tanh \left( \beta(\frac{m_i}{\rho_i} - \frac{\sum_s x_s}{N-i}) \right)
 \label{eq:extrem_i}
 \end{equation}
-In the $N$ large limit, and for a typical sample, we assume that: $\frac{\sum_s x_s}{N-i} \approx |\tilde{m}_{\beta}| \text{sign}(\sum_s x_s)$, where the $m_{\beta}$ is the magnetization of the Curie-Weiss system at inverse temperature $\beta$ and $\text{sign(x)} = \frac{|x|}{x}$ is the sign function.
+In the $N$ large limit, and for a typical sample, we assume that: $\frac{\sum_s x_s}{N-i} \approx |\tilde{m}_{\beta}| \text{sgn}(\sum_s x_s)$, where the $m_{\beta}$ is the magnetization of the Curie-Weiss system at inverse temperature $\beta$ and $\text{sgn(x)} = \frac{|x|}{x}$ is the sign function.
 We can distinguish two cases when the magnetization of the system is zero or not. 
 In the first case, when $\beta\leq 1$, the solution of eq.\ref{eq:extrem_i} is zero as well, and $\log(\rho_i^{+}) - \log(\rho_i^{-})=0$ because the only term that makes the two quantities different, $\mp \beta J m_i$, vanish.\\ 
 When instead the system acquires a magnetization $m_{\beta}$ different from zero, the eq.\ref{eq:extrem_i} admit one maximum that depends on the two possible symmetric values of $\frac{\sum_s x_s}{N-i}\approx |\tilde{m}_{\beta}| \text{sign}(\sum_q x_q)$. 
-The solution of eq.\ref{eq:extrem_i}, $\pm \tilde{m}_{\text{extrem}}$ depends again on $\text{sign}(\sum_s x_s)$, and we can write the maximum solution as $\tilde{m}_{i}=|\tilde{m}_i| \text{sign}(\sum_s x_s)$. 
-Easily we obtain that $\log(\rho_i^{+}) - \log(\rho_i^{-}) = -2\beta J|\tilde{m}_i| \text{sign}(\sum_s x_s)$. 
-In the end, we can define the $\text{CuWANN}_{\infty}$ the following neural network architecture:
-\begin{eqnarray}\
-\label{eq:curie_weiss_cond2}
-Q^{\Theta}\left(x_{i}=+1|\mathbf{x}_{<i}\right) & = & \sigma \left(b^0+\omega_{i}^0\sum_{s=1}^{i-1}x_{s} + \omega_i^1 \text{sign}(\sum_{s=1}^{i-1}x_{s})\right).
-\end{eqnarray}
-where $b^0=2\beta h$, $\omega^0_i = \frac{2\beta J}{N}$ are the same, and so shared, among all the conditional probability functions. The $\omega^1_i = -2\beta J |\tilde{m}_i|$ is different for each of them, and it will be set as free parameter to be learned during the training. The total number of parameters of the $\text{CuWANN}_{\infty}$ is $N+2$.
+The solution of eq.\ref{eq:extrem_i}, $\pm \tilde{m}_{\text{extrem}}$ depends again on $\text{sign}(\sum_s x_s)$, and we can write the maximum solution as $\tilde{m}_{i}=|\tilde{m}_i| \text{sgn}(\sum_s x_s)$. 
+Easily we obtain that $\log(\rho_i^{+}) - \log(\rho_i^{-}) = -2\beta J|\tilde{m}_i| \text{sgn}(\sum_s x_s)$, demostrating the formula in the main text.
 
 \subsection{The SK model}
-The SK hamiltonian, with zero external fields for simplicity, is given by:
+In order to derive the architecture for the SK model based on the replica method, I'll start from the eq. presented in the main text:
 \begin{equation}
-H\left(\mathbf{x}\right)=-\sum_{i<j}J_{ij}x_{i}x_{j}
-\end{equation}
-where the set of $\underline{J}$ are i.i.d. random variable extracted from a Gaussian probability distribution $P(J)=\sqrt{\frac{N}{2\pi}}\exp\left(\frac{-NJ^2}{2} \right)$. \\
-To find a feed-forward representation of conditional probability of its Boltzmann distribution, we use the replica trick \cite{10.1142/0271}, usually, used together with the average over the system's disorder. In our case, we work with a single instance of the set of $Js$, but we assume that $N-i$ is large enough such that the following approximation hold for $\rho_i^{\pm}$ functions: 
-\[
-\log\rho_i^{\pm} \sim \mathbb{E}\left[  \log\rho_i^{\pm} \right] = \lim_{n\rightarrow 0} \frac{  \log(\mathbb{E}\left[(\rho_i^{\pm})^n \right])}{n}
-\]
-In the last equality, we use the replica trick. 
-For each specific conditional probability, the average over the disorder $\mathbb{E}$ is taken on the coupling variables $J_{ll'}$ with $l,l'>i$. Implicitly, we assume that the quantities $\log\rho_i^{\pm}$ are a self-averaged quantity on the $\mathbf{x}_{i>}$ variables.
- The replica computation can be carried on easily, finding:
-\begin{multline}
 \mathbb{E}_{\underline{J}}\left[(\rho_i^{\pm}[\mathbf{x}_{<i}])^n \right]  = \\
 \int \prod_{l<l'} dP_{J_{ll'}} \bigg\{ 
 \sum_{\{\underline{x}^{a}\}_{i+1}^N} \exp\bigg[\beta \bigg(
-\sum_{l,a}\bigg( \pm J_{il} + \sum_{s} J_{sl} x_s \bigg) x_l^{a} + \\
+\sum_{l,a}\bigg( \pm J_{il} + \sum_{s} J_{sl} x_s \bigg) x_l^{a} + 
 \sum_{l,l', a} J_{ll'} x_l^{a} x_{l'}^{a}
 \bigg)  \bigg] 
-\bigg\}\\
-\end{multline}
-where, the sums over $(l,l')$, $s$ and $a$ run respectively over $(i+1,N)$, $(1,i-1)$ and $(1,n)$, and $dP_{J_{ll'}}=P(J_{ll'})dJ_{ll'}$. Defining $h_l^{\pm}[\mathbf{x}_{<i}] =\pm J_{il} + \sum_{s=1}^{i-1} J_{sl} x_s$ as an external field we can observe that the baove quantity is the partition function a classical SK model with external fields $h_l^{\pm}[\mathbf{x}_{<i}]$, at fixed $\mathbf{x}_{<i}$
-
-capo
-and $J_{ll'}$ as coupling constants. \\  
-
-and carrying out the integrals over the disorder variables $\{P(J_{ll'})\}$ yields:
+\bigg\}
+\end{equation}
+where, the sums over $(l,l')$, $s$ and $a$ run respectively over $(i+1,N)$, $(1,i-1)$ and $(1,n)$, and $dP_{J_{ll'}}=P(J_{ll'})dJ_{ll'}$. Here we assumed that the number $N-i \gg 1$, and the average over the disorder $\mathbb{E}_{\underline{J}}$ is on the parameters $J_{l,l'}$ with $l,l'>i$. Defining $h_l^{\pm}[\mathbf{x}_{<i}] =\pm J_{il} + \sum_{s=1}^{i-1} J_{sl} x_s$ as an external field, we can observe that the above quantity is the partition function of the SK model on $\mathbf{x}_{i>}$ variables, with external fields $h_l^{\pm}[\mathbf{x}_{<i}]$, at fixed $\mathbf{x}_{<i}$, and $J_{ll'}$ as coupling constants. \\  
+Computing the integrals over the disorder variables $\{J_{ll'}\}$ yields:
 \begin{widetext}
 \begin{eqnarray}
 \mathbb{E}_{\underline{J}}\left[(\rho_i^{\pm}[\mathbf{x}_{<i}])^n \right] & = & 
@@ -159,17 +167,10 @@ h_l^{\pm}[\mathbf{x}_{<i}] \sum_{a} x_l^{a} +\beta \sum_{a<b} Q_{a,b}  x_l^{a} x
 \end{widetext}
 where we defined: 
 $$c(n,N,i) = e^{ \frac{(N-i) \beta^2}{4N}((N-i)n-n^2) } \left(\frac{2\pi \beta^2}{N}\right)^{\frac{n(n-1)}{2}}.$$ 
-The celebrated \cite{pippo2021} Parisi solutions of the SK model prescribe how to parametrize the matrix of the overlaps $Q$ \cite{10.1142/0271}. The following shows how to obtain neural network architectures based on the replica symmetric (RS) and k-step replica symmetric broken (k-RSB) solutions.
-
-\begin{figure}[]
-    \centering 
-    \includegraphics[width=0.5\textwidth]{img/SK_res.pdf}
-    \caption{Results}
-    \label{fig:SK}
-\end{figure}
-
+The Parisi solutions of the SK model prescribe how to parametrize the matrix of the overlaps $Q$ \cite{10.1142/0271}. The following shows how to obtain neural network architectures based on the replica symmetric (RS) and k-step replica symmetric broken (k-RSB) solutions.
 
 \subsubsection{Replica Symmetric solution (RS)}
+\label{sec:RS}
 We assume that the overlaps between the replicas are symmetric under permutations, and the matrix of the overlaps between replicas is parametrized with only one variable $q$:
 $$
 Q_{a,b}=\begin{cases}
@@ -257,7 +258,7 @@ c(N,i, q_0) -
 \end{eqnarray}
 \end{widetext}
 In the second line we use the saddle point methods to evaluate the integral over $q$, assuming that the single maximum value $q_0$ does not depend on the input values $\mathbf{x}_{<i}$ in the set of $h_l^{\pm}[\mathbf{x}_{<i}]$. It is a bold assumption to be verified {\it a posteriori} on the goodness of the neural network architectures performances. 
-In the third line, we use the identity $\log\cosh(x) = 2x - \log\sigma(2x)$ and the elements that are equals between $\log(\rho^+)$ and $\log(\rho^-)$ are simplified. We introduced the $\log\sigma$ non-linear operator for computational reason.
+In the third line, we use the identity $\log\cosh(x) = 2x - \log\sigma(2x)$ and the elements that are equals between $\log(\rho^+)$ and $\log(\rho^-)$ are simplified. We introduced the $\log\sigma$ non-linear operator for computational reasons.
 
 % We can, after some manipulations, obtain a more neural network friendly function:
 % \begin{eqnarray}
@@ -277,23 +278,22 @@ Now we consider the following approximation of the Gaussian convolution:
 \log \sigma \left(\beta \left(
 h +\beta \sqrt{q}z \right)\right) \sim b_0 + w_0*\log \sigma(b_1 + w_1 h), 
 \]
-where $(b_0, w_0, b_1,w_1)$ are free parameters to be determined. In Supporting Material (SI) a numerical analysis of the correctness of this approximation is shown.  
+where $(b_0, w_0, b_1,w_1)$ are free parameters to be determined. In the sec. of the Appendix a numerical analysis of the correctness of this approximation is shown. 
 Putting together all the pieces, we can parameterize the conditional probability as:
 \begin{multline}
 Q^{RS}\left(x_{i}=1|\mathbf{x}_{<i}\right) = \sigma\left( 
     x_i^1(\mathbf{x}_{<i}) +\log(\rho_i^+) - \log(\rho_i^-)
 \right) \\
  = \sigma \bigg( x_i^1(\mathbf{x}_{<i}) + \sum_{l^+=i+1}^{N}  w_0^{i,l^+} \log\sigma(b_1^{i,l^+} +
- w_1^{i,l^+} x_{i,l^+}^1(\mathbf{x}_{<i}))+ \\
+ w_1^{i,l^+} x_{i,l^+}^1(\mathbf{x}_{<i}))+ 
  + \sum_{l^-=i+1}^{N}  w_0^{i,l^-} \log\sigma(b_1^{i,l^-} + w_1^{i,l^-} x_{i,l^-}^1(\mathbf{x}_{<i})
  \bigg) 
 \end{multline}
-where the set of $(\mathbf{b},\mathbf{w})$ are free variational parameters to learn. 
+where the set of $(\mathbf{b},\mathbf{w})$ are free variational parameters to learn in the training process. 
 %The $\sum_l$ considers all the elements together of the plus and minus $\rho^{\pm}$ function. 
-\\DO the image of the nets.
-
 
 \subsubsection{K-step Replica symmetric breaking (k-RSB)}
+\label{sec:rsb}
 Assuming that the replica symmetry is broken, we can use the following ansatz called 1-step replica symmetric breaking (1RSB), where the overlaps between replicas are divided into $m$ blocks:
 \begin{eqnarray}
     Q_{a,b}=\begin{cases}
@@ -304,15 +304,14 @@ Assuming that the replica symmetry is broken, we can use the following ansatz ca
 With the above ansatz, we can compute the following quantities:
 \begin{align}
 \begin{split}
-    \sum_{ab} Q_{ab} x_{a} x_{b}  &  = \frac{1}{2} \bigg[ q_0 \left( \sum_{a}x_a\right)^2 +\\ 
-& (q_1-q_0) \sum_{\text{blocks}}  \left( \sum_{a \in \text{block}}x_a\right)^2   - nq_1\bigg] 
+    \sum_{ab} Q_{ab} x_{a} x_{b}  &  = \frac{1}{2} \bigg[ q_0 \left( \sum_{a}x_a\right)^2 +  (q_1-q_0) \sum_{\text{blocks}}  \left( \sum_{a \in \text{block}}x_a\right)^2   - nq_1\bigg] 
 \end{split}
 \\
 \sum_{ab} Q_{ab}^2 & =  n^2 q_0^2 + nm(q_1^2 - q_0^2) -n q_1^2.
 \end{align}
 The equation \ref{eq:before_ansaltz} becomes:
-\begin{widetext}
-\begin{align}
+%\begin{widetext}
+\begin{align*}
 & \mathbb{E}_{\underline{J}} \left[(\rho_i^{\pm, 1RSB})^n \right] =  \\[1ex]
 \begin{split}
 & = c(n,N,i) \int dq_1 dq_0 e^{\frac{N}{2}\beta^2 \left[n^2 q_0^2 + nm(q_1^2 - q_0^2) -n q_1^2 \right]} 
@@ -330,8 +329,8 @@ The equation \ref{eq:before_ansaltz} becomes:
 & = c'(n,N,i) + c(n,N,i) \int dq_1 dq_0 e^{\frac{N}{2}\beta\left[n^2 q_0^2 + nm(q_1^2 - q_0^2) -n q_1^2 -n q_1\right]} 
 \prod_{p} \int dP_{z_l}  \exp \bigg\{ \frac{n}{m} \log \bigg( \int dP_{y_{l}} \cosh^m\bigg(\beta \big[h_l^{\pm}+ \beta z_l + \beta y_{l}\bigl]  \bigg)  \bigg) \bigg\},
 \end{split}\\ 
-\end{align}
-\end{widetext}
+\end{align*}
+%\end{widetext}
 where we defined:
 \begin{align}
     dP_{z_l} & = \frac{dz_l}{\sqrt{2\pi q_0}}e^{\frac{z^2}{2q_0}}\\
@@ -356,25 +355,30 @@ The above integrals are rewritten as the following:
  = \\
 & \beta h_{l}^{\pm} + \int dP_{z_l} \log \biggl( \int dP_{y_{l}} e^{\beta^2 m y_{l} - m \log \sigma \left(\beta \left[h_l^{\pm}+ \beta z_l +\beta y_{l}\right]  \right) } \biggr) 
 \end{align}
-We have two nested gaussian convolutions. In order to make it easier to compute this non-linear operator, we will use a sequence of approximations similar to those used previously for RS case. %Recalling $h_l^{\pm}[\mathbf{x}_{<i}] =\pm J_{il} + \sum_{s} J_{sl} x_s$, we consider the approximation of the nested gaussian convolution:
+We have two nested gaussian convolutions.
+% In order to make it easier to compute this non-linear operator, we will use a sequence of approximations similar to those used previously for RS case. %Recalling $h_l^{\pm}[\mathbf{x}_{<i}] =\pm J_{il} + \sum_{s} J_{sl} x_s$, we consider the approximation of the nested gaussian convolution:
 %\begin{multline}
 %f(\mathbf{x}_{<i}) = \int \frac{dz_l}{\sqrt{2\pi q_0}}e^{\frac{z^2}{2q_0}} \log \bigg( \int \frac{dy_{l}}{\sqrt{2\pi (q_1-q_0)}}e^{\frac{y_{l}^2}{2 (q_i-q_0)}} \\
 % e^{ y_{l} - m \log \sigma \left(\beta \left[\pm J_{il} + \sum_{s} J_{sl} x_s + h + z_l + y_{l}\right]  \right) } \bigg) 
 %\end{multline}
 %Fixed the parameters of the model $(\{J_{pq}\}, h, \beta)$, this is a function that depends from three free parameters $(q_0, q_1, m)$. 
-The integrals concerning the variables $(z_l, y_l)$ are approximated in the same way as the approach used previously for RS case: The number of free parameters increases to have feed-forward functions without integrals. First, we consider the following maps:
-\begin{widetext}
+The integrals over the variables $(z_l, y_l)$ are approximated in the same way as the approach used previously for RS case: the number of free parameters increases to have feed-forward functions without integrals. First, we consider the following maps:
 \begin{align}
-        & \int dP_{z_l}  \log \int dP_{y_{l}} e^{ \beta^2 m y_{l} - m \log \sigma \left(\beta \left[h_l^{\pm}+ z_l + y_{l}\right]  \right) }  \approx\\
-        & \int dP_{z_l} \log \bigg( e^{\hat{b}_0^{l^{\pm}}}(1 + e^{\hat{b}_1^{l^{\pm}} + \hat{w}_1^{l^{\pm}} \log \sigma (\hat{b}_2^{l^{\pm}} + \hat{w}_2^{l^{\pm}} (h_l^{\pm}+ z_l)) }) \bigg) = \\
-        & \hat{b}_0^{l^{\pm}} + \hat{w}_0^{l^{\pm}} \int dP_{z_l} \log \sigma \bigg(\hat{b}_1^{l^{\pm}} + \hat{w}_1^{l^{\pm}} \log \sigma (\hat{b}_2^{l^{\pm}} + \hat{w}_2^{l^{\pm}} (h_l^{\pm}+ z_l)) \bigg) \approx \\
-        & b_0^{l^{\pm}} + w_0^{l^{\pm}} \log \sigma (b_1^{l^{\pm}} + w_1^{l^{\pm}} \log \sigma (b_2^{l^{\pm}} + w_2^{l^{\pm}} (h_l^{\pm}))),
+    & \log \int dP_{y_{l}} e^{ \beta^2 m y_{l} - m \log \sigma \left(\beta \left[h_l^{\pm}+\beta z_l +\beta y_{l}\right]  \right) }  \approx\\
+    & \log \bigg( \hat{b}_0^{l^{\pm}} + \hat{w}_0^{l^{\pm}} e^{\hat{b}_1^{l^{\pm}} + \hat{w}_1^{l^{\pm}} \log \sigma (\hat{b}_2^{l^{\pm}} + \hat{w}_2^{l^{\pm}} (h_l^{\pm}+ \beta  z_l))} \bigg) = \\
+    & \log(b_0^{l^{\pm}}) + \log(1 + e^{ \log( \frac{\hat{w}_0^{l^{\pm}}}{b_0^{l^{\pm}}} ) + \hat{b}_1^{l^{\pm}} + \hat{w}_1^{l^{\pm}} \log \sigma (\hat{b}_2^{l^{\pm}} + \hat{w}_2^{l^{\pm}} (h_l^{\pm}+ \beta  z_l))})=\\
+    & \log(\hat{b}_0^{l^{\pm}}) - \log\sigma( \log( \frac{\hat{w}_0^{l^{\pm}}}{b_0^{l^{\pm}}} ) + \hat{b}_1^{l^{\pm}} + \hat{w}_1^{l^{\pm}} \log \sigma (\hat{b}_2^{l^{\pm}} + \hat{w}_2^{l^{\pm}} (h_l^{\pm}+ \beta  z_l)))=\\
+    & b_0^{l^{\pm}} + w_0^{l^{\pm}} \log\sigma(b_1^{l^{\pm}} + w_1^{l^{\pm}} \log \sigma (b_2^{l^{\pm}} + w_2^{l^{\pm}} (h_l^{\pm}+ \beta  z_l)))
 %        \int dx e^{\frac{x^2}{a}} \log\sigma (a_1 + b_1 \log \sigma (a_2 + b_2 (h+x))) & \approx a_0 +b_0 \log \sigma (a'_1 + b'_1 \log \sigma (a'_2 + b'_2 (h))) 
 \end{align}
-\end{widetext}
-where the set of parameters $(\mathbf{b_0^{{\pm}}},\mathbf{w_0^{{\pm}}},\mathbf{b_1^{{\pm}}},\mathbf{w_1^{{\pm}}},\mathbf{b_2^{{\pm}}},\mathbf{w_2^{{\pm}}})$ are free parameters to be determined by the learning procedures. The gaussian convolution integrals are substituted by feed-forward non-linear operations, enlarging the space of parameters. For the 1RSB case, we use the following architecture:
-\begin{widetext}
-\begin{multline}
+Where in the last line I renamed the variational parameters, for instance, $ b_0^{l^{\pm}} = \log(\hat{b}_0^{l^{\pm}})$, $w_0^{l^{\pm}} =-1$, etc. Then once again:
+\begin{align}
+        & \hat{b}_0^{l^{\pm}} + \hat{w}_0^{l^{\pm}} \int dP_{z_l} \log \sigma \bigg(\hat{b}_1^{l^{\pm}} + \hat{w}_1^{l^{\pm}} \log \sigma (\hat{b}_2^{l^{\pm}} + \hat{w}_2^{l^{\pm}} (h_l^{\pm}+ \beta  z_l)) \bigg) \approx \\
+        & b_0^{l^{\pm}} + w_0^{l^{\pm}} \log \sigma (b_1^{l^{\pm}} + w_1^{l^{\pm}} \log \sigma (b_2^{l^{\pm}} + w_2^{l^{\pm}} (h_l^{\pm}))).
+%        \int dx e^{\frac{x^2}{a}} \log\sigma (a_1 + b_1 \log \sigma (a_2 + b_2 (h+x))) & \approx a_0 +b_0 \log \sigma (a'_1 + b'_1 \log \sigma (a'_2 + b'_2 (h))) 
+\end{align}
+The set of parameters $(\mathbf{b_0^{{\pm}}},\mathbf{w_0^{{\pm}}},\mathbf{b_1^{{\pm}}},\mathbf{w_1^{{\pm}}},\mathbf{b_2^{{\pm}}},\mathbf{w_2^{{\pm}}})$ are free parameters to be determined by the learning procedures. The gaussian convolution integrals are substituted by feed-forward non-linear operations, enlarging the space of parameters. In the section ... numerical evidence for the goodness of the above approximations is shown. For the 1RSB case, we use the following architecture:
+\begin{multline*}
     Q^{1RSB}\left(x_{i}=1|\mathbf{x}_{<i}\right) = \sigma\left( 
         x_i^1(\mathbf{x}_{<i}) +\log(\rho_i^+) - \log(\rho_i^-)
     \right) 
@@ -383,29 +387,45 @@ where the set of parameters $(\mathbf{b_0^{{\pm}}},\mathbf{w_0^{{\pm}}},\mathbf{
      w_2^{i,l^+}  x_{i,l^+}^1(\mathbf{x}_{<i})))+ \sum_{l^-=i+1}^{N}  w_0^{i,l^-} \log\sigma(b_1^{i,l^-} + w_1^{i,l^-} \log\sigma(b_2^{i,l^+} +
      w_2^{i,l^+} x_{i,l^-}^1(\mathbf{x}_{<i})))
      \bigg) 
-\end{multline}   
-\end{widetext}
-The generalization of the $\rho$ parametrization to the K-RSB case is straightforward. For instance for 2-RSB we have:
-\begin{multline}
+\end{multline*}   
+The generalization of the $\rho$ parametrization to the K-RSB case is straightforward. For instance, for 2-RSB we have:
+\begin{equation*}
     \log \rho^{\pm, 2RSB} \left(x_{i}=1|\mathbf{x}_{<i}\right)  =  
-   \sum_{l^{\pm}} w_0^{i,l^{\pm}} \log\sigma(b_1^{i,l^{\pm}} +\\
+   \sum_{l^{\pm}} w_0^{i,l^{\pm}} \log\sigma(b_1^{i,l^{\pm}} +
    w_1^{i,l^{\pm}} \log\sigma(b_2^{i,l^{\pm}} +
     w_2^{i,l^{\pm}}( \log\sigma(b_3^{i,l^{\pm}} +
     w_3^{i,l^{\pm}}x_{i,l^{\pm}}^1(\mathbf{x}_{<i})))))
-\end{multline}
+\end{equation*}
 
 
-\section{Numerical evidence of Gaussian convolution approximations}
-
-The case of replica:
-\[
- \int dt e^{-\frac{Nt^2}{2K}}\log\cosh(K*h+t) \approx \left(\sum_{t \in \text{Extrem}^+}  b_i^t + c_i^t\log\cosh(d_i^t+e_i^t h)\right)
-\label{eq:CW_gauss_approx2}
-\]
-
+\subsection{Numerical evidence of Gaussian convolution approximations}
+\label{sec:num_evidence}
+In this section, I show the numerical evidence of some of the approximations used to represent the non-linear operation derived for the SK model. In the RS case, see subsec.\ref{sec:RS}, the non-linear operation is approximated as in the following:
+\begin{equation}
+    \label{eq:rs_approx}
+    f(x) = \int \frac{dz}{\sqrt{2 \pi q_0}} e^{-\frac{z^2}{q_0}}
+\log \sigma \left(\beta \left(
+x +\beta \sqrt{q}z \right)\right) \sim b_0 + w_0*\log \sigma(b_1 + w_1 h). 
+\end{equation}
+The results in fig.\ref{fig:rs_approx} of the fit of the $f(x)$ with the l.h.s of the above expression, with free parameters $b_0, w_0, b_1, w_1$, are shown. The parameters are fitted for different values of $\beta$ and $q_0$, showing the robustness of the approximation used.  In the 1RSB case, see subsection \ref{sec:rsb}, one of the non-linear operations is approximated as in the following:
+\begin{equation}
+    f(x) = \log \int  \frac{dz}{\sqrt{2 \pi (q_1-q_0)}} e^{-\frac{z^2}{(q_1-q_0)}} e^{ \beta^2 m z - m \log \sigma \left(\beta x+\beta^2 z \right) }  \approx b_0  + w_0  \log\sigma(b_1  + w_1  \log \sigma (b_2  + w_2  x))
+    \label{eq:1rsb_approx}
+\end{equation}
+As before, the function $f(x)$ is fitted with the l.h.s of the above expression, and the results in fig.\ref{fig:1rsb_approx} show the robustness of the approximation used for different values of $(q_1-q_0)$, $m$, and $\beta$.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1\textwidth]{img/RFIM_fit.pdf}
-    \caption{Fit of eq.\ref{eq:CW_gauss_approx} at different values of $K=J\beta$. In the first row only one extreme is considered and two in the second row.}
-    \label{fig:gauss_approx}
+    \includegraphics[width=1\textwidth]{img/fit_rs.pdf}
+    \caption{Fit of eq.\ref{eq:rs_approx} at different values of $beta$ and $q_0$. The free parameters are $b_0, w_0, b_1, w_1$. The results show the robustness of the approximation used. }
+    \label{fig:rs_approx}
 \end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{img/fit_1rsb.pdf}
+    \caption{Fit of eq.\ref{eq:1rsb_approx} at different values of $beta$ $m$, and $q_1 - q_0$. The free parameters are $b_0, w_0, b_1, w_1, b_2, w_2$. The results show the robustness of the approximation used. }
+    \label{fig:1rsb_approx}
+\end{figure}
+
+\bibliography{refs}% Produces the bibliography via BibTeX.
+
+\end{document}
