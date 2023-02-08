@@ -61,29 +61,27 @@ On the other hand, techniques borrowed from statistical physics have been used t
 In last years, the introduction of deep generative autoregressive models \cite{pmlr-v37-germain15, NIPS2016_b1301141}, like transformers \cite{NIPS2017_3f5ee243}, has been a breakthrough in the field, generating images and text with a quality comparable to human-generated ones \cite{https://doi.org/10.48550/arxiv.2005.14165}. One of the main advantages of these models is that they can be trained in an unsupervised manner, and they can be used, thanks to ancestral sampling, to generate efficient new independent samples from a given probability distribution. 
 The introduction of deep AR-NN was motivated as a flexible and general approach to generating according to a probability distribution learned from data \cite{pmlr-v32-gregor14, pmlr-v15-larochelle11a, pmlr-v48-oord16}. In classical statistical physics, the AR-NN was introduced, in a variational setting, as an improvement over the standard variational approach thanks to the high expressiveness of the AR-NN architecture \cite{Wu2019}, and quickly similar approaches are used in different contexts and domains of classical \cite{10.1103/physreve.101.023304,PhysRevE.101.053312,PhysRevE.103.012103,PhysRevResearch.3.L042024,10.1038/s42256-021-00401-3} and quantum statistical physics \cite{10.1103/physrevlett.128.090501,PhysRevA.102.062413,PhysRevLett.124.020503,PhysRevResearch.2.023358, Liu_2021, Barrett2022}. The ability of the AR-NNs to efficiently generate samples, thanks to the ancestral sampling procedure, opened the way to overcome the slow down of Monte-Carlo methods for frustrated or complex systems, although recently some work questioned the real gain in very frustrated systems \cite{condmat7020038,https://doi.org/10.48550/arxiv.2210.11145}.
 %The main idea behind these models is to use a neural network to predict the next element in a sequence given all previous elements. 
-A large part of the application of the AR-NN in statistical physics problems apart from small modifications used architecture created for computer science problems, usually constructed for very different purposes. The main difference when we are working with statistical physics problems is that usually the model we want to approximate is known, and the main aim of this work is to show how this information can be used to shape better architecture for the problems under study, and using standard statistical physics computations to derive them. In the following, I'll derive AR-NN architecture of the classical Boltzmann distribution of a general pairwise interacting Hamiltonians of binary variables. Despite the generality of the hamiltonian several interesting properties comes out:
+A large part of the application of the AR-NN in statistical physics problems apart from small modifications used architecture created for computer science problems, usually constructed for very different purposes. The main difference when we are working with statistical physics problems is that usually the model we want to approximate is known, and the main aim of this work is to show how this information can be used to shape better architecture for the problems under study and using standard statistical physics computations to derive them. In the following, I'll derive the AR-NN architecture of the classical Boltzmann distribution of a general pairwise interacting Hamiltonians of binary variables. Despite the generality of the hamiltonian the architecture displays interesting properties:
 \begin{itemize}
     \item The first layer parameters of the network are directly related to the Hamiltonian parameters.
-    \item the appetence of residual connections and recurrent structures with a clear physical interpretation.
+    \item The emergence of residual connections and recurrent structures with a clear physical interpretation.
 \end{itemize}
 The resulting deep AR-NN architecture has the number of parameters of the second layer scaling exponentially with the system's size. 
-However, the physical clear picture of the architecture allows us to use standard statistical physics techniques to find new AR-NN architecture for specific statistical physics systems. To show the potentiality of the representation the AR-NN architecture for two very well-known mean-field models is derived.
+However, the physical clear picture of the architecture allows us to use standard statistical physics techniques to find new AR-NN architecture for specific statistical physics systems. To show the potentiality of the representation the AR-NN architectures for two very well-known mean-field models are derived: the Curie-Weiss model (CW) and the Sherrington-Kirkpatrick model (SK). These fully connected models are chosen due to their paradigmatic role in the history of statistical physics systems. The CW model, despite its straightforward hamiltonian, was one of the first models explaining the behavior of ferromagnet systems, displaying a second-order phase transition \cite{kadanoff2000statistical}. In this case, an exact AR-NN architecture both at finite N and in the thermodynamic limit is obtained with the number of parameters scaling polynomially with the system's size.
 
-In particular, neural network architectures for two exact solvable models: the Curie-Weiss model (CW) and the Sherrington-Kirkpatrick model (SK) will be derived. These fully connected models are chosen due to their paradigmatic role in the history of statistical physics systems. The CW model, despite its straightforward hamiltonian, was one of the first model explaining the behavior of ferromagnet systems, displaying a second-order phase transition \cite{kadanoff2000statistical}. In this case, an exact AR-NN architecture both at finite N and in the thermodynamic limit is obtained both having the number of parameters scaling polinomially with the system's size.
-
-The second is the Sherrington-Kirkpatrick (SK) model \cite{PhysRevLett.35.1792}, a spin glass Mean-Field model of disorder magnetic materials. Once again, despite its simple Hamiltonian, key concept and methods of the celebrated \cite{Nobel2021} replica symmetric breaking solution \cite{PARISI1979203, PhysRevLett.43.1754} of Parisi, has been applied to very different problems, like neural networks \cite{Gardner_1987, PhysRevLett.55.1530}, optimizations \cite{doi:10.1126/science.1073287}, inference problems \cite{doi:10.1080/00018732.2016.1211393}, or in characterizing the jamming of hard spheres \cite{RevModPhys.82.789, PhysRevLett.102.195701}. The complex many valley landscapes of the probability distribution captured by the replica symmetric breaking solution is the key concept that unifies the description of many different problems. In the following, I will derive an AR-NN architecture for the Boltzmann distribution of a single instance of disorder, with a finite number of variables, of the SK model. The derivation is based on the K-RSB solution, and intriguingly every step of the RSB solution corresponds to adding a linear layer and a non-linear operator, resulting in a deep AR-NN architecture with parameters scaling polinomially with the system size. 
+The SK model \cite{PhysRevLett.35.1792} is a spin glass Mean-Field model of disorder magnetic materials. Once again, despite its simple Hamiltonian, key concept and methods of the celebrated \cite{Nobel2021} replica symmetric breaking solution \cite{PARISI1979203, PhysRevLett.43.1754} of Parisi, has been applied to very different problems, like neural networks \cite{Gardner_1987, PhysRevLett.55.1530}, optimizations \cite{doi:10.1126/science.1073287}, inference problems \cite{doi:10.1080/00018732.2016.1211393}, or in characterizing the jamming of hard spheres \cite{RevModPhys.82.789, PhysRevLett.102.195701}. The complex many valley landscapes of the probability distribution captured by the replica symmetric breaking (RSB) solution is the key concept that unifies the description of many different problems. In the following, I will derive an AR-NN architecture for the Boltzmann distribution of the SK model for a single instance of disorder, with a finite number of variables. The derivation is based on the RSB solution, where a deep AR-NN architecture with parameters scaling polynomially with the system size is derived. \\
 Where?
 \cite{Carleo2018},
-similar approach for density estimation with energy function, where they arrive an approximated ARNN with pecularieties similar of my approach \cite{pmlr-v80-huang18d}.
+similar approach for density estimation with energy function, where they arrive an approximated ARNN with peculiarities similar to my approach \cite{pmlr-v80-huang18d}.
             
 \section{autoregressive Boltzmann distribution of pair-wise interacting Hamiltonian}
 
-The Boltzmann probability distribution of given a Hamiltonian $H[\mathbf{x}]$ of a set of $N$ binary variables $\mathbf{x}=\{x_1, x_2,...x_N\}$ at inverse temperature $\beta$ is $P(\mathbf{x}) = \nicefrac{e^{-\beta H\left(\mathbf{x}\right)}}{Z}$, where $Z=\sum_{\mathbf{x}}e^{-\beta H\left(\mathbf{x}\right)}$ is the usually normalization factor.
+The Boltzmann probability distribution of a given Hamiltonian $H[\mathbf{x}]$ of a set of $N$ binary variables $\mathbf{x}=\{x_1, x_2,...x_N\}$ at inverse temperature $\beta$ is $P(\mathbf{x}) = \nicefrac{e^{-\beta H\left(\mathbf{x}\right)}}{Z}$. The $Z=\sum_{\mathbf{x}}e^{-\beta H\left(\mathbf{x}\right)}$ is the usually normalization factor.
 It is generally challenging to compute marginals and average quantities when $N$ is large, and generate samples on frustrated systems. Defining the sets of variables $\mathbf{x}_{<i}=\left(x_{1},x_{2}\dots x_{i-1}\right)$ and $\mathbf{x}_{>i}=\left(x_{i+1},x_{i+2}\dots x_{N}\right)$ respectively with an index lower and larger than $i$, then if we can rewrite the Boltzmann distribution in the autoregressive form:
 $
-P\left(\mathbf{x}\right)=\prod_{i}P\left(x_{i}|\mathbf{x}_{<i}\right)
+P\left(\mathbf{x}\right)=\prod_{i}P\left(x_{i}|\mathbf{x}_{<i}\right),
 $
-then it would be straightforward to produce independent samples from it, thanks to the ancestral sampling procedure. It has been proposed to use a variational approach to approximate the Boltzmann distribution with trial autoregressive probability distributions where each conditional probability is represented by a feed-forward neural network with a set of parameters ${\theta}$,
+it would be straightforward to produce independent samples from it, thanks to the ancestral sampling procedure \cite{Wu2019}. It has been proposed \cite{Wu2019} to use a variational approach to approximate the Boltzmann distribution with trial autoregressive probability distributions where each conditional probability is represented by a feed-forward neural network with a set of parameters ${\theta}$,
 $
 Q^{\theta}\left(\mathbf{x}\right)=\prod_{i}Q^{\theta_i}\left(x_{i}|\mathbf{x}_{<i}\right)
 $.
@@ -121,7 +119,7 @@ where I defined: $f\left(x_{i}=\pm 1,\mathbf{x}_{<i}\right) = \sum_{x_{i+1}\dots
 Consider a generic two-body interaction Hamiltonian of binary spin variables $x_i \in \{-1,1\}$, $H = -\sum_{i<j} J_{ij} x_i x_j - \sum_{i} h_i x_i$, where $J_{ij}$ are the interaction couplings and $h_i$ are the external fields. Substituting it in eq.\ref{eq:sigma_log}, we obtain:
 \begin{figure}[!ht]
     %\centering 
-    \includegraphics[width=0.45\textwidth]{img/twoboghann.pdf}
+    \includegraphics[width=0.45\textwidth]{img/h2ARNN.pdf}
     \caption{Neural network Architectures of conditional probability}
     \label{fig:arch}
 \end{figure}
@@ -159,7 +157,7 @@ The parameters of the second layers are the $b_c^{\pm} = \beta\sum_{l=i+1}^N (\p
 As the last layer, the two $\rho^{\pm}$ and $x_i^1$ are combined with the right signs, and the sigma function is applied. The whole architecture of the Boltzmann distribution of general pairwise interacting Hamiltonian of an Autoregressive Neural Network ($\text{H}_2\text{ARNN}$) is depicted in fig.\ref{fig:arch}. The total number of parameters scales exponentially with the system size, making the sampling infeasible after a few spins.
 Nevertheless, the $\text{H}_2\text{ARNN}$ architecture shows some interesting futures:
 \begin{itemize}
-    \item The weights and biases of the first layers are the parameters of the Hamiltonian of the Boltzmann distribution.  As for the author known, it is the first time that a neural network architecture is proposed to represent the autoregressive Boltzmann probability distribution of a classical physical system where the weights and biases of the first layers are the parameters of the Hamiltonian. 
+    \item The weights and biases of the first layers are the parameters of the Hamiltonian of the Boltzmann distribution.  As far as the author knows, it is the first time that a neural network architecture is proposed to represent the autoregressive Boltzmann probability distribution of a classical physical system where the weights and biases of the first layers are the parameters of the Hamiltonian. 
     \item Residual connections among layers, due to the $x_i^1$ variables, naturally emerge from the derivation. 
     The importance of residual connections appeared recently \cite{10.48550/arxiv.1512.03385}, and became a key element in the success of the ResNet and transformer architectures \cite{vaswani2017attention}, in classification and generative tasks. They were presented as a way to improve the training of deep neural networks avoiding the exploding and vanishing gradient problem. In our context, they represent the direct interactions among the variable $x_i$ and all the previous variables $\mathbf{x}_{<i}$. 
 
@@ -178,7 +176,7 @@ The $\rho_i^{\pm}$ function can be interpreted as the partition function of a sy
 Starting from that observation, in the following, I show how to use standard tools of statistical physics to derive deep AR-NN architecture that solves the exponential growth.  \\
 
 \section{Models}
-\subsection{Curie-Weiss model}
+\subsection{The Curie-Weiss model}
 
 The Curie-Weiss model (CW) is a uniform, fully-connected Ising model. The Hamiltonian, with $N$ spins, is $H\left(\mathbf{x}\right)=-h\sum_{i=1}^{N}x_{i}-\frac{J}{N}\sum_{i<j}x_{i}x_{j}$. The conditional probability of a spin $i$, eq.\ref{eq:conditional_ghann}, of the CW model is:
 \begin{multline}
@@ -217,7 +215,7 @@ P^{CW}\left(x_{i}=+1|\mathbf{x}_{<i}\right)  =   \sigma \bigg[b_{0}+\omega_{0}\s
 -\log\big(\sum_{k=0}^{N-i}e^{b_{i,k}^{+} + 
 w_{i,k}^{+}\sum_{s=1}^{i-1}x_{s}}\big)+\log\big(\sum_{k=0}^{N-i}e^{b_{i,k}^{-} + w_{i,k}^{-}\sum_{s=1}^{i-1}x_{s}}\big)\bigg],
 \end{multline*}
-where $b^0=2\beta h$, $\omega^0_i = \frac{2\beta J}{N}$ are the same, and so shared, among all the conditional probability functions, see fig.\ref{fig:curie_weiss}. Their parameters have an analytic dependence from the parameters $J$ and $h$ of the Hamiltonian of the systems. 
+where $b^0=2\beta h$, $\omega^0_i = \frac{2\beta J}{N}$ are the same, and so shared, among all the conditional probability functions, see fig.\ref{fig:CW_arch }. Their parameters have an analytic dependence from the parameters $J$ and $h$ of the Hamiltonian of the systems. 
 %The set of parameters ($b_i, b_i^{k\pm}, \omega_i, \omega_i^{k\pm}$) can be consider as free parameters trained to minimize the KL divergence with the true probability distribution. 
 \begin{figure}[!h]
     \centering 
@@ -227,13 +225,13 @@ where $b^0=2\beta h$, $\omega^0_i = \frac{2\beta J}{N}$ are the same, and so sha
 \end{figure}
 
 It is interesting to note the number of parameters of the CW-ARNN is $2+4(N-i)$; they decrease as $i$ increases. This result is, somehow, the opposite of what the neural network architecture usually should take care of, meaning increasing the number of input variables, the number of parameters should also increase to describe the complexity of the function. Still, it is compatible with what was derived for the general case, where the number of parameters needed for the $\rho^{\pm}$ decreases, in that case exponentially, with the index $i$. The CW-ARNN depends only on the sum of the input variables.
-The total number of parameters of all conditional probability distribution scales as $2N^2+ O(N)$. \\
+The total number of parameters of whole conditional probability distribution scales as $2N^2+ O(N)$. \\
 If we consider the thermodynamical limit, $N \gg 1$, the architecture of the CW model, $\text{CW}_{\infty}$, simplify:
 \begin{equation*}
     %\label{eq:curie_weiss_cond2}
     P^{CW_{\infty}}\left(x_{i}=1|\mathbf{x}_{<i}\right) =  \sigma \left(b^0+\omega_{i}^0\sum_{s=1}^{i-1}x_{s} + \omega_i^1 \text{sgn}(\sum_{s=1}^{i-1}x_{s})\right).
 \end{equation*}
-where $b^0=2\beta h$, $\omega^0_i = \frac{2\beta J}{N}$ are the same, and so shared, among all the conditional probability functions. The $\omega^1_i = -2\beta J |m_i|$ is different for each of them, and it is the solution of the following equation:
+where $b^0=2\beta h$, $\omega^0_i = \frac{2\beta J}{N}$ are the same, and so shared, among all the conditional probability functions. The $\omega^1_i = -2\beta J |m_i|$ is different for each of them, and $m_i$ is the solution of the following equation:
 \begin{equation}
     \frac{m_i N}{N-1} = \tanh \left( \beta(\frac{m_i N}{N - i} - \frac{m_{\beta}N}{N-i}) \right)
     \label{eq:extrem_i}
@@ -241,18 +239,18 @@ where $b^0=2\beta h$, $\omega^0_i = \frac{2\beta J}{N}$ are the same, and so sha
 where $m_{\beta}$ is the average magnetization of the CW systems at inverse temperature $\beta$, see Appendix for details. In practice the set of $\omega^1_i$ are treated as variational parameters to be learned during the training. The total number of parameters of the $\text{CuWANN}_{\infty}$ scale as $N+2$.
     
 
-\subsection{The SK model}
+\subsection{The Sherrington-Kirkpatrick model}
 The SK hamiltonian, with zero external fields for simplicity, is given by:
 \begin{equation}
 H\left(\mathbf{x}\right)=-\sum_{i<j}J_{ij}x_{i}x_{j}
 \end{equation}
 where the set of $\underline{J}$ are i.i.d. random variable extracted from a Gaussian probability distribution $P(J)=\sqrt{\frac{N}{2\pi}}\exp\left(\frac{-NJ^2}{2} \right)$. \\
-To find a feed-forward representation of conditional probability of its Boltzmann distribution, we use the replica trick \cite{10.1142/0271} that, usually, it was used together with the average over the system's disorder. In our case, we work on a single instance of the set of $Js$, but I will assume that $N-i$ is large enough such that the following approximation hold for the $\rho_i^{\pm}$ functions: 
+To find a feed-forward representation of conditional probability of its Boltzmann distribution, we use the replica trick \cite{10.1142/0271} that, usually, is applied together with the average over the system's disorder. In our case, we work on a single instance of the set of $Js$, but I will assume that $N-i$ is large enough such that the following approximation hold for the $\rho_i^{\pm}$ functions: 
 \[
 \log\rho_i^{\pm} \sim \mathbb{E}\left[  \log\rho_i^{\pm} \right] = \lim_{n\rightarrow 0} \frac{  \log(\mathbb{E}\left[(\rho_i^{\pm})^n \right])}{n}
 \]
 In the last equality, we use the replica trick. 
-For each specific conditional probability, the average over the disorder $\mathbb{E}$ is taken on the coupling parameteters $J_{ll'}$ with $l,l'>i$. Implicitly, we assume that the quantities $\log\rho_i^{\pm}$ are a self-averaged quantity on the $\mathbf{x}_{i>}$ variables.
+For each specific conditional probability, the average over the disorder $\mathbb{E}$ is taken on the coupling parameters $J_{ll'}$ with $l,l'>i$. Implicitly, we assume that the quantities $\log\rho_i^{\pm}$ are a self-averaged quantity on the $\mathbf{x}_{i>}$ variables.
  The replica computation can be carried on easily, finding:
 \begin{multline}
 \mathbb{E}_{\underline{J}}\left[(\rho_i^{\pm}[\mathbf{x}_{<i}])^n \right]  = 
@@ -310,7 +308,7 @@ The final AR-NN architecture of the SK model $\text{SK-ARNN}$ is:
          \log(\rho_i^{-, \text{(RS/kRSB)}})
     \bigg)  
 \end{multline}
-Where in the RS and the first k-RSB architectures are:
+Where for RS and 1-RSB cases the architectures are:
 \begin{align*}
     \log \rho^{\pm, RS} & = \sum_{l^{\pm}=i+1}^{N}  w_0^{i,l^+} \log \sigma(b_1^{i,l^{\pm}} +
 w_1^{i,l^{\pm}} x_{i,l^{\pm}}^1(\mathbf{x}_{<i})) \\
@@ -320,7 +318,7 @@ w_1^{i,l^{\pm}} x_{i,l^{\pm}}^1(\mathbf{x}_{<i})) \\
     &  w_1^{i,l^{\pm}} \log\sigma(b_2^{i,l^{\pm}} +  w_2^{i,l^{\pm}}  x_{i,l^{\pm}}^1(\mathbf{x}_{<i}))) 
     \end{split}
 \end{align*}
-Where $x_{i,l^{\pm}}^1(\mathbf{x}_{<i})$ is the output of the first layer of the AR-NN, see eq. , and $(w_0^{i,l^{\pm}}, b_1^{i,l^{\pm}}, w_1^{i,l^{\pm}}, b_2^{i,l^{\pm}}, w_2^{i,l^{\pm}})$ are the free variational parameters of the AR-NN, see fig.
+Where $x_{i,l^{\pm}}^1(\mathbf{x}_{<i})$ is the output of the first layer of the AR-NN, see eq. , and $(w_0^{i,l^{\pm}}, b_1^{i,l^{\pm}}, w_1^{i,l^{\pm}}, b_2^{i,l^{\pm}}, w_2^{i,l^{\pm}})$ are the free variational parameters of the AR-NN, see fig.\ref{fig:SK_arch}. The number of parameters of a single conditional probability distribution scales as $2(k+1)(N-i)$ where $k$ is the level of the k-RSB solution used, assuming $k=0$ as the RS solution.
 
 \section{Results}
 
@@ -336,6 +334,13 @@ Where $x_{i,l^{\pm}}^1(\mathbf{x}_{<i})$ is the output of the first layer of the
     \includegraphics[width=0.5\textwidth]{img/SK_res.pdf}
     \caption{Results}
     \label{fig:SK}
+\end{figure}
+
+\begin{figure}[]
+    \centering 
+    \includegraphics[width=0.5\textwidth]{img/MC_img.pdf}
+    \caption{Results}
+    \label{fig:SK_MC}
 \end{figure}
 
 
