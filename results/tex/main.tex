@@ -172,8 +172,8 @@ Nevertheless, the $\text{H}_2\text{ARNN}$ architecture shows some interesting fu
 %The computational cost of the sum over all the configuration of spins $x_l$ grows exponentially with the system's size making it unfeasible, after a few spins, the explicit computations. The idea is to find feed-forward neural network architectures representing these functions with a polynomial number of free parameters. \\
 The number of parameters of the feed-forward neural network representations of the $\rho_i^{\pm}$ functions of the conditional probability of the variable $i$, eq.\ref{eq:rho_ghann}, scale exponentially with the system's size, proportionally to $2^{N-i}$. 
 The functions $\rho_i^{\pm}$ take into account the effect of the interactions among $\mathbf{x}_{<i}$ and $\mathbf{x}_{>i}$ on the variable $x_i$. 
-The $\rho_i^{\pm}$ function can be interpreted as the partition function of a system, where the variables are $\mathbf{x}_{>i}$ and external fields are determined by the values of the variables $x_{<i}$.
-Starting from that observation, in the following, I show how to use standard tools of statistical physics to derive deep AR-NN architecture that solves the exponential growth.  \\
+The $\rho_i^{\pm}$ function can be interpreted as the partition function of a system, where the variables are the $\mathbf{x}_{>i}$ and the external fields are determined by the values of the variables $x_{<i}$.
+Starting from that observation, in the following, I will show how to use standard tools of statistical physics to derive deep AR-NN architecture that solves the exponential growth.  \\
 
 \section{Models}
 \subsection{The Curie-Weiss model}
@@ -207,6 +207,7 @@ b_{i,k}^{\pm} & = \log\left(\binom{N-i}{k}\right) + \frac{\beta J}{2N}\left(N-i-
 & \qquad \left(N-i-2k\right)\left(\beta h \pm \frac{\beta J}{N}\right)
 \end{split} \\
 \omega_{i,k}^{\pm} & = \frac{\beta J}{N}\left(N-i-2k\right).
+\label{eq:CW_params}
 \end{align}
 The final feed-forward architecture of the Curie-Weiss Autoregressive Neural Network (CW-ARNN) architecture is:
 \begin{multline*}
@@ -324,25 +325,37 @@ Where $x_{i,l^{\pm}}^1(\mathbf{x}_{<i})$ is the output of the first layer of the
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.5\textwidth]{img/CW_res.pdf}
+    \includegraphics[width=0.45\textwidth]{img/CW_res.pdf}
     \caption{Results}
     \label{fig:curie_weiss}
 \end{figure}
 
+In this section, a comparison between neural netwrok architecure in learning to generate from the SK and CW models are shown. 
+The $CW$, $CW_{\infty}$ and $SK_{RS/k-RSB}$ architecture, are compared with: a single variable net, $1Par$, where for each conditional probability a sum operator is applied to the input variables and a single parameter multiply the results before the sigma function is applied, the total number of paramters scale as $N$, the same as defined in \cite{https://doi.org/10.48550/arxiv.2210.11145}. Then the Single Layer (SL) architecture, where a fully connected single linera layer parametrizes the whole probability distribution, appliyng a mask that preserves the autoregressive form. The width of the layer is $N$, and the total number of paramters scale like $N^2$. Finally I consider the MADE architecture \cite{pmlr-v37-germain15}, an extension to the deep neural network of the SL neural network. In this case, the whole probability distribution is represented with a deep sequence of fully connected layers, with non-linear activation functions and masks, to assure the autoregressive property, between each layer. The MADE$_{dw}$ used has $d$ number of hidden layers each of them with width $w$ times the number of input variable $N$. For instance, the SL architecture is equivalent to the MADE$_{11}$ and MADE$_{23}$ has two hidden fully-connected layers, each of them of width $3*N$. 
+The ARR-NN framework presented is a variational approach and in general, the variational free energy $F^{Q} =  \sum_{\mathbf{x}} Q^{\theta}(\mathbf{x})(\beta E(\mathbf{x}) + \log(Q^{\theta}(\mathbf{x}))) > F$ is an upper bound of the true one. In our case, the sum over all the configurations in the computation of the variational free energy is substituted by an estimation of the variational free energy with 20K number of configurations sampled from the autoregressive neural network.
+In the following, I utilized the same training procedure, unless conversely specified; starting from $\beta=0.1$ it reached $\beta=2.0$ with a step of $0.05$. The training was performed with a batch size of $2000$ samples and $1000$ epochs for each temperature, with a learning rate of $0.001$, the ADAM algorithm was used for the optimization steps. 
+The first layers $CW_{\infty}$ and $SK_{RS/k-RSB}$ are fixed by the hamiltonian parameters, and for the $CW$ all the parameters are fixed and pre-calculated, see eq.\ref{eq:CW_params}.\\
+The results on the CW model, with $J=1$ and $h=0$, are shown in fig.\ref{fig:curie_weiss}. 
+In the first row, plots A1, A2, and A3, show the relative error of the free energy, with respect to the exact one computed analytically, for different system sizes $N$. 
+The free energy computed from samples generate with CW architecture does not have an appreciable difference with the analytic solution, and the CW$_{\infty}$ improves as the system size increases. In fig.\ref{fig:curie_weiss}.B plots the scaling of the error for the architectures with fewer parameters, 1Par and CW$_{\infty}$ (both scaling linearly with the system's size and differing only by one parameter); It shows clearly that a deep architecture, in this case with only one more parameters, improves of orders of magnitude the accuracy. The need for deep architectures, already on a simple model as the CW, is indicated by the worst performance of the SL net, where despite the scaling of parameters as $N^2$, the performances are similar to the 1Par architecture. The MADE architecture obtains good results but was not close to the $CW$, even though having higher numbers of parameters. The plot in fig.\ref{fig:curie_weiss}(c) shows the distribution of the overlaps $q_{\mathbf{a}, \mathbf{b}}=\sum_{i} a_i b_i$ of the samples generated by the AR-NN architecture. The distribution is computed at $\beta=1.3$ for $N=200$. It can be seen as the worst performance of the 1-layer networks (1par, SL) is due to the difficulty of correctly representing the configurations with magnetization different than zero in the proximity of the phase transition. This could be due to some mode collapse problems \cite{https://doi.org/10.48550/arxiv.2210.11145}, which does not afflict the other deep AR-NN architectures tested.
+
 \begin{figure}[]
     \centering 
-    \includegraphics[width=0.5\textwidth]{img/SK_res.pdf}
+    \includegraphics[width=0.48\textwidth]{img/SK_res.pdf}
     \caption{Results}
     \label{fig:SK}
 \end{figure}
 
+In figure \ref{fig:SK}, the result of the SK model, with $J=1$ and $h=0$ are shown; as before in the first row there is the relative error in the estimation of the free energy at different system sizes. In this case, the exact solution, for a single instance of disorder and a finite $N$ is not known. In this case, I take the free energy estimation of the SK-ANN$_{2-RSB}$ as a reference and compute the relative difference from it. The free energy estimated of SK-ANN$_{k-RSB}$ with $k=1,2$ are very close to each other, confirming the fact that the difference in free energy is very small from the 1-RSB all the subsequent k-RSB solutions \cite{Parisi_1980}. The performance KS-ARNN$_{RS}$ net is the same as the SL architecture even with a much higher number of parameters. The MADE architecture tested, even with a similar number of parameters of the SK-ANN$_{k-RSB}$ net, estimate a smaller free energy, with the difference increasing with $N$. Observing the overlap distribution in the glassy phase of the sample generated by the architecture, fig.\ref{fig:SK}.D we can check as the distribution generated by the ANN$_{k-RSB}$ is higher in the region between the pick and zero overlaps,  testifying that these architectures better capture the complex landscape of probability distribution \cite{PhysRevLett.51.1206}.
+
 \begin{figure}[]
     \centering 
-    \includegraphics[width=0.5\textwidth]{img/MC_img.pdf}
+    \includegraphics[width=0.45\textwidth]{img/MC_img.pdf}
     \caption{Results}
     \label{fig:SK_MC}
 \end{figure}
 
+The last question that the present work aims to answer is: the architecture derived for SK can recover at least approximately the coupling of the hamiltonian of the systems given only samples extracted directly from an instance of disorder of the Boltzmann distribution of the SK model? 10K samples are generate with the Metropolis Monte Carlo algorithm and a SK-ARNN$_{1-RSB}$ is trained to minimize the log-likelihood computed on the sample. As shown in the derivations of the SK-ARNN$_{1-RSB}$ architecture the widths of the first sharing layer of the neural network should be the coupling parameters of the hamiltonian. In fig.\ref{fig:SK_MC} the weights of the first layers are plotted against the coupling hamiltonian finding a good correlation between them. This is also surprising considering its over-parametrization setting: the number of parameters $\sim 60$K of the neural network is much higher than the number of samples $10$K.
 
 
 %\include{Conclusions}
