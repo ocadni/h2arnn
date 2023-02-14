@@ -1,5 +1,5 @@
 %\documentclass[aps,physrev,10pt,floatfix,reprint]{revtex4-2}
-\documentclass[preprint, 10pt]{revtex4-2}
+\documentclass[10pt, notitlepage]{revtex4-2}
 
 \usepackage{graphicx}% Include figure files
 \usepackage{dcolumn}% Align table columns on decimal point
@@ -9,10 +9,10 @@
 %\linenumbers\relax % Commence numbering lines
 
 \usepackage[%Uncomment any one of the following lines to test 
-scale=0.7, marginratio={1:1, 2:3}, ignoreall,% default settings
-text={7in,10in},centering,
+%scale=0.7, marginratio={1:1, 2:3}, ignoreall,% default settings
+%text={7in,10in},centering,
 %%margin=1.5in,
-%%total={6.5in,8.75in}, top=1.2in, left=0.9in, includefoot,
+total={6.5in,8.75in}, top=1.2in, left=0.5in, right=0.5in, includefoot,
 %%height=10in,a5paper,hmargin={3cm,0.8in},
 ]{geometry}
 \usepackage[utf8]{inputenc}
@@ -35,13 +35,21 @@ text={7in,10in},centering,
     }
 %\geometry{verbose,lmargin=2cm,rmargin=2cm}
 
+%% TO WRITE: EXACT FREE ENERGY SOLUTION OF THE CW MODEL
+% MONTE CARLO SIMULATION SPEC
+% 
+
 \begin{document}
 
-\section*{Appendix}
+\title{Supplementary information of the: "Autoregressive neural network architecture of the Boltzmann distribution: the cases of pairwise interacting systems and two mean-field models."}
 
-\subsection{AN-RR architecture of the Curie-Weiss model}
+\author{Indaco Biazzo}
+\maketitle
+\tableofcontents
 
-The Curie-Weiss model (CW) is a uniform, fully-connected Ising model. The Hamiltonian of the Curie-Weiss model (CW) with $N$ spins, is $H\left(\mathbf{x}\right)=-h\sum_{i=1}^{N}x_{i}-\frac{J}{N}\sum_{i<j}x_{i}x_{j}$. Defining $M_{<i}[\mathbf{x}_{<i}]=\sum_{s=1}^{i-1}x_{s}$ and $M_{>i}=\sum_{l=i+1}^{N}x_{l}$, the conditional probability of a spin $i$, see main text, of the CW model is:
+\section{ANRR architecture of the Curie-Weiss model}
+
+The Curie-Weiss model (CW) is a uniform, fully-connected Ising model. The Hamiltonian of the Curie-Weiss model (CW) with $N$ spins, is $H\left(\mathbf{x}\right)=-h\sum_{i=1}^{N}x_{i}-\frac{J}{N}\sum_{i<j}x_{i}x_{j}$. Defining $M_{<i}[\mathbf{x}_{<i}]=\sum_{s=1}^{i-1}x_{s}$ and $M_{>i}=\sum_{l=i+1}^{N}x_{l}$, the conditional probability of a spin $i$, see eq.11 in the main text, of the CW model is:
 \begin{equation}
 %\begin{multline}
 P^{CW}\left(x_{i}=1|\mathbf{x}_{<i}\right) = 
@@ -90,14 +98,13 @@ proving the equation shown in the main text.
 
 \subsubsection{Thermodynamical limit of the conditional probability of the CW model}
 In the thermodynamical limit, the Curie-Weiss model admits an analytical solution. The order parameter of the system is the magnetization, $m_{\beta}=\frac{1}{N Z}\sum_{\mathbf{x}}\sum_i x_i e^{-\beta H}$ with $Z = \sum_{\mathbf{x}} e^{-\beta H}$. At high temperatures, with zero external fields $h=0$, the magnetization, $m_{\beta}$, is zero up to a critical temperature $\beta_c=1$, where a phase transition occurs, and a non-zero magnetization is observed \cite{kadanoff2000statistical}. Considering the following variables: $\rho_i = \frac{N-i}{N}$, $m_i = -\frac{N-i-2k}{N}$, and for simplicity, the $h=0$ case, we can rewrite the expression, eq.\ref{eq:rho_last_exact}, as:
-\begin{widetext}
-    \begin{align*}
+%\begin{widetext}
+\begin{align}
     \rho_i^{\pm}[\mathbf{x}_{<i}] &= \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} 
-    \sum_{k=0}^{N-i} \binom{N-i}{k} e^{(N-i-2k)*(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t)}\\
-    &= \sum_{k=0}^{N-i} \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\pm\frac{\beta J}{N}\right)} e^{\frac{\beta J}{N}\left(N-i-2k\right) \sum_s x_s} \\
+    \sum_{k=0}^{N-i} \binom{N-i}{k} e^{(N-i-2k)*(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t)}\\ \label{eq:rho_last_exact2} &= \sum_{k=0}^{N-i} \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\pm\frac{\beta J}{N}\right)} e^{\frac{\beta J}{N}\left(N-i-2k\right) \sum_s x_s}  \\
     &= \sum_{m_i=-\rho_i}^{\rho_i} \binom{N\rho_i}{\frac{N(m_i+\rho_i)}{2}} e^{\frac{N \beta J}{2}m_i^{2} \mp \beta J m_i } e^{N \rho_i \beta J \frac{\sum_s x_s}{N-i}}
-    \end{align*}    
-\end{widetext}
+\end{align}    
+%\end{widetext}
 
 In the limit $N \gg 1$, and using the Stirling approximation for the binomial factor, we obtain:
  \begin{align}
@@ -121,8 +128,18 @@ When instead the system acquires a magnetization $m_{\beta}$ different from zero
 The solution of eq.\ref{eq:extrem_i}, $\pm \tilde{m}_{\text{extrem}}$ depends again on $\text{sign}(\sum_s x_s)$, and we can write the maximum solution as $\tilde{m}_{i}=|\tilde{m}_i| \text{sgn}(\sum_s x_s)$. 
 Easily we obtain that $\log(\rho_i^{+}) - \log(\rho_i^{-}) = -2\beta J|\tilde{m}_i| \text{sgn}(\sum_s x_s)$, demostrating the formula in the main text.
 
-\subsection{The SK model}
-In order to derive the architecture for the SK model based on the replica method, I'll start from the eq. presented in the main text:
+\section{Analytic expression of the CW free energy at finite N}
+Free energy is defined as:
+\begin{equation}
+F = -\frac{1}{\beta} \log Z
+\end{equation}
+With similar computation that leads to the eq.\ref{eq:rho_last_exact2} we find:
+\begin{equation}
+F = -\frac{1}{\beta}\log \sum_{k=0}^{N} \binom{N}{k}e^{\frac{\beta J}{2}\left(N-2k\right)^{2}+\left(N-2k\right)h}  + \frac{J}{2}
+\end{equation}
+
+\section{ANRR architectures of The Sherrington-Kirkpatrick model}
+In order to derive the architecture for the SK model based on the replica method, I'll start from the eq.17 presented in the main text:
 \begin{equation}
 \mathbb{E}_{\underline{J}}\left[(\rho_i^{\pm}[\mathbf{x}_{<i}])^n \right]  = \\
 \int \prod_{l<l'} dP_{J_{ll'}} \bigg\{ 
@@ -169,7 +186,7 @@ where we defined:
 $$c(n,N,i) = e^{ \frac{(N-i) \beta^2}{4N}((N-i)n-n^2) } \left(\frac{2\pi \beta^2}{N}\right)^{\frac{n(n-1)}{2}}.$$ 
 The Parisi solutions of the SK model prescribe how to parametrize the matrix of the overlaps $Q$ \cite{10.1142/0271}. The following shows how to obtain neural network architectures based on the replica symmetric (RS) and k-step replica symmetric broken (k-RSB) solutions.
 
-\subsubsection{Replica Symmetric solution (RS)}
+\subsection{Replica Symmetric solution (RS)}
 \label{sec:RS}
 We assume that the overlaps between the replicas are symmetric under permutations, and the matrix of the overlaps between replicas is parametrized with only one variable $q$:
 $$
@@ -257,7 +274,7 @@ c(N,i, q_0) -
 2h_l^{\pm}[\mathbf{x}_{<i}] +2\beta z_l \right)\right)
 \end{eqnarray}
 \end{widetext}
-In the second line we use the saddle point methods to evaluate the integral over $q$, assuming that the single maximum value $q_0$ does not depend on the input values $\mathbf{x}_{<i}$ in the set of $h_l^{\pm}[\mathbf{x}_{<i}]$. It is a bold assumption to be verified {\it a posteriori} on the goodness of the neural network architectures performances. 
+In the second line, I use the saddle point methods to evaluate the integral over $q$, assuming that the single maximum value $q_0$ does not depend on the input values $\mathbf{x}_{<i}$ in the set of $h_l^{\pm}[\mathbf{x}_{<i}]$. It is a bold assumption to be verified {\it a posteriori} on the quality of the neural network architectures performances. 
 In the third line, we use the identity $\log\cosh(x) = 2x - \log\sigma(2x)$ and the elements that are equals between $\log(\rho^+)$ and $\log(\rho^-)$ are simplified. We introduced the $\log\sigma$ non-linear operator for computational reasons.
 
 % We can, after some manipulations, obtain a more neural network friendly function:
@@ -278,7 +295,7 @@ Now we consider the following approximation of the Gaussian convolution:
 \log \sigma \left(\beta \left(
 h +\beta \sqrt{q}z \right)\right) \sim b_0 + w_0*\log \sigma(b_1 + w_1 h), 
 \]
-where $(b_0, w_0, b_1,w_1)$ are free parameters to be determined. In the sec. of the Appendix a numerical analysis of the correctness of this approximation is shown. 
+where $(b_0, w_0, b_1,w_1)$ are free parameters to be determined. In the sec.\ref{sec:num_evidence} of the SI a numerical analysis of the quality of this approximation is shown. 
 Putting together all the pieces, we can parameterize the conditional probability as:
 \begin{multline}
 Q^{RS}\left(x_{i}=1|\mathbf{x}_{<i}\right) = \sigma\left( 
@@ -292,9 +309,9 @@ Q^{RS}\left(x_{i}=1|\mathbf{x}_{<i}\right) = \sigma\left(
 where the set of $(\mathbf{b},\mathbf{w})$ are free variational parameters to learn in the training process. 
 %The $\sum_l$ considers all the elements together of the plus and minus $\rho^{\pm}$ function. 
 
-\subsubsection{K-step Replica symmetric breaking (k-RSB)}
+\subsection{K-step Replica symmetric breaking (k-RSB)}
 \label{sec:rsb}
-Assuming that the replica symmetry is broken, we can use the following ansatz called 1-step replica symmetric breaking (1RSB), where the overlaps between replicas are divided into $m$ blocks:
+Assuming that the replica symmetry is broken, we can use the  ansatz called 1-step replica symmetric breaking (1RSB), where the overlaps between replicas are divided into $m$ blocks:
 \begin{eqnarray}
     Q_{a,b}=\begin{cases}
 			q_1, & \text{if } I(a/m)=I(b/m) \\
@@ -371,13 +388,13 @@ The integrals over the variables $(z_l, y_l)$ are approximated in the same way a
     & b_0^{l^{\pm}} + w_0^{l^{\pm}} \log\sigma(b_1^{l^{\pm}} + w_1^{l^{\pm}} \log \sigma (b_2^{l^{\pm}} + w_2^{l^{\pm}} (h_l^{\pm}+ \beta  z_l)))
 %        \int dx e^{\frac{x^2}{a}} \log\sigma (a_1 + b_1 \log \sigma (a_2 + b_2 (h+x))) & \approx a_0 +b_0 \log \sigma (a'_1 + b'_1 \log \sigma (a'_2 + b'_2 (h))) 
 \end{align}
-Where in the last line I renamed the variational parameters, for instance, $ b_0^{l^{\pm}} = \log(\hat{b}_0^{l^{\pm}})$, $w_0^{l^{\pm}} =-1$, etc. Then once again:
+Where in the last equation I renamed the variational parameters, for instance, $ b_0^{l^{\pm}} = \log(\hat{b}_0^{l^{\pm}})$, $w_0^{l^{\pm}} =-1$, etc. Then once again:
 \begin{align}
         & \hat{b}_0^{l^{\pm}} + \hat{w}_0^{l^{\pm}} \int dP_{z_l} \log \sigma \bigg(\hat{b}_1^{l^{\pm}} + \hat{w}_1^{l^{\pm}} \log \sigma (\hat{b}_2^{l^{\pm}} + \hat{w}_2^{l^{\pm}} (h_l^{\pm}+ \beta  z_l)) \bigg) \approx \\
         & b_0^{l^{\pm}} + w_0^{l^{\pm}} \log \sigma (b_1^{l^{\pm}} + w_1^{l^{\pm}} \log \sigma (b_2^{l^{\pm}} + w_2^{l^{\pm}} (h_l^{\pm}))).
 %        \int dx e^{\frac{x^2}{a}} \log\sigma (a_1 + b_1 \log \sigma (a_2 + b_2 (h+x))) & \approx a_0 +b_0 \log \sigma (a'_1 + b'_1 \log \sigma (a'_2 + b'_2 (h))) 
 \end{align}
-The set of parameters $(\mathbf{b_0^{{\pm}}},\mathbf{w_0^{{\pm}}},\mathbf{b_1^{{\pm}}},\mathbf{w_1^{{\pm}}},\mathbf{b_2^{{\pm}}},\mathbf{w_2^{{\pm}}})$ are free parameters to be determined by the learning procedures. The gaussian convolution integrals are substituted by feed-forward non-linear operations, enlarging the space of parameters. In the section ... numerical evidence for the goodness of the above approximations is shown. For the 1RSB case, we use the following architecture:
+The set of parameters $(\mathbf{b_0^{{\pm}}},\mathbf{w_0^{{\pm}}},\mathbf{b_1^{{\pm}}},\mathbf{w_1^{{\pm}}},\mathbf{b_2^{{\pm}}},\mathbf{w_2^{{\pm}}})$ are free parameters to be determined by the learning procedures. The gaussian convolution integrals are substituted by feed-forward non-linear operations, enlarging the space of parameters. In the section \ref{sec:num_evidence} numerical evidence for the goodness of the above approximations is shown. For the 1RSB case, we use the following architecture:
 \begin{multline*}
     Q^{1RSB}\left(x_{i}=1|\mathbf{x}_{<i}\right) = \sigma\left( 
         x_i^1(\mathbf{x}_{<i}) +\log(\rho_i^+) - \log(\rho_i^-)
@@ -388,7 +405,7 @@ The set of parameters $(\mathbf{b_0^{{\pm}}},\mathbf{w_0^{{\pm}}},\mathbf{b_1^{{
      w_2^{i,l^+} x_{i,l^-}^1(\mathbf{x}_{<i})))
      \bigg) 
 \end{multline*}   
-The generalization of the $\rho$ parametrization to the K-RSB case is straightforward. For instance, for 2-RSB we have:
+The generalization of the $\rho^{\pm}$ parametrization to the k-RSB case is straightforward. For instance, for 2-RSB we have:
 \begin{equation*}
     \log \rho^{\pm, 2RSB} \left(x_{i}=1|\mathbf{x}_{<i}\right)  =  
    \sum_{l^{\pm}} w_0^{i,l^{\pm}} \log\sigma(b_1^{i,l^{\pm}} +
@@ -426,6 +443,12 @@ As before, the function $f(x)$ is fitted with the l.h.s of the above expression,
     \label{fig:1rsb_approx}
 \end{figure}
 
+
+\section{Monte Carlo sampling of the SK model}
+In the main text, in the section results, in order to check the correlation between the weights of the first layer of the SK$_{1RSB}$ architecture with the coupling of the hamiltonian we generated 10,000 samples through the Monte-Carlo Metropolis algorithm \cite{doi:10.1063/1.1887186}. The samples are generated for a system with $N=200$ variables at $\beta=2$. Each configuration is sampled after $200*N$ spin trail flip, the values where the time correlation between configuration drop below 0.5. The training of the SK$_{1RSB}$ was done minimizing, over the parameters of the SK$_{1RSB}$, the average of the negative log-likelihood (LL) of the generated $m$ samples:
+\begin{equation}
+    LL = - \frac{1}{m} \sum_{m}\log(Q_{1RSB})
+\end{equation}  
 \bibliography{refs}% Produces the bibliography via BibTeX.
 
 \end{document}
