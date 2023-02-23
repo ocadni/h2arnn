@@ -1,0 +1,8 @@
+*.ipynb_checkpoints*
+*DS_Store*
+*old_stuff*
+*__pycache__*
+*.gzip
+*.zip
+*.pt
+*.out

@@ -1,0 +1,815 @@
+%apsrev4-2.bst 2019-01-14 (MD) hand-edited version of apsrev4-1.bst
+%Control: key (0)
+%Control: author (8) initials jnrlst
+%Control: editor formatted (1) identically to author
+%Control: production of article title (0) allowed
+%Control: page (0) single
+%Control: year (1) truncated
+%Control: production of eprint (0) enabled
+\begin{thebibliography}{54}%
+\makeatletter
+\providecommand \@ifxundefined [1]{%
+ \@ifx{#1\undefined}
+}%
+\providecommand \@ifnum [1]{%
+ \ifnum #1\expandafter \@firstoftwo
+ \else \expandafter \@secondoftwo
+ \fi
+}%
+\providecommand \@ifx [1]{%
+ \ifx #1\expandafter \@firstoftwo
+ \else \expandafter \@secondoftwo
+ \fi
+}%
+\providecommand \natexlab [1]{#1}%
+\providecommand \enquote  [1]{``#1''}%
+\providecommand \bibnamefont  [1]{#1}%
+\providecommand \bibfnamefont [1]{#1}%
+\providecommand \citenamefont [1]{#1}%
+\providecommand \href@noop [0]{\@secondoftwo}%
+\providecommand \href [0]{\begingroup \@sanitize@url \@href}%
+\providecommand \@href[1]{\@@startlink{#1}\@@href}%
+\providecommand \@@href[1]{\endgroup#1\@@endlink}%
+\providecommand \@sanitize@url [0]{\catcode `\\12\catcode `\$12\catcode
+  `\&12\catcode `\#12\catcode `\^12\catcode `\_12\catcode `\%12\relax}%
+\providecommand \@@startlink[1]{}%
+\providecommand \@@endlink[0]{}%
+\providecommand \url  [0]{\begingroup\@sanitize@url \@url }%
+\providecommand \@url [1]{\endgroup\@href {#1}{\urlprefix }}%
+\providecommand \urlprefix  [0]{URL }%
+\providecommand \Eprint [0]{\href }%
+\providecommand \doibase [0]{https://doi.org/}%
+\providecommand \selectlanguage [0]{\@gobble}%
+\providecommand \bibinfo  [0]{\@secondoftwo}%
+\providecommand \bibfield  [0]{\@secondoftwo}%
+\providecommand \translation [1]{[#1]}%
+\providecommand \BibitemOpen [0]{}%
+\providecommand \bibitemStop [0]{}%
+\providecommand \bibitemNoStop [0]{.\EOS\space}%
+\providecommand \EOS [0]{\spacefactor3000\relax}%
+\providecommand \BibitemShut  [1]{\csname bibitem#1\endcsname}%
+\let\auto@bib@innerbib\@empty
+%</preamble>
+\bibitem [{\citenamefont {Hopfield}(1982)}]{doi:10.1073/pnas.79.8.2554}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.~J.}\ \bibnamefont
+  {Hopfield}},\ }\bibfield  {title} {\bibinfo {title} {Neural networks and
+  physical systems with emergent collective computational abilities.},\ }\href
+  {https://doi.org/10.1073/pnas.79.8.2554} {\bibfield  {journal} {\bibinfo
+  {journal} {Proceedings of the National Academy of Sciences}\ }\textbf
+  {\bibinfo {volume} {79}},\ \bibinfo {pages} {2554} (\bibinfo {year}
+  {1982})},\ \Eprint
+  {https://arxiv.org/abs/https://www.pnas.org/doi/pdf/10.1073/pnas.79.8.2554}
+  {https://www.pnas.org/doi/pdf/10.1073/pnas.79.8.2554} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Amit}\ \emph
+  {et~al.}(1985{\natexlab{a}})\citenamefont {Amit}, \citenamefont {Gutfreund},\
+  and\ \citenamefont {Sompolinsky}}]{PhysRevA.32.1007}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.~J.}\ \bibnamefont
+  {Amit}}, \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont {Gutfreund}},\
+  and\ \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont {Sompolinsky}},\
+  }\bibfield  {title} {\bibinfo {title} {Spin-glass models of neural
+  networks},\ }\href {https://doi.org/10.1103/PhysRevA.32.1007} {\bibfield
+  {journal} {\bibinfo  {journal} {Phys. Rev. A}\ }\textbf {\bibinfo {volume}
+  {32}},\ \bibinfo {pages} {1007} (\bibinfo {year}
+  {1985}{\natexlab{a}})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {LeCun}\ \emph {et~al.}(2015)\citenamefont {LeCun},
+  \citenamefont {Bengio},\ and\ \citenamefont
+  {Hinton}}]{bengioNatureDeepLearning2015}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont
+  {LeCun}}, \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Bengio}},\ and\
+  \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Hinton}},\ }\bibfield
+  {title} {\bibinfo {title} {Deep learning},\ }\href
+  {https://doi.org/10.1038/nature14539} {\bibfield  {journal} {\bibinfo
+  {journal} {Nature}\ }\textbf {\bibinfo {volume} {521}},\ \bibinfo {pages}
+  {436} (\bibinfo {year} {2015})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Carleo}\ \emph {et~al.}(2019)\citenamefont {Carleo},
+  \citenamefont {Cirac}, \citenamefont {Cranmer}, \citenamefont {Daudet},
+  \citenamefont {Schuld}, \citenamefont {Tishby}, \citenamefont
+  {Vogt-Maranto},\ and\ \citenamefont {Zdeborov\'a}}]{RevModPhys.91.045002}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Carleo}}, \bibinfo {author} {\bibfnamefont {I.}~\bibnamefont {Cirac}},
+  \bibinfo {author} {\bibfnamefont {K.}~\bibnamefont {Cranmer}}, \bibinfo
+  {author} {\bibfnamefont {L.}~\bibnamefont {Daudet}}, \bibinfo {author}
+  {\bibfnamefont {M.}~\bibnamefont {Schuld}}, \bibinfo {author} {\bibfnamefont
+  {N.}~\bibnamefont {Tishby}}, \bibinfo {author} {\bibfnamefont
+  {L.}~\bibnamefont {Vogt-Maranto}},\ and\ \bibinfo {author} {\bibfnamefont
+  {L.}~\bibnamefont {Zdeborov\'a}},\ }\bibfield  {title} {\bibinfo {title}
+  {Machine learning and the physical sciences},\ }\href
+  {https://doi.org/10.1103/RevModPhys.91.045002} {\bibfield  {journal}
+  {\bibinfo  {journal} {Rev. Mod. Phys.}\ }\textbf {\bibinfo {volume} {91}},\
+  \bibinfo {pages} {045002} (\bibinfo {year} {2019})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Carleo}\ and\ \citenamefont
+  {Troyer}(2017)}]{doi:10.1126/science.aag2302}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Carleo}}\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Troyer}},\ }\bibfield  {title} {\bibinfo {title} {Solving the quantum
+  many-body problem with artificial neural networks},\ }\href
+  {https://doi.org/10.1126/science.aag2302} {\bibfield  {journal} {\bibinfo
+  {journal} {Science}\ }\textbf {\bibinfo {volume} {355}},\ \bibinfo {pages}
+  {602} (\bibinfo {year} {2017})},\ \Eprint
+  {https://arxiv.org/abs/https://www.science.org/doi/pdf/10.1126/science.aag2302}
+  {https://www.science.org/doi/pdf/10.1126/science.aag2302} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {van Nieuwenburg}\ \emph {et~al.}(2017)\citenamefont
+  {van Nieuwenburg}, \citenamefont {Liu},\ and\ \citenamefont
+  {Huber}}]{Nieuwenburg2017}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.~P.~L.}\
+  \bibnamefont {van Nieuwenburg}}, \bibinfo {author} {\bibfnamefont {Y.-H.}\
+  \bibnamefont {Liu}},\ and\ \bibinfo {author} {\bibfnamefont {S.~D.}\
+  \bibnamefont {Huber}},\ }\bibfield  {title} {\bibinfo {title} {Learning phase
+  transitions by confusion},\ }\href {https://doi.org/10.1038/nphys4037}
+  {\bibfield  {journal} {\bibinfo  {journal} {Nature Physics}\ }\textbf
+  {\bibinfo {volume} {13}},\ \bibinfo {pages} {435} (\bibinfo {year}
+  {2017})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Carrasquilla}\ and\ \citenamefont
+  {Melko}(2017)}]{Carrasquilla2017}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Carrasquilla}}\ and\ \bibinfo {author} {\bibfnamefont {R.~G.}\ \bibnamefont
+  {Melko}},\ }\bibfield  {title} {\bibinfo {title} {Machine learning phases of
+  matter},\ }\href {https://doi.org/10.1038/nphys4035} {\bibfield  {journal}
+  {\bibinfo  {journal} {Nature Physics}\ }\textbf {\bibinfo {volume} {13}},\
+  \bibinfo {pages} {431} (\bibinfo {year} {2017})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Wu}\ \emph {et~al.}(2019)\citenamefont {Wu},
+  \citenamefont {Wang},\ and\ \citenamefont {Zhang}}]{Wu2019}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Wu}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Wang}},\ and\
+  \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Zhang}},\ }\bibfield
+  {title} {\bibinfo {title} {{Solving Statistical Mechanics Using Variational
+  Autoregressive Networks}},\ }\href
+  {https://doi.org/10.1103/physrevlett.122.080602} {\bibfield  {journal}
+  {\bibinfo  {journal} {Physical Review Letters}\ }\textbf {\bibinfo {volume}
+  {122}},\ \bibinfo {pages} {1} (\bibinfo {year} {2019})},\ \Eprint
+  {https://arxiv.org/abs/1809.10606} {1809.10606} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {No{\'e}}\ \emph {et~al.}(2019)\citenamefont
+  {No{\'e}}, \citenamefont {Olsson}, \citenamefont {K{\"o}hler},\ and\
+  \citenamefont {Wu}}]{noe2019boltzmann}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
+  {No{\'e}}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Olsson}},
+  \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {K{\"o}hler}},\ and\
+  \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont {Wu}},\ }\bibfield
+  {title} {\bibinfo {title} {Boltzmann generators: Sampling equilibrium states
+  of many-body systems with deep learning},\ }\href@noop {} {\bibfield
+  {journal} {\bibinfo  {journal} {Science}\ }\textbf {\bibinfo {volume}
+  {365}},\ \bibinfo {pages} {eaaw1147} (\bibinfo {year} {2019})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Jumper}\ \emph {et~al.}(2021)\citenamefont {Jumper},
+  \citenamefont {Evans}, \citenamefont {Pritzel}, \citenamefont {Green},
+  \citenamefont {Figurnov}, \citenamefont {Ronneberger}, \citenamefont
+  {Tunyasuvunakool}, \citenamefont {Bates}, \citenamefont {{\v{Z}}{\'\i}dek},
+  \citenamefont {Potapenko} \emph {et~al.}}]{jumper2021highly}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Jumper}}, \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {Evans}},
+  \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Pritzel}}, \bibinfo
+  {author} {\bibfnamefont {T.}~\bibnamefont {Green}}, \bibinfo {author}
+  {\bibfnamefont {M.}~\bibnamefont {Figurnov}}, \bibinfo {author}
+  {\bibfnamefont {O.}~\bibnamefont {Ronneberger}}, \bibinfo {author}
+  {\bibfnamefont {K.}~\bibnamefont {Tunyasuvunakool}}, \bibinfo {author}
+  {\bibfnamefont {R.}~\bibnamefont {Bates}}, \bibinfo {author} {\bibfnamefont
+  {A.}~\bibnamefont {{\v{Z}}{\'\i}dek}}, \bibinfo {author} {\bibfnamefont
+  {A.}~\bibnamefont {Potapenko}}, \emph {et~al.},\ }\bibfield  {title}
+  {\bibinfo {title} {Highly accurate protein structure prediction with
+  alphafold},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal}
+  {Nature}\ }\textbf {\bibinfo {volume} {596}},\ \bibinfo {pages} {583}
+  (\bibinfo {year} {2021})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Zdeborová}\ and\ \citenamefont
+  {Krzakala}(2016)}]{doi:10.1080/00018732.2016.1211393}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {L.}~\bibnamefont
+  {Zdeborová}}\ and\ \bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
+  {Krzakala}},\ }\bibfield  {title} {\bibinfo {title} {Statistical physics of
+  inference: thresholds and algorithms},\ }\href
+  {https://doi.org/10.1080/00018732.2016.1211393} {\bibfield  {journal}
+  {\bibinfo  {journal} {Advances in Physics}\ }\textbf {\bibinfo {volume}
+  {65}},\ \bibinfo {pages} {453} (\bibinfo {year} {2016})},\ \Eprint
+  {https://arxiv.org/abs/https://doi.org/10.1080/00018732.2016.1211393}
+  {https://doi.org/10.1080/00018732.2016.1211393} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Nguyen}\ \emph {et~al.}(2017)\citenamefont {Nguyen},
+  \citenamefont {Zecchina},\ and\ \citenamefont {Berg}}]{Nguyen2017}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.~C.}\ \bibnamefont
+  {Nguyen}}, \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {Zecchina}},\
+  and\ \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Berg}},\ }\bibfield
+  {title} {\bibinfo {title} {Inverse statistical problems: from the inverse
+  ising problem to data science},\ }\bibfield  {booktitle} {\emph {\bibinfo
+  {booktitle} {Advances in Physics}},\ }\href
+  {https://doi.org/10.1080/00018732.2017.1341604} {\bibfield  {journal}
+  {\bibinfo  {journal} {Advances in Physics}\ }\textbf {\bibinfo {volume}
+  {66}},\ \bibinfo {pages} {197} (\bibinfo {year} {2017})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Chaudhari}\ \emph {et~al.}(2019)\citenamefont
+  {Chaudhari}, \citenamefont {Choromanska}, \citenamefont {Soatto},
+  \citenamefont {LeCun}, \citenamefont {Baldassi}, \citenamefont {Borgs},
+  \citenamefont {Chayes}, \citenamefont {Sagun},\ and\ \citenamefont
+  {Zecchina}}]{Chaudhari_2019}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Chaudhari}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Choromanska}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Soatto}},
+  \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {LeCun}}, \bibinfo
+  {author} {\bibfnamefont {C.}~\bibnamefont {Baldassi}}, \bibinfo {author}
+  {\bibfnamefont {C.}~\bibnamefont {Borgs}}, \bibinfo {author} {\bibfnamefont
+  {J.}~\bibnamefont {Chayes}}, \bibinfo {author} {\bibfnamefont
+  {L.}~\bibnamefont {Sagun}},\ and\ \bibinfo {author} {\bibfnamefont
+  {R.}~\bibnamefont {Zecchina}},\ }\bibfield  {title} {\bibinfo {title}
+  {Entropy-sgd: biasing gradient descent into wide valleys*},\ }\href
+  {https://doi.org/10.1088/1742-5468/ab39d9} {\bibfield  {journal} {\bibinfo
+  {journal} {Journal of Statistical Mechanics: Theory and Experiment}\ }\textbf
+  {\bibinfo {volume} {2019}},\ \bibinfo {pages} {124018} (\bibinfo {year}
+  {2019})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Sohl-Dickstein}\ \emph {et~al.}(2015)\citenamefont
+  {Sohl-Dickstein}, \citenamefont {Weiss}, \citenamefont {Maheswaranathan},\
+  and\ \citenamefont {Ganguli}}]{pmlr-v37-sohl-dickstein15}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Sohl-Dickstein}}, \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Weiss}}, \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont
+  {Maheswaranathan}},\ and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Ganguli}},\ }\bibfield  {title} {\bibinfo {title} {Deep unsupervised
+  learning using nonequilibrium thermodynamics},\ }in\ \href
+  {https://proceedings.mlr.press/v37/sohl-dickstein15.html} {\emph {\bibinfo
+  {booktitle} {Proceedings of the 32nd International Conference on Machine
+  Learning}}},\ \bibinfo {series} {Proceedings of Machine Learning Research},
+  Vol.~\bibinfo {volume} {37},\ \bibinfo {editor} {edited by\ \bibinfo {editor}
+  {\bibfnamefont {F.}~\bibnamefont {Bach}}\ and\ \bibinfo {editor}
+  {\bibfnamefont {D.}~\bibnamefont {Blei}}}\ (\bibinfo  {publisher} {PMLR},\
+  \bibinfo {address} {Lille, France},\ \bibinfo {year} {2015})\ pp.\ \bibinfo
+  {pages} {2256--2265}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Germain}\ \emph {et~al.}(2015)\citenamefont
+  {Germain}, \citenamefont {Gregor}, \citenamefont {Murray},\ and\
+  \citenamefont {Larochelle}}]{pmlr-v37-germain15}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Germain}}, \bibinfo {author} {\bibfnamefont {K.}~\bibnamefont {Gregor}},
+  \bibinfo {author} {\bibfnamefont {I.}~\bibnamefont {Murray}},\ and\ \bibinfo
+  {author} {\bibfnamefont {H.}~\bibnamefont {Larochelle}},\ }\bibfield  {title}
+  {\bibinfo {title} {Made: Masked autoencoder for distribution estimation},\
+  }in\ \href {https://proceedings.mlr.press/v37/germain15.html} {\emph
+  {\bibinfo {booktitle} {Proceedings of the 32nd International Conference on
+  Machine Learning}}},\ \bibinfo {series} {Proceedings of Machine Learning
+  Research}, Vol.~\bibinfo {volume} {37},\ \bibinfo {editor} {edited by\
+  \bibinfo {editor} {\bibfnamefont {F.}~\bibnamefont {Bach}}\ and\ \bibinfo
+  {editor} {\bibfnamefont {D.}~\bibnamefont {Blei}}}\ (\bibinfo  {publisher}
+  {PMLR},\ \bibinfo {address} {Lille, France},\ \bibinfo {year} {2015})\ pp.\
+  \bibinfo {pages} {881--889}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {van~den Oord}\ \emph
+  {et~al.}(2016{\natexlab{a}})\citenamefont {van~den Oord}, \citenamefont
+  {Kalchbrenner}, \citenamefont {Espeholt}, \citenamefont {kavukcuoglu},
+  \citenamefont {Vinyals},\ and\ \citenamefont {Graves}}]{NIPS2016_b1301141}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {van~den Oord}}, \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont
+  {Kalchbrenner}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont
+  {Espeholt}}, \bibinfo {author} {\bibfnamefont {k.}~\bibnamefont
+  {kavukcuoglu}}, \bibinfo {author} {\bibfnamefont {O.}~\bibnamefont
+  {Vinyals}},\ and\ \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Graves}},\ }\bibfield  {title} {\bibinfo {title} {Conditional image
+  generation with pixelcnn decoders},\ }in\ \href
+  {https://proceedings.neurips.cc/paper/2016/file/b1301141feffabac455e1f90a7de2054-Paper.pdf}
+  {\emph {\bibinfo {booktitle} {Advances in Neural Information Processing
+  Systems}}},\ Vol.~\bibinfo {volume} {29},\ \bibinfo {editor} {edited by\
+  \bibinfo {editor} {\bibfnamefont {D.}~\bibnamefont {Lee}}, \bibinfo {editor}
+  {\bibfnamefont {M.}~\bibnamefont {Sugiyama}}, \bibinfo {editor}
+  {\bibfnamefont {U.}~\bibnamefont {Luxburg}}, \bibinfo {editor} {\bibfnamefont
+  {I.}~\bibnamefont {Guyon}},\ and\ \bibinfo {editor} {\bibfnamefont
+  {R.}~\bibnamefont {Garnett}}}\ (\bibinfo  {publisher} {Curran Associates,
+  Inc.},\ \bibinfo {year} {2016})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Vaswani}\ \emph
+  {et~al.}(2017{\natexlab{a}})\citenamefont {Vaswani}, \citenamefont {Shazeer},
+  \citenamefont {Parmar}, \citenamefont {Uszkoreit}, \citenamefont {Jones},
+  \citenamefont {Gomez}, \citenamefont {Kaiser},\ and\ \citenamefont
+  {Polosukhin}}]{NIPS2017_3f5ee243}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Vaswani}}, \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont {Shazeer}},
+  \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont {Parmar}}, \bibinfo
+  {author} {\bibfnamefont {J.}~\bibnamefont {Uszkoreit}}, \bibinfo {author}
+  {\bibfnamefont {L.}~\bibnamefont {Jones}}, \bibinfo {author} {\bibfnamefont
+  {A.~N.}\ \bibnamefont {Gomez}}, \bibinfo {author} {\bibfnamefont {L.~u.}\
+  \bibnamefont {Kaiser}},\ and\ \bibinfo {author} {\bibfnamefont
+  {I.}~\bibnamefont {Polosukhin}},\ }\bibfield  {title} {\bibinfo {title}
+  {Attention is all you need},\ }in\ \href
+  {https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf}
+  {\emph {\bibinfo {booktitle} {Advances in Neural Information Processing
+  Systems}}},\ Vol.~\bibinfo {volume} {30},\ \bibinfo {editor} {edited by\
+  \bibinfo {editor} {\bibfnamefont {I.}~\bibnamefont {Guyon}}, \bibinfo
+  {editor} {\bibfnamefont {U.~V.}\ \bibnamefont {Luxburg}}, \bibinfo {editor}
+  {\bibfnamefont {S.}~\bibnamefont {Bengio}}, \bibinfo {editor} {\bibfnamefont
+  {H.}~\bibnamefont {Wallach}}, \bibinfo {editor} {\bibfnamefont
+  {R.}~\bibnamefont {Fergus}}, \bibinfo {editor} {\bibfnamefont
+  {S.}~\bibnamefont {Vishwanathan}},\ and\ \bibinfo {editor} {\bibfnamefont
+  {R.}~\bibnamefont {Garnett}}}\ (\bibinfo  {publisher} {Curran Associates,
+  Inc.},\ \bibinfo {year} {2017})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Brown}\ \emph {et~al.}(2020)\citenamefont {Brown},
+  \citenamefont {Mann}, \citenamefont {Ryder}, \citenamefont {Subbiah},
+  \citenamefont {Kaplan}, \citenamefont {Dhariwal}, \citenamefont
+  {Neelakantan}, \citenamefont {Shyam}, \citenamefont {Sastry}, \citenamefont
+  {Askell}, \citenamefont {Agarwal}, \citenamefont {Herbert-Voss},
+  \citenamefont {Krueger}, \citenamefont {Henighan}, \citenamefont {Child},
+  \citenamefont {Ramesh}, \citenamefont {Ziegler}, \citenamefont {Wu},
+  \citenamefont {Winter}, \citenamefont {Hesse}, \citenamefont {Chen},
+  \citenamefont {Sigler}, \citenamefont {Litwin}, \citenamefont {Gray},
+  \citenamefont {Chess}, \citenamefont {Clark}, \citenamefont {Berner},
+  \citenamefont {McCandlish}, \citenamefont {Radford}, \citenamefont
+  {Sutskever},\ and\ \citenamefont
+  {Amodei}}]{https://doi.org/10.48550/arxiv.2005.14165}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.~B.}\ \bibnamefont
+  {Brown}}, \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont {Mann}},
+  \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont {Ryder}}, \bibinfo
+  {author} {\bibfnamefont {M.}~\bibnamefont {Subbiah}}, \bibinfo {author}
+  {\bibfnamefont {J.}~\bibnamefont {Kaplan}}, \bibinfo {author} {\bibfnamefont
+  {P.}~\bibnamefont {Dhariwal}}, \bibinfo {author} {\bibfnamefont
+  {A.}~\bibnamefont {Neelakantan}}, \bibinfo {author} {\bibfnamefont
+  {P.}~\bibnamefont {Shyam}}, \bibinfo {author} {\bibfnamefont
+  {G.}~\bibnamefont {Sastry}}, \bibinfo {author} {\bibfnamefont
+  {A.}~\bibnamefont {Askell}}, \bibinfo {author} {\bibfnamefont
+  {S.}~\bibnamefont {Agarwal}}, \bibinfo {author} {\bibfnamefont
+  {A.}~\bibnamefont {Herbert-Voss}}, \bibinfo {author} {\bibfnamefont
+  {G.}~\bibnamefont {Krueger}}, \bibinfo {author} {\bibfnamefont
+  {T.}~\bibnamefont {Henighan}}, \bibinfo {author} {\bibfnamefont
+  {R.}~\bibnamefont {Child}}, \bibinfo {author} {\bibfnamefont
+  {A.}~\bibnamefont {Ramesh}}, \bibinfo {author} {\bibfnamefont {D.~M.}\
+  \bibnamefont {Ziegler}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Wu}}, \bibinfo {author} {\bibfnamefont {C.}~\bibnamefont {Winter}}, \bibinfo
+  {author} {\bibfnamefont {C.}~\bibnamefont {Hesse}}, \bibinfo {author}
+  {\bibfnamefont {M.}~\bibnamefont {Chen}}, \bibinfo {author} {\bibfnamefont
+  {E.}~\bibnamefont {Sigler}}, \bibinfo {author} {\bibfnamefont
+  {M.}~\bibnamefont {Litwin}}, \bibinfo {author} {\bibfnamefont
+  {S.}~\bibnamefont {Gray}}, \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
+  {Chess}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Clark}},
+  \bibinfo {author} {\bibfnamefont {C.}~\bibnamefont {Berner}}, \bibinfo
+  {author} {\bibfnamefont {S.}~\bibnamefont {McCandlish}}, \bibinfo {author}
+  {\bibfnamefont {A.}~\bibnamefont {Radford}}, \bibinfo {author} {\bibfnamefont
+  {I.}~\bibnamefont {Sutskever}},\ and\ \bibinfo {author} {\bibfnamefont
+  {D.}~\bibnamefont {Amodei}},\ }\href
+  {https://doi.org/10.48550/ARXIV.2005.14165} {\bibinfo {title} {Language
+  models are few-shot learners}} (\bibinfo {year} {2020})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Gregor}\ \emph {et~al.}(2014)\citenamefont {Gregor},
+  \citenamefont {Danihelka}, \citenamefont {Mnih}, \citenamefont {Blundell},\
+  and\ \citenamefont {Wierstra}}]{pmlr-v32-gregor14}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
+  {Gregor}}, \bibinfo {author} {\bibfnamefont {I.}~\bibnamefont {Danihelka}},
+  \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Mnih}}, \bibinfo {author}
+  {\bibfnamefont {C.}~\bibnamefont {Blundell}},\ and\ \bibinfo {author}
+  {\bibfnamefont {D.}~\bibnamefont {Wierstra}},\ }\bibfield  {title} {\bibinfo
+  {title} {Deep autoregressive networks},\ }in\ \href
+  {https://proceedings.mlr.press/v32/gregor14.html} {\emph {\bibinfo
+  {booktitle} {Proceedings of the 31st International Conference on Machine
+  Learning}}},\ \bibinfo {series} {Proceedings of Machine Learning Research},
+  Vol.~\bibinfo {volume} {32},\ \bibinfo {editor} {edited by\ \bibinfo {editor}
+  {\bibfnamefont {E.~P.}\ \bibnamefont {Xing}}\ and\ \bibinfo {editor}
+  {\bibfnamefont {T.}~\bibnamefont {Jebara}}}\ (\bibinfo  {publisher} {PMLR},\
+  \bibinfo {address} {Bejing, China},\ \bibinfo {year} {2014})\ pp.\ \bibinfo
+  {pages} {1242--1250}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Larochelle}\ and\ \citenamefont
+  {Murray}(2011)}]{pmlr-v15-larochelle11a}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
+  {Larochelle}}\ and\ \bibinfo {author} {\bibfnamefont {I.}~\bibnamefont
+  {Murray}},\ }\bibfield  {title} {\bibinfo {title} {The neural autoregressive
+  distribution estimator},\ }in\ \href
+  {https://proceedings.mlr.press/v15/larochelle11a.html} {\emph {\bibinfo
+  {booktitle} {Proceedings of the Fourteenth International Conference on
+  Artificial Intelligence and Statistics}}},\ \bibinfo {series} {Proceedings of
+  Machine Learning Research}, Vol.~\bibinfo {volume} {15},\ \bibinfo {editor}
+  {edited by\ \bibinfo {editor} {\bibfnamefont {G.}~\bibnamefont {Gordon}},
+  \bibinfo {editor} {\bibfnamefont {D.}~\bibnamefont {Dunson}},\ and\ \bibinfo
+  {editor} {\bibfnamefont {M.}~\bibnamefont {Dudík}}}\ (\bibinfo  {publisher}
+  {PMLR},\ \bibinfo {address} {Fort Lauderdale, FL, USA},\ \bibinfo {year}
+  {2011})\ pp.\ \bibinfo {pages} {29--37}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {van~den Oord}\ \emph
+  {et~al.}(2016{\natexlab{b}})\citenamefont {van~den Oord}, \citenamefont
+  {Kalchbrenner},\ and\ \citenamefont {Kavukcuoglu}}]{pmlr-v48-oord16}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {van~den Oord}}, \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont
+  {Kalchbrenner}},\ and\ \bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
+  {Kavukcuoglu}},\ }\bibfield  {title} {\bibinfo {title} {Pixel recurrent
+  neural networks},\ }in\ \href {https://proceedings.mlr.press/v48/oord16.html}
+  {\emph {\bibinfo {booktitle} {Proceedings of The 33rd International
+  Conference on Machine Learning}}},\ \bibinfo {series} {Proceedings of Machine
+  Learning Research}, Vol.~\bibinfo {volume} {48},\ \bibinfo {editor} {edited
+  by\ \bibinfo {editor} {\bibfnamefont {M.~F.}\ \bibnamefont {Balcan}}\ and\
+  \bibinfo {editor} {\bibfnamefont {K.~Q.}\ \bibnamefont {Weinberger}}}\
+  (\bibinfo  {publisher} {PMLR},\ \bibinfo {address} {New York, New York,
+  USA},\ \bibinfo {year} {2016})\ pp.\ \bibinfo {pages}
+  {1747--1756}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Nash}\ and\ \citenamefont
+  {Durkan}(2019)}]{pmlr-v97-durkan19a}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {C.}~\bibnamefont
+  {Nash}}\ and\ \bibinfo {author} {\bibfnamefont {C.}~\bibnamefont {Durkan}},\
+  }\bibfield  {title} {\bibinfo {title} {Autoregressive energy machines},\ }in\
+  \href {https://proceedings.mlr.press/v97/durkan19a.html} {\emph {\bibinfo
+  {booktitle} {Proceedings of the 36th International Conference on Machine
+  Learning}}},\ \bibinfo {series} {Proceedings of Machine Learning Research},
+  Vol.~\bibinfo {volume} {97},\ \bibinfo {editor} {edited by\ \bibinfo {editor}
+  {\bibfnamefont {K.}~\bibnamefont {Chaudhuri}}\ and\ \bibinfo {editor}
+  {\bibfnamefont {R.}~\bibnamefont {Salakhutdinov}}}\ (\bibinfo  {publisher}
+  {PMLR},\ \bibinfo {year} {2019})\ pp.\ \bibinfo {pages}
+  {1735--1744}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Nicoli}\ \emph {et~al.}(2020)\citenamefont {Nicoli},
+  \citenamefont {Nakajima}, \citenamefont {Strodthoff}, \citenamefont {Samek},
+  \citenamefont {Müller},\ and\ \citenamefont
+  {Kessel}}]{10.1103/physreve.101.023304}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {K.~A.}\ \bibnamefont
+  {Nicoli}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Nakajima}},
+  \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont {Strodthoff}}, \bibinfo
+  {author} {\bibfnamefont {W.}~\bibnamefont {Samek}}, \bibinfo {author}
+  {\bibfnamefont {K.-R.}\ \bibnamefont {Müller}},\ and\ \bibinfo {author}
+  {\bibfnamefont {P.}~\bibnamefont {Kessel}},\ }\bibfield  {title} {\bibinfo
+  {title} {{Asymptotically unbiased estimation of physical observables with
+  neural samplers}},\ }\href {https://doi.org/10.1103/physreve.101.023304}
+  {\bibfield  {journal} {\bibinfo  {journal} {Physical Review E}\ }\textbf
+  {\bibinfo {volume} {101}},\ \bibinfo {pages} {023304} (\bibinfo {year}
+  {2020})},\ \Eprint {https://arxiv.org/abs/1910.13496} {1910.13496}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {McNaughton}\ \emph {et~al.}(2020)\citenamefont
+  {McNaughton}, \citenamefont {Milo\ifmmode \check{s}\else
+  \v{s}\fi{}evi\ifmmode~\acute{c}\else \'{c}\fi{}}, \citenamefont {Perali},\
+  and\ \citenamefont {Pilati}}]{PhysRevE.101.053312}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
+  {McNaughton}}, \bibinfo {author} {\bibfnamefont {M.~V.}\ \bibnamefont
+  {Milo\ifmmode \check{s}\else \v{s}\fi{}evi\ifmmode~\acute{c}\else
+  \'{c}\fi{}}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Perali}},\
+  and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Pilati}},\
+  }\bibfield  {title} {\bibinfo {title} {Boosting monte carlo simulations of
+  spin glasses using autoregressive neural networks},\ }\href
+  {https://doi.org/10.1103/PhysRevE.101.053312} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. E}\ }\textbf {\bibinfo {volume} {101}},\ \bibinfo
+  {pages} {053312} (\bibinfo {year} {2020})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Pan}\ \emph {et~al.}(2021)\citenamefont {Pan},
+  \citenamefont {Zhou}, \citenamefont {Zhou},\ and\ \citenamefont
+  {Zhang}}]{PhysRevE.103.012103}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
+  {Pan}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Zhou}}, \bibinfo
+  {author} {\bibfnamefont {H.-J.}\ \bibnamefont {Zhou}},\ and\ \bibinfo
+  {author} {\bibfnamefont {P.}~\bibnamefont {Zhang}},\ }\bibfield  {title}
+  {\bibinfo {title} {Solving statistical mechanics on sparse graphs with
+  feedback-set variational autoregressive networks},\ }\href
+  {https://doi.org/10.1103/PhysRevE.103.012103} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. E}\ }\textbf {\bibinfo {volume} {103}},\ \bibinfo
+  {pages} {012103} (\bibinfo {year} {2021})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Wu}\ \emph {et~al.}(2021)\citenamefont {Wu},
+  \citenamefont {Rossi},\ and\ \citenamefont
+  {Carleo}}]{PhysRevResearch.3.L042024}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Wu}}, \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {Rossi}},\ and\
+  \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Carleo}},\ }\bibfield
+  {title} {\bibinfo {title} {Unbiased monte carlo cluster updates with
+  autoregressive neural networks},\ }\href
+  {https://doi.org/10.1103/PhysRevResearch.3.L042024} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. Res.}\ }\textbf {\bibinfo {volume} {3}},\
+  \bibinfo {pages} {L042024} (\bibinfo {year} {2021})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Hibat-Allah}\ \emph {et~al.}(2021)\citenamefont
+  {Hibat-Allah}, \citenamefont {Inack}, \citenamefont {Wiersema}, \citenamefont
+  {Melko},\ and\ \citenamefont {Carrasquilla}}]{10.1038/s42256-021-00401-3}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Hibat-Allah}}, \bibinfo {author} {\bibfnamefont {E.~M.}\ \bibnamefont
+  {Inack}}, \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {Wiersema}},
+  \bibinfo {author} {\bibfnamefont {R.~G.}\ \bibnamefont {Melko}},\ and\
+  \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Carrasquilla}},\
+  }\bibfield  {title} {\bibinfo {title} {{Variational neural annealing}},\
+  }\href {https://doi.org/10.1038/s42256-021-00401-3} {\bibfield  {journal}
+  {\bibinfo  {journal} {Nature Machine Intelligence}\ }\textbf {\bibinfo
+  {volume} {3}},\ \bibinfo {pages} {1} (\bibinfo {year} {2021})},\ \Eprint
+  {https://arxiv.org/abs/2101.10154} {2101.10154} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Luo}\ \emph {et~al.}(2022)\citenamefont {Luo},
+  \citenamefont {Chen}, \citenamefont {Carrasquilla},\ and\ \citenamefont
+  {Clark}}]{10.1103/physrevlett.128.090501}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Luo}}, \bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont {Chen}}, \bibinfo
+  {author} {\bibfnamefont {J.}~\bibnamefont {Carrasquilla}},\ and\ \bibinfo
+  {author} {\bibfnamefont {B.~K.}\ \bibnamefont {Clark}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Autoregressive Neural Network for Simulating Open Quantum
+  Systems via a Probabilistic Formulation}},\ }\href
+  {https://doi.org/10.1103/physrevlett.128.090501} {\bibfield  {journal}
+  {\bibinfo  {journal} {Physical Review Letters}\ }\textbf {\bibinfo {volume}
+  {128}},\ \bibinfo {pages} {090501} (\bibinfo {year} {2022})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Wang}\ and\ \citenamefont
+  {Davis}(2020)}]{PhysRevA.102.062413}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont
+  {Wang}}\ and\ \bibinfo {author} {\bibfnamefont {E.~J.}\ \bibnamefont
+  {Davis}},\ }\bibfield  {title} {\bibinfo {title} {Calculating r\'enyi
+  entropies with neural autoregressive quantum states},\ }\href
+  {https://doi.org/10.1103/PhysRevA.102.062413} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. A}\ }\textbf {\bibinfo {volume} {102}},\ \bibinfo
+  {pages} {062413} (\bibinfo {year} {2020})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Sharir}\ \emph {et~al.}(2020)\citenamefont {Sharir},
+  \citenamefont {Levine}, \citenamefont {Wies}, \citenamefont {Carleo},\ and\
+  \citenamefont {Shashua}}]{PhysRevLett.124.020503}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {O.}~\bibnamefont
+  {Sharir}}, \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Levine}},
+  \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont {Wies}}, \bibinfo {author}
+  {\bibfnamefont {G.}~\bibnamefont {Carleo}},\ and\ \bibinfo {author}
+  {\bibfnamefont {A.}~\bibnamefont {Shashua}},\ }\bibfield  {title} {\bibinfo
+  {title} {Deep autoregressive models for the efficient variational simulation
+  of many-body quantum systems},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.124.020503} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {124}},\
+  \bibinfo {pages} {020503} (\bibinfo {year} {2020})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Hibat-Allah}\ \emph {et~al.}(2020)\citenamefont
+  {Hibat-Allah}, \citenamefont {Ganahl}, \citenamefont {Hayward}, \citenamefont
+  {Melko},\ and\ \citenamefont {Carrasquilla}}]{PhysRevResearch.2.023358}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Hibat-Allah}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Ganahl}},
+  \bibinfo {author} {\bibfnamefont {L.~E.}\ \bibnamefont {Hayward}}, \bibinfo
+  {author} {\bibfnamefont {R.~G.}\ \bibnamefont {Melko}},\ and\ \bibinfo
+  {author} {\bibfnamefont {J.}~\bibnamefont {Carrasquilla}},\ }\bibfield
+  {title} {\bibinfo {title} {Recurrent neural network wave functions},\ }\href
+  {https://doi.org/10.1103/PhysRevResearch.2.023358} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. Res.}\ }\textbf {\bibinfo {volume} {2}},\
+  \bibinfo {pages} {023358} (\bibinfo {year} {2020})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Liu}\ \emph {et~al.}(2021)\citenamefont {Liu},
+  \citenamefont {Mao}, \citenamefont {Zhang},\ and\ \citenamefont
+  {Wang}}]{Liu_2021}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.-G.}\ \bibnamefont
+  {Liu}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Mao}}, \bibinfo
+  {author} {\bibfnamefont {P.}~\bibnamefont {Zhang}},\ and\ \bibinfo {author}
+  {\bibfnamefont {L.}~\bibnamefont {Wang}},\ }\bibfield  {title} {\bibinfo
+  {title} {Solving quantum statistical mechanics with variational
+  autoregressive networks and quantum circuits},\ }\href
+  {https://doi.org/10.1088/2632-2153/aba19d} {\bibfield  {journal} {\bibinfo
+  {journal} {Machine Learning: Science and Technology}\ }\textbf {\bibinfo
+  {volume} {2}},\ \bibinfo {pages} {025011} (\bibinfo {year}
+  {2021})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Barrett}\ \emph {et~al.}(2022)\citenamefont
+  {Barrett}, \citenamefont {Malyshev},\ and\ \citenamefont
+  {Lvovsky}}]{Barrett2022}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.~D.}\ \bibnamefont
+  {Barrett}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Malyshev}},\
+  and\ \bibinfo {author} {\bibfnamefont {A.~I.}\ \bibnamefont {Lvovsky}},\
+  }\bibfield  {title} {\bibinfo {title} {Autoregressive neural-network
+  wavefunctions for ab initio quantum chemistry},\ }\href
+  {https://doi.org/10.1038/s42256-022-00461-z} {\bibfield  {journal} {\bibinfo
+  {journal} {Nature Machine Intelligence}\ }\textbf {\bibinfo {volume} {4}},\
+  \bibinfo {pages} {351} (\bibinfo {year} {2022})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Inack}\ \emph {et~al.}(2022)\citenamefont {Inack},
+  \citenamefont {Morawetz},\ and\ \citenamefont {Melko}}]{condmat7020038}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.~M.}\ \bibnamefont
+  {Inack}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Morawetz}},\
+  and\ \bibinfo {author} {\bibfnamefont {R.~G.}\ \bibnamefont {Melko}},\
+  }\bibfield  {title} {\bibinfo {title} {Neural annealing and visualization of
+  autoregressive neural networks in the newman-moore model},\ }\bibfield
+  {journal} {\bibinfo  {journal} {Condensed Matter}\ }\textbf {\bibinfo
+  {volume} {7}},\ \href {https://doi.org/10.3390/condmat7020038}
+  {10.3390/condmat7020038} (\bibinfo {year} {2022})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Ciarella}\ \emph {et~al.}(2022)\citenamefont
+  {Ciarella}, \citenamefont {Trinquier}, \citenamefont {Weigt},\ and\
+  \citenamefont {Zamponi}}]{https://doi.org/10.48550/arxiv.2210.11145}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Ciarella}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Trinquier}},
+  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Weigt}},\ and\ \bibinfo
+  {author} {\bibfnamefont {F.}~\bibnamefont {Zamponi}},\ }\href
+  {https://doi.org/10.48550/ARXIV.2210.11145} {\bibinfo {title}
+  {Machine-learning-assisted monte carlo fails at sampling computationally hard
+  problems}} (\bibinfo {year} {2022})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Kadanoff}(2000)}]{kadanoff2000statistical}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {L.~P.}\ \bibnamefont
+  {Kadanoff}},\ }\href@noop {} {\emph {\bibinfo {title} {Statistical physics:
+  statics, dynamics and renormalization}}}\ (\bibinfo  {publisher} {World
+  Scientific},\ \bibinfo {year} {2000})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Sherrington}\ and\ \citenamefont
+  {Kirkpatrick}(1975)}]{PhysRevLett.35.1792}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Sherrington}}\ and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Kirkpatrick}},\ }\bibfield  {title} {\bibinfo {title} {Solvable model of a
+  spin-glass},\ }\href {https://doi.org/10.1103/PhysRevLett.35.1792} {\bibfield
+   {journal} {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo
+  {volume} {35}},\ \bibinfo {pages} {1792} (\bibinfo {year}
+  {1975})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {nobel committee~for Physics}(2021)}]{Nobel2021}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {nobel committee~for Physics}},\ }\href
+  {https://www.nobelprize.org/prizes/physics/2021/advanced-information/}
+  {\bibinfo {title} {For groundbreaking contributions to our understanding of
+  complex physical systems. [nobel to g. parisi]}} (\bibinfo {year}
+  {2021})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Parisi}(1979{\natexlab{a}})}]{PARISI1979203}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Parisi}},\ }\bibfield  {title} {\bibinfo {title} {Toward a mean field theory
+  for spin glasses},\ }\href
+  {https://doi.org/https://doi.org/10.1016/0375-9601(79)90708-4} {\bibfield
+  {journal} {\bibinfo  {journal} {Physics Letters A}\ }\textbf {\bibinfo
+  {volume} {73}},\ \bibinfo {pages} {203} (\bibinfo {year}
+  {1979}{\natexlab{a}})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Parisi}(1979{\natexlab{b}})}]{PhysRevLett.43.1754}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Parisi}},\ }\bibfield  {title} {\bibinfo {title} {Infinite number of order
+  parameters for spin-glasses},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.43.1754} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {43}},\ \bibinfo
+  {pages} {1754} (\bibinfo {year} {1979}{\natexlab{b}})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Gardner}(1987)}]{Gardner_1987}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Gardner}},\ }\bibfield  {title} {\bibinfo {title} {Maximum storage capacity
+  in neural networks},\ }\href {https://doi.org/10.1209/0295-5075/4/4/016}
+  {\bibfield  {journal} {\bibinfo  {journal} {Europhysics Letters}\ }\textbf
+  {\bibinfo {volume} {4}},\ \bibinfo {pages} {481} (\bibinfo {year}
+  {1987})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Amit}\ \emph
+  {et~al.}(1985{\natexlab{b}})\citenamefont {Amit}, \citenamefont {Gutfreund},\
+  and\ \citenamefont {Sompolinsky}}]{PhysRevLett.55.1530}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.~J.}\ \bibnamefont
+  {Amit}}, \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont {Gutfreund}},\
+  and\ \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont {Sompolinsky}},\
+  }\bibfield  {title} {\bibinfo {title} {Storing infinite numbers of patterns
+  in a spin-glass model of neural networks},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.55.1530} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {55}},\ \bibinfo
+  {pages} {1530} (\bibinfo {year} {1985}{\natexlab{b}})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Mézard}\ \emph {et~al.}(2002)\citenamefont
+  {Mézard}, \citenamefont {Parisi},\ and\ \citenamefont
+  {Zecchina}}]{doi:10.1126/science.1073287}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Mézard}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Parisi}},\
+  and\ \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {Zecchina}},\
+  }\bibfield  {title} {\bibinfo {title} {Analytic and algorithmic solution of
+  random satisfiability problems},\ }\href
+  {https://doi.org/10.1126/science.1073287} {\bibfield  {journal} {\bibinfo
+  {journal} {Science}\ ,\ \bibinfo {pages} {812}} (\bibinfo {year} {2002})},\
+  \Eprint
+  {https://arxiv.org/abs/https://www.science.org/doi/pdf/10.1126/science.1073287}
+  {https://www.science.org/doi/pdf/10.1126/science.1073287} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Parisi}\ and\ \citenamefont
+  {Zamponi}(2010)}]{RevModPhys.82.789}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Parisi}}\ and\ \bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
+  {Zamponi}},\ }\bibfield  {title} {\bibinfo {title} {Mean-field theory of hard
+  sphere glasses and jamming},\ }\href
+  {https://doi.org/10.1103/RevModPhys.82.789} {\bibfield  {journal} {\bibinfo
+  {journal} {Rev. Mod. Phys.}\ }\textbf {\bibinfo {volume} {82}},\ \bibinfo
+  {pages} {789} (\bibinfo {year} {2010})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Biazzo}\ \emph {et~al.}(2009)\citenamefont {Biazzo},
+  \citenamefont {Caltagirone}, \citenamefont {Parisi},\ and\ \citenamefont
+  {Zamponi}}]{PhysRevLett.102.195701}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {I.}~\bibnamefont
+  {Biazzo}}, \bibinfo {author} {\bibfnamefont {F.}~\bibnamefont {Caltagirone}},
+  \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Parisi}},\ and\ \bibinfo
+  {author} {\bibfnamefont {F.}~\bibnamefont {Zamponi}},\ }\bibfield  {title}
+  {\bibinfo {title} {Theory of amorphous packings of binary mixtures of hard
+  spheres},\ }\href {https://doi.org/10.1103/PhysRevLett.102.195701} {\bibfield
+   {journal} {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo
+  {volume} {102}},\ \bibinfo {pages} {195701} (\bibinfo {year}
+  {2009})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {He}\ \emph {et~al.}(2015)\citenamefont {He},
+  \citenamefont {Zhang}, \citenamefont {Ren},\ and\ \citenamefont
+  {Sun}}]{10.48550/arxiv.1512.03385}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
+  {He}}, \bibinfo {author} {\bibfnamefont {X.}~\bibnamefont {Zhang}}, \bibinfo
+  {author} {\bibfnamefont {S.}~\bibnamefont {Ren}},\ and\ \bibinfo {author}
+  {\bibfnamefont {J.}~\bibnamefont {Sun}},\ }\bibfield  {title} {\bibinfo
+  {title} {{Deep Residual Learning for Image Recognition}},\ }\bibfield
+  {journal} {\bibinfo  {journal} {arXiv}\ }\href
+  {https://doi.org/10.48550/arxiv.1512.03385} {10.48550/arxiv.1512.03385}
+  (\bibinfo {year} {2015}),\ \Eprint {https://arxiv.org/abs/1512.03385}
+  {1512.03385} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Vaswani}\ \emph
+  {et~al.}(2017{\natexlab{b}})\citenamefont {Vaswani}, \citenamefont {Shazeer},
+  \citenamefont {Parmar}, \citenamefont {Uszkoreit}, \citenamefont {Jones},
+  \citenamefont {Gomez}, \citenamefont {Kaiser},\ and\ \citenamefont
+  {Polosukhin}}]{vaswani2017attention}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Vaswani}}, \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont {Shazeer}},
+  \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont {Parmar}}, \bibinfo
+  {author} {\bibfnamefont {J.}~\bibnamefont {Uszkoreit}}, \bibinfo {author}
+  {\bibfnamefont {L.}~\bibnamefont {Jones}}, \bibinfo {author} {\bibfnamefont
+  {A.~N.}\ \bibnamefont {Gomez}}, \bibinfo {author} {\bibfnamefont
+  {{\L}.}~\bibnamefont {Kaiser}},\ and\ \bibinfo {author} {\bibfnamefont
+  {I.}~\bibnamefont {Polosukhin}},\ }\bibfield  {title} {\bibinfo {title}
+  {Attention is all you need},\ }\href@noop {} {\bibfield  {journal} {\bibinfo
+  {journal} {Advances in neural information processing systems}\ }\textbf
+  {\bibinfo {volume} {30}} (\bibinfo {year} {2017}{\natexlab{b}})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Lipton}\ \emph {et~al.}(2015)\citenamefont {Lipton},
+  \citenamefont {Berkowitz},\ and\ \citenamefont
+  {Elkan}}]{https://doi.org/10.48550/arxiv.1506.00019}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Z.~C.}\ \bibnamefont
+  {Lipton}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Berkowitz}},\
+  and\ \bibinfo {author} {\bibfnamefont {C.}~\bibnamefont {Elkan}},\ }\href
+  {https://doi.org/10.48550/ARXIV.1506.00019} {\bibinfo {title} {A critical
+  review of recurrent neural networks for sequence learning}} (\bibinfo {year}
+  {2015})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Mezard}\ \emph {et~al.}(1986)\citenamefont {Mezard},
+  \citenamefont {Parisi},\ and\ \citenamefont {Virasoro}}]{10.1142/0271}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Mezard}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Parisi}},\
+  and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Virasoro}},\ }\href
+  {https://doi.org/10.1142/0271} {\emph {\bibinfo {title} {{Spin Glass Theory
+  and Beyond}}}}\ (\bibinfo {year} {1986})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Parisi}(1980)}]{Parisi_1980}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Parisi}},\ }\bibfield  {title} {\bibinfo {title} {A sequence of approximated
+  solutions to the s-k model for spin glasses},\ }\href
+  {https://doi.org/10.1088/0305-4470/13/4/009} {\bibfield  {journal} {\bibinfo
+  {journal} {Journal of Physics A: Mathematical and General}\ }\textbf
+  {\bibinfo {volume} {13}},\ \bibinfo {pages} {L115} (\bibinfo {year}
+  {1980})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Paszke}\ \emph {et~al.}(2019)\citenamefont {Paszke},
+  \citenamefont {Gross}, \citenamefont {Massa}, \citenamefont {Lerer},
+  \citenamefont {Bradbury}, \citenamefont {Chanan}, \citenamefont {Killeen},
+  \citenamefont {Lin}, \citenamefont {Gimelshein}, \citenamefont {Antiga},
+  \citenamefont {Desmaison}, \citenamefont {Kopf}, \citenamefont {Yang},
+  \citenamefont {DeVito}, \citenamefont {Raison}, \citenamefont {Tejani},
+  \citenamefont {Chilamkurthy}, \citenamefont {Steiner}, \citenamefont {Fang},
+  \citenamefont {Bai},\ and\ \citenamefont {Chintala}}]{NEURIPS2019_bdbca288}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Paszke}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Gross}},
+  \bibinfo {author} {\bibfnamefont {F.}~\bibnamefont {Massa}}, \bibinfo
+  {author} {\bibfnamefont {A.}~\bibnamefont {Lerer}}, \bibinfo {author}
+  {\bibfnamefont {J.}~\bibnamefont {Bradbury}}, \bibinfo {author}
+  {\bibfnamefont {G.}~\bibnamefont {Chanan}}, \bibinfo {author} {\bibfnamefont
+  {T.}~\bibnamefont {Killeen}}, \bibinfo {author} {\bibfnamefont
+  {Z.}~\bibnamefont {Lin}}, \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont
+  {Gimelshein}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Antiga}},
+  \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Desmaison}}, \bibinfo
+  {author} {\bibfnamefont {A.}~\bibnamefont {Kopf}}, \bibinfo {author}
+  {\bibfnamefont {E.}~\bibnamefont {Yang}}, \bibinfo {author} {\bibfnamefont
+  {Z.}~\bibnamefont {DeVito}}, \bibinfo {author} {\bibfnamefont
+  {M.}~\bibnamefont {Raison}}, \bibinfo {author} {\bibfnamefont
+  {A.}~\bibnamefont {Tejani}}, \bibinfo {author} {\bibfnamefont
+  {S.}~\bibnamefont {Chilamkurthy}}, \bibinfo {author} {\bibfnamefont
+  {B.}~\bibnamefont {Steiner}}, \bibinfo {author} {\bibfnamefont
+  {L.}~\bibnamefont {Fang}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Bai}},\ and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Chintala}},\ }\bibfield  {title} {\bibinfo {title} {Pytorch: An imperative
+  style, high-performance deep learning library},\ }in\ \href
+  {https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf}
+  {\emph {\bibinfo {booktitle} {Advances in Neural Information Processing
+  Systems}}},\ Vol.~\bibinfo {volume} {32},\ \bibinfo {editor} {edited by\
+  \bibinfo {editor} {\bibfnamefont {H.}~\bibnamefont {Wallach}}, \bibinfo
+  {editor} {\bibfnamefont {H.}~\bibnamefont {Larochelle}}, \bibinfo {editor}
+  {\bibfnamefont {A.}~\bibnamefont {Beygelzimer}}, \bibinfo {editor}
+  {\bibfnamefont {F.}~\bibnamefont {d\textquotesingle Alch\'{e}-Buc}}, \bibinfo
+  {editor} {\bibfnamefont {E.}~\bibnamefont {Fox}},\ and\ \bibinfo {editor}
+  {\bibfnamefont {R.}~\bibnamefont {Garnett}}}\ (\bibinfo  {publisher} {Curran
+  Associates, Inc.},\ \bibinfo {year} {2019})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Biazzo}(2023)}]{mygithub}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {I.}~\bibnamefont
+  {Biazzo}},\ }\href@noop {} {\bibinfo {title} {{H2AR-NN}}},\ \bibinfo
+  {howpublished} {\url{http://github.com/}} (\bibinfo {year} {2023}),\ \bibinfo
+  {note} {[Online; accessed 1-march-2023]}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Young}(1983)}]{PhysRevLett.51.1206}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~P.}\ \bibnamefont
+  {Young}},\ }\bibfield  {title} {\bibinfo {title} {Direct determination of the
+  probability distribution for the spin-glass order parameter},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.51.1206} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {51}},\ \bibinfo
+  {pages} {1206} (\bibinfo {year} {1983})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Biazzo}\ \emph {et~al.}(2022)\citenamefont {Biazzo},
+  \citenamefont {Braunstein}, \citenamefont {Dall'Asta},\ and\ \citenamefont
+  {Mazza}}]{Biazzo2022}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {I.}~\bibnamefont
+  {Biazzo}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Braunstein}},
+  \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Dall'Asta}},\ and\
+  \bibinfo {author} {\bibfnamefont {F.}~\bibnamefont {Mazza}},\ }\bibfield
+  {title} {\bibinfo {title} {A bayesian generative neural network framework for
+  epidemic inference problems},\ }\href
+  {https://doi.org/10.1038/s41598-022-20898-x} {\bibfield  {journal} {\bibinfo
+  {journal} {Scientific Reports}\ }\textbf {\bibinfo {volume} {12}},\ \bibinfo
+  {pages} {19673} (\bibinfo {year} {2022})}\BibitemShut {NoStop}%
+\end{thebibliography}%
