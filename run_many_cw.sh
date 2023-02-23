@@ -1,10 +1,10 @@
 #!/bin/bash
 #for N in 20 50 100 200
-for N in 500 1000
+for N in 200 
 	do
-      #for net_spec in "exact" "one" "sum_exp" "sp2" "sp4" "sum_exp_exact" "MADE" "MADE_21" "MADE_22" "SL" 
-	#for net_spec in "one_var_sign" "one_new" 
-	for net_spec in "exact" 
+      #for net_spec in "sum_exp_exact" "exact_Ninf" "SL" "one_new" "MADE" "MADE_21" "MADE_22"
+	for net_spec in "one_var_sign"
+	#for net_spec in "exact" 
 		do
             echo $N
             echo $net_spec

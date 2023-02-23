@@ -49,7 +49,7 @@ total={6.5in,8.75in}, top=1.2in, left=0.5in, right=0.5in, includefoot,
 
 \section{ANRR architecture of the Curie-Weiss model}
 
-The Curie-Weiss model (CW) is a uniform, fully-connected Ising model. The Hamiltonian of the Curie-Weiss model (CW) with $N$ spins is $H\left(\mathbf{x}\right)=-h\sum_{i=1}^{N}x_{i}-\frac{J}{N}\sum_{i<j}x_{i}x_{j}$. Defining $M_{<i}[\mathbf{x}_{<i}]=\sum_{s=1}^{i-1}x_{s}$ and $M_{>i}=\sum_{l=i+1}^{N}x_{l}$, the conditional probability of a spin $i$, see eq.11 in the main text, of the CW model is:
+The Curie-Weiss model (CW) is a uniform, fully-connected Ising model. The Hamiltonian of the Curie-Weiss model (CW) with $N$ spins is $H\left(\mathbf{x}\right)=-h\sum_{i=1}^{N}x_{i}-\frac{J}{N}\sum_{i<j}x_{i}x_{j}$. Defining $M_{<i}[\mathbf{x}_{<i}]=\sum_{s=1}^{i-1}x_{s}$ and $M_{>i}=\sum_{l=i+1}^{N}x_{l}$, the conditional probability of a spin $i$, see eq.11 in the main text, of the CW model, is:
 \begin{equation}
 %\begin{multline}
 P^{CW}\left(x_{i}=1|\mathbf{x}_{<i}\right) = 
@@ -394,7 +394,7 @@ Where in the last equation I renamed the variational parameters, for instance, $
         & b_0^{l^{\pm}} + w_0^{l^{\pm}} \log \sigma (b_1^{l^{\pm}} + w_1^{l^{\pm}} \log \sigma (b_2^{l^{\pm}} + w_2^{l^{\pm}} (h_l^{\pm}))).
 %        \int dx e^{\frac{x^2}{a}} \log\sigma (a_1 + b_1 \log \sigma (a_2 + b_2 (h+x))) & \approx a_0 +b_0 \log \sigma (a'_1 + b'_1 \log \sigma (a'_2 + b'_2 (h))) 
 \end{align}
-The set of parameters $(\mathbf{b_0^{{\pm}}},\mathbf{w_0^{{\pm}}},\mathbf{b_1^{{\pm}}},\mathbf{w_1^{{\pm}}},\mathbf{b_2^{{\pm}}},\mathbf{w_2^{{\pm}}})$ are free parameters to be determined by the learning procedures. The gaussian convolution integrals are substituted by feed-forward non-linear operations, enlarging the space of parameters. In the section \ref{sec:num_evidence} numerical evidence for the goodness of the above approximations is shown. For the 1RSB case, we use the following architecture:
+The set of parameters $(\mathbf{b_0^{{\pm}}},\mathbf{w_0^{{\pm}}},\mathbf{b_1^{{\pm}}},\mathbf{w_1^{{\pm}}},\mathbf{b_2^{{\pm}}},\mathbf{w_2^{{\pm}}})$ are free parameters to be determined by the learning procedures. The gaussian convolution integrals are substituted by feed-forward non-linear operations, enlarging the space of parameters. In section \ref{sec:num_evidence} numerical evidence for the goodness of the above approximations is shown. For the 1RSB case, we use the following architecture:
 \begin{multline*}
     Q^{1RSB}\left(x_{i}=1|\mathbf{x}_{<i}\right) = \sigma\left( 
         x_i^1(\mathbf{x}_{<i}) +\log(\rho_i^+) - \log(\rho_i^-)
@@ -445,7 +445,7 @@ As before, the function $f(x)$ is fitted with the l.h.s of the above expression,
 
 
 \section{Monte Carlo sampling of the SK model}
-In the main text, in the section results, in order to check the correlation between the weights of the first layer of the SK$_{1RSB}$ architecture with the coupling of the hamiltonian, 10,000 samples were generated through the Monte-Carlo Metropolis algorithm \cite{doi:10.1063/1.1887186}. The samples are generated for a system with $N=200$ variables at $\beta=2$. Each configuration is sampled after $stf = 200*N$ spin trail flip.  I observe that, for the system under study, for this number of trail spin flip of the Metropolis algorithm the autocorrelation time between the configurations drops below 0.5. The training of the SK$_{1RSB}$ was done minimizing, over the parameters of the SK$_{1RSB}$, the average of the negative log-likelihood (LL) of the generated $m$ samples:
+In the main text, in the section results, in order to check the correlation between the weights of the first layer of the SK$_{1RSB}$ architecture with the coupling of the hamiltonian, 10,000 samples were generated through the Monte-Carlo Metropolis algorithm \cite{doi:10.1063/1.1887186}. The samples are generated for a system with $N=200$ variables at $\beta=2$. Each configuration is sampled after $stf = 200*N$ spin trail flip.  I observe that, for the system under study, for this number of trail spin flips of the Metropolis algorithm the autocorrelation time between the configurations drops below 0.5. The training of the SK$_{1RSB}$ was done minimizing, over the parameters of the SK$_{1RSB}$, the average of the negative log-likelihood (LL) of the generated $m$ samples:
 \begin{equation}
     LL = - \frac{1}{m} \sum_{m}\log(Q_{1RSB})
 \end{equation}  

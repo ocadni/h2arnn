@@ -8,6 +8,21 @@ from scipy.special import comb
 
 
 def find_neigh(model_):
+    """
+    This function finds the neighbors of a given model. 
+
+    Parameters: 
+    model_: the model whose neighbors are to be found 
+
+    Variables: 
+    n: the number of nodes in the model 
+    neighs: a list of lists containing the neighbors of each node in the model 
+    num_neighs: a list containing the number of neighbors for each node in the model 
+    n_i: an index used to iterate through all nodes in the model 
+    neigh_i: an index used to iterate through all possible neighbors for each node in the model 
+    val: a boolean value indicating whether or not two nodes are connected by an edge  
+
+    The function loops through all nodes in the model and creates a list containing all of its neighbors. It also creates another list containing the number of neighbors for each node. Finally, it returns both lists."""
     n = model_.N
     neighs = []
     num_neighs = []
@@ -296,6 +311,9 @@ class SK_net_krsb(nn.Module):
             self.bias_p = torch.zeros((1, 1), device=device, dtype=dtype)
             self.bias_m = torch.zeros((1, 1), device=device, dtype=dtype)
 
+        # if self.learn_first_l:
+        self.Ji = self.J
+
         weight_0 = torch.zeros((1), device=device, dtype=dtype)
         bias_0 = torch.zeros((1), device=device, dtype=dtype)
         self.weight_0 = nn.Parameter(weight_0)
@@ -323,7 +341,7 @@ class SK_net_krsb(nn.Module):
 
     def first_l(self, x):
         n_i = self.n_i
-        return F.linear(x, self.J[n_i:, 0:n_i])
+        return F.linear(x, self.Ji[n_i:, 0:n_i])
 
 
 class SK_net_krsb_nofirst(nn.Module):

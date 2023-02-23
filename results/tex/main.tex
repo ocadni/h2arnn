@@ -85,16 +85,16 @@ The parameters ${\theta}$ can be learn minimizing the (inverse) Kullback-Leibler
 with the true probability function:
 \begin{equation}
 \begin{split}
-& D_{KL}\left(Q^{\Theta}| P_{B}\right) =  \sum_{\left\{ \mathbf{x} \right\} } Q^{\Theta} [\mathbf{x}]\ln\left(\frac{Q^{\Theta}[\mathbf{x}]}{P_{B}[\mathbf{x}]}\right)  \\
-& = \beta F[Q^{\Theta}] - \beta F[P_{B}]\\
+& D_{KL}\left(Q^{\theta}| P_{B}\right) =  \sum_{\left\{ \mathbf{x} \right\} } Q^{\theta} [\mathbf{x}]\ln\left(\frac{Q^{\theta}[\mathbf{x}]}{P_{B}[\mathbf{x}]}\right)  \\
+& = \beta F[Q^{\theta}] - \beta F[P_{B}]\\
 \end{split}
 \label{eq:kl}    
 \end{equation}
-%& = \sum_{\mathbf{x}\sim Q^{\Theta}}\left[\ln\left(Q^{\Theta}\left(\mathbf{x} \right)\right) + \beta H \right]\\
+%& = \sum_{\mathbf{x}\sim Q^{\theta}}\left[\ln\left(Q^{\theta}\left(\mathbf{x} \right)\right) + \beta H \right]\\
 where:
 $$\beta F[P]= \sum_{\left\{ \mathbf{x} \right\}}P[\mathbf{x}]\left[\log P[\mathbf{x}] + \beta H[\mathbf{x}] \right] 
 $$
-is the variational free energy of the system. The Kullback-Leibler divergence is always larger or equal to zero, so the variational free energy $F[Q^{\Theta}]$ is always an upper bound of the free energy of the system $F[P_{B}]$ \cite{Wu2019}. Minimizing the KL divergence with respect to the parameters of the ARNN, is equivalent to minimizing the variational free energy $F[Q^{\Theta}]$. The computation of $F[Q^{\Theta}]$ and their derivatives with respect to the ARNN's parameters involve a summation over all the configurations of the systems, that grows exponentially with the system's size, making it unfeasible after a few numbers of parameters. In practice, they are estimated summing over a subset of configurations sampled directly from the ARNN thanks to the ancestral sampling procedure\cite{Wu2019}. Usually, an annealing procedure is applied, starting at a high temperature and slowly decreasing it.
+is the variational free energy of the system. The Kullback-Leibler divergence is always larger or equal to zero, so the variational free energy $F[Q^{\theta}]$ is always an upper bound of the free energy of the system $F[P_{B}]$ \cite{Wu2019}. Minimizing the KL divergence with respect to the parameters of the ARNN, is equivalent to minimizing the variational free energy $F[Q^{\theta}]$. The computation of $F[Q^{\theta}]$ and their derivatives with respect to the ARNN's parameters involve a summation over all the configurations of the systems, that grows exponentially with the system's size, making it unfeasible after a few numbers of parameters. In practice, they are estimated summing over a subset of configurations sampled directly from the ARNN thanks to the ancestral sampling procedure\cite{Wu2019}. Usually, an annealing procedure is applied, starting at a high temperature and slowly decreasing it.
 Apart from the minimization procedure, the choice of the architecture of the neural networks is crucial to obtain a good approximation of the Boltzmann distribution.
 
 \subsection{Conditionals}
@@ -125,7 +125,7 @@ Consider a generic two-body interaction Hamiltonian of binary spin variables $x_
 \begin{figure}[!ht]
     %\centering 
     \includegraphics[width=0.45\textwidth]{img/h2ARNN.pdf}
-    \caption{ \textbf{H$_2$-ARNN} Architectures of a single Boltzmann conditional probability of a pairwise interacting Hamiltonian, eq.\ref{eq:H2ANN}. The input are the $x_{<i}$ variables, the output is the estimation of the conditional probability $Q^{\Theta} (x_i=1 | \mathbf{x_{<i}})$. The first layer computes the $x^1_i$ and $x^1_{il}$ variables, see eq.\ref{eq:x_i_first}, where the weight and bias, directly related to the hamiltonian parameters, are shown in orange. The non-linear operators are represented in square form. The width of the second layer grows exponentially with the system size. The last layer is the sigma function.}
+    \caption{ \textbf{H$_2$-ARNN} Architectures of a single Boltzmann conditional probability of a pairwise interacting Hamiltonian, eq.\ref{eq:H2ANN}. The input are the $x_{<i}$ variables, the output is the estimation of the conditional probability $Q^{\theta} (x_i=1 | \mathbf{x_{<i}})$. The first layer computes the $x^1_i$ and $x^1_{il}$ variables, see eq.\ref{eq:x_i_first}, where the weight and bias, directly related to the hamiltonian parameters, are shown in orange. The non-linear operators are represented in square form. The width of the second layer grows exponentially with the system size. The last layer is the sigma function.}
     \label{fig:arch}
 \end{figure}
 \begin{equation}
@@ -344,7 +344,7 @@ The CW$_N$, CW$_{\infty}$ and SK$_{RS/kRSB}$ architectures are compared with:
     \item The single layer (1L) architecture, where a fully connected single linear layer parametrizes the whole probability distribution, where a mask is applied to a subset of the weights in order to preserve the autoregressive properties. The width of the layer is $N$, and the total number of parameters scale as $N^2$.
     \item The MADE architecture \cite{pmlr-v37-germain15}, where the whole probability distribution is represented with a deep sequence of fully connected layers, with non-linear activation functions and masks in between them, to assure the autoregressive properties and enhance the expressive power. The MADE$_{dw}$ used has $d$ number of hidden layers, each of them with width $w$ times the number of input variable $N$. For instance, the 1L architecture is equivalent to the MADE$_{11}$ and MADE$_{23}$ has two hidden fully-connected layers, each of them of width $3*N$. 
 \end{itemize}
-As explained in sec.\ref{sec:ARNN_boltzmann} the variational free energy $F[Q^{\Theta}]$ is always an upper bound of the free energy of the system, and I estimate it using 20,000 configurations sampled from the autoregressive neural network.
+As explained in sec.\ref{sec:ARNN_boltzmann} the variational free energy $F[Q^{\theta}]$ is always an upper bound of the free energy of the system, and I estimate it using 20,000 configurations sampled from the autoregressive neural network.
 The training procedure was the same for all the experiments unless conversely specified; starting from $\beta=0.1$ it reached $\beta=2.0$ with a step of $0.05$. The training was performed with a batch size of $2000$ samples and $1000$ epochs for each temperature, with a learning rate of $0.001$, and the ADAM algorithm for the optimization of the ARNN parameters. The code was written using the PyTorch framework \cite{NEURIPS2019_bdbca288}, and it is open-source, released in \cite{mygithub}.
 The first layers of $CW_{\infty}$ and $SK_{RS/kRSB}$ are fixed by the hamiltonian parameters, and for the CW$_N$ all the parameters are fixed and pre-calculated, see eq.\ref{eq:CW_params}.
 The results on the CW model, with $J=1$ and $h=0$, are shown in fig.\ref{fig:curie_weiss}. 

@@ -9,21 +9,25 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=indaco.biazzo@epfl.ch
 
-python="/home/biazzo/miniconda3/envs/sib/bin/python"
-script="/home/biazzo/git/pytorch_test/run.py"
+#python="/home/biazzo/miniconda3/envs/sib/bin/python"
+#script="/home/biazzo/git/pytorch_test/run.py"
 python="python"
 script="run.py"
 beta_init=0.1
 beta_end=2
 beta_step=39
-num_threads=1
+num_threads=4
 lr=0.001
 max_step=1000
 batch_size=2000
 std_fe_limit=1e-4
 batch_iter=20
 stats_step=1
-save_dir="./results/Curie-Weiss/data/"
+save_dir="./results/Curie-Weiss/data_net/"
 N=20
 net_spec="one"
-$python $script --N $N --beta_range $beta_init $beta_end $beta_step --net_spec $net_spec --num_threads $num_threads --lr $lr --max_step $max_step --batch_size $batch_size --std_fe_limit $std_fe_limit --batch_iter $batch_iter --stats_step $stats_step --save_dir $save_dir
+model="CW"
+device="cpu"
+save_net="yes"
+seed=0
+$python $script --model $model --N $N --beta_range $beta_init $beta_end $beta_step --net_spec $net_spec --num_threads $num_threads --lr $lr --max_step $max_step --batch_size $batch_size --std_fe_limit $std_fe_limit --batch_iter $batch_iter --stats_step $stats_step --save_dir $save_dir --device $device --save_net $save_net --seed $seed

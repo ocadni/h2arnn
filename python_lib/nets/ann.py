@@ -19,7 +19,8 @@ def compute_stats(x, loss, log_prob, energy, beta, model, step=0, ifprint=True, 
         mag = x.mean(dim=0).cpu().detach().numpy()
         mag_mean = torch.abs(x.mean(dim=1)).mean(dim=0)
         mag_mean = mag_mean.cpu().detach().numpy().item()
-        q = torch.histogram((x@x.T).flatten().cpu()/N, bins=100, range=(-1, 1))[0]
+        q = torch.histogram((x@x.T).flatten().cpu()/N,
+                            bins=100, range=(-1, 1))[0]
         if ifprint:
             str_p = f"\rstep: {step} {beta:.5f} fe: {free_energy_mean:.3f} +- {free_energy_std:.5f} E: {energy_mean:.3f}, S: {entropy_mean:.3f}, M: {mag_mean:.3}"
             times["stats"] = time.time() - tt
@@ -43,6 +44,8 @@ def compute_stats(x, loss, log_prob, energy, beta, model, step=0, ifprint=True, 
 
 
 class ANN(nn.Module):
+    """Class """
+
     def __init__(
         self,
         model,
@@ -53,6 +56,8 @@ class ANN(nn.Module):
         eps=1e-10,
         print_num_params=True
     ):
+        """Initialize the class. 
+        Args:model: model class, net: neural network class, input_mask: input mask, dtype: data type, device: device, eps: epsilon, print_num_params: print number of parameters"""
         # print(model)
         super().__init__()
         self.N = model.N
@@ -209,6 +214,83 @@ class ANN(nn.Module):
             times["optimizer"] = time.time() - start_t - times["sample_t"] - \
                 times["log_prob"] - times["loss"]
             stats = compute_stats(samples, loss, log_prob, energy,
+                                  beta, self.model, step=step, ifprint=ifprint, times=times)
+            fe_run.append(stats["free_energy_mean"])
+            fe_std_run.append(stats["free_energy_std"])
+            if step >= max_step or stats["free_energy_std"] < std_fe_limit:
+                stats_list.append(stats)
+                stats_iter_done += 1
+            if stats["free_energy_std"] < std_fe_limit and stats_iter_done >= batch_iter:
+                break
+        #print(stats_list, step)
+        res_stats = self.avg_stats_(stats_list, batch_iter=batch_iter)
+        res_stats["fe_run"] = fe_run
+        res_stats["fe_std_run"] = fe_std_run
+
+        return res_stats
+
+    def train_with_samples(
+        self,
+        samples,
+        lr=1e-3,
+        opt="adam",
+        beta=1,
+        max_step=10000,
+        batch_fraction=1,
+        std_fe_limit=1e-4,
+        batch_iter=1,
+        ifprint=True,
+        exact=False,
+        set_optim=True,
+    ):
+
+        if set_optim:
+            params = self.parameters()
+            if opt == "SGD":
+                optimizer = torch.optim.SGD(params, lr=lr)
+            elif opt == "sgdm":
+                optimizer = torch.optim.SGD(params, lr=lr, momentum=0.9)
+            elif opt == "rmsprop":
+                optimizer = torch.optim.RMSprop(params, lr=lr, alpha=0.99)
+            elif opt == "adam":
+                optimizer = torch.optim.Adam(params, lr=lr)
+            elif opt == "adam0.5":
+                optimizer = torch.optim.Adam(params, lr=lr, betas=(0.5, 0.999))
+            else:
+                print("optimizer not found, setted Adam")
+                optimizer = torch.optim.Adam(params, lr=lr)
+            self.optimizer = optimizer
+
+        optimizer = self.optimizer
+        optimizer.zero_grad()
+        stats_list = []
+        stats_iter_done = 0
+        fe_run = []
+        fe_std_run = []
+        times = {}
+        ss_num = int(samples.shape[0] / batch_fraction)
+        for step in range(0, max_step + batch_iter):
+            idx = torch.randperm(samples.shape[0])[:ss_num]
+            sample_ss = samples[idx]
+            optimizer.zero_grad()
+            start_t = time.time()
+            times["sample_t"] = time.time() - start_t
+            log_prob = self.log_prob(sample_ss)
+            times["log_prob"] = time.time() - start_t - times["sample_t"]
+            with torch.no_grad():
+                samples_net, x_hat = self.sample(ss_num)
+                energy = self.model.energy(samples_net)
+                log_prob_net = self.log_prob(samples_net)
+                loss = log_prob_net + beta * energy
+            times["loss"] = time.time() - start_t - times["sample_t"] - \
+                times["log_prob"]
+
+            loss_reinforce = -torch.mean(log_prob)
+            loss_reinforce.backward()
+            optimizer.step()
+            times["optimizer"] = time.time() - start_t - times["sample_t"] - \
+                times["log_prob"] - times["loss"]
+            stats = compute_stats(samples_net, loss, log_prob_net, energy,
                                   beta, self.model, step=step, ifprint=ifprint, times=times)
             fe_run.append(stats["free_energy_mean"])
             fe_std_run.append(stats["free_energy_std"])
