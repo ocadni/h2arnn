@@ -18,8 +18,9 @@ import python_lib.nets as nets
 import python_lib.nets.simple_layer as simple_layer
 import python_lib.nets.made as made
 import python_lib.run_lib as run_lib
+import python_lib.nets.h2_arnn as h2_arnn
 import python_lib.nets.list_nets as list_nets
-import python_lib.nets.cw_net as cw_net
+import python_lib.nets.cw_arnn as cw_arnn
 
 
 def file_name(args, net=False):
@@ -151,12 +152,11 @@ def CW_case(args):
         stats = pd.DataFrame(stats)
         stats = stats.add_suffix(suffix)
 
-    elif net_spec == "sum_exp_exact":
-        list_n = list_nets.CW_net
+    elif net_spec == "CWARNN":
         input_mask = torch.tril(J_interaction, diagonal=-1)
         input_mask = input_mask.to(dtype=torch.bool)
-        net = list_nets.list_nets(
-            CW_model, list_n, input_mask, device=device)
+        net = cw_arnn.CWARNN(
+            CW_model, input_mask, device=device)
         stats = run_lib.train_net(net,
                                   betas,
                                   lr=lr,
@@ -192,46 +192,20 @@ def CW_case(args):
                             net_depth=2,
                             net_width=2
                             )
-        elif net_spec == "one_new":
-            net = cw_net.one_var(CW_model,
-                                 device=device,
-                                 )
-        elif net_spec == "one_var_sign":
-            net = cw_net.one_var_sign(CW_model,
-                                      device=device,
-                                      )
-        elif net_spec == "one":
-            one = list_nets.one_var
+        elif net_spec == "1Par":
+            net = cw_arnn.oneP(CW_model,
+                              device=device,
+                              )
+        elif net_spec == "CWARNN_inf":
+            net = cw_arnn.CWARNN_inf(CW_model,
+                                    device=device,
+                                    )
+        elif net_spec == "CWARNN_free":
+            list_n = h2_arnn.CWARNN
             input_mask = torch.tril(J_interaction, diagonal=-1)
             input_mask = input_mask.to(dtype=torch.bool)
-            net = list_nets.list_nets(
-                CW_model, one, input_mask, device=device)
-        elif net_spec == "CW_sign":
-            one = list_nets.CW_sign
-            input_mask = torch.tril(J_interaction, diagonal=-1)
-            input_mask = input_mask.to(dtype=torch.bool)
-            net = list_nets.list_nets(
-                CW_model, one, input_mask, device=device)
-        elif net_spec == "sum_exp":
-            list_n = list_nets.CW_net
-            input_mask = torch.tril(J_interaction, diagonal=-1)
-            input_mask = input_mask.to(dtype=torch.bool)
-            net = list_nets.list_nets(
+            net = h2_arnn.list_nets(
                 CW_model, list_n, input_mask, device=device)
-        elif net_spec == "sp2":
-            list_n = list_nets.CW_net_sp
-            input_mask = torch.tril(J_interaction, diagonal=-1)
-            input_mask = input_mask.to(dtype=torch.bool)
-            dict_nets = {"num_extremes": 2}
-            net = list_nets.list_nets(
-                CW_model, list_n, input_mask, device=device, dict_nets=dict_nets)
-        elif net_spec == "sp4":
-            list_n = list_nets.CW_net_sp
-            input_mask = torch.tril(J_interaction, diagonal=-1)
-            input_mask = input_mask.to(dtype=torch.bool)
-            dict_nets = {"num_extremes": 4}
-            net = list_nets.list_nets(
-                CW_model, list_n, input_mask, device=device, dict_nets=dict_nets)
         else:
             print("ERROR: Nets not found!")
             return 0
@@ -286,15 +260,6 @@ def SK_case(args):
     if net_spec == "exact":
         for beta_ in betas:
             stats.append(SK_model.exact(beta_))
-        stats = pd.DataFrame(stats)
-        stats = stats.add_suffix(suffix)
-
-    elif net_spec == "exact_Ninf":
-        print("TODO")
-        stats = pd.DataFrame()
-        pass
-        for beta_ in betas:
-            stats.append(SK_model.exact_infN(beta_))
         stats = pd.DataFrame(stats)
         stats = stats.add_suffix(suffix)
     else:

@@ -3,49 +3,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from python_lib.nets.ann import ANN
-import random
 from scipy.special import comb
 
 
-def find_neigh(model_):
-    """
-    This function finds the neighbors of a given model. 
-
-    Parameters: 
-    model_: the model whose neighbors are to be found 
-
-    Variables: 
-    n: the number of nodes in the model 
-    neighs: a list of lists containing the neighbors of each node in the model 
-    num_neighs: a list containing the number of neighbors for each node in the model 
-    n_i: an index used to iterate through all nodes in the model 
-    neigh_i: an index used to iterate through all possible neighbors for each node in the model 
-    val: a boolean value indicating whether or not two nodes are connected by an edge  
-
-    The function loops through all nodes in the model and creates a list containing all of its neighbors. It also creates another list containing the number of neighbors for each node. Finally, it returns both lists."""
-    n = model_.N
-    neighs = []
-    num_neighs = []
-    for n_i in range(n):
-        num_n_less = 0
-        neighs.append([])
-        for neigh_i, val in enumerate(model_.J_interaction[n_i][0:n_i]):
-            if val:
-                num_n_less += 1
-                neighs[n_i].append(neigh_i)
-        num_neighs.append(num_n_less)
-    return neighs
-
-
-def rand_grad(self, prob_zero=0.5):
-    non_z = torch.nonzero(self.net[0].weight.grad)
-    for non_z in torch.nonzero(self.net[0].weight.grad):
-        if random.random() > prob_zero:
-            self.net[0].weight.grad[non_z[0], non_z[1]] = 0
-    return self.net[0].weight.grad
-
-
-class one_var(nn.Module):
+class oneP(nn.Module):
     def __init__(self,
                  model,
                  n_i,
@@ -67,7 +28,7 @@ class one_var(nn.Module):
         return torch.sigmoid(res)
 
 
-class CW_sign(nn.Module):
+class CWARNN_inf(nn.Module):
     def __init__(self,
                  model,
                  n_i,
@@ -90,7 +51,7 @@ class CW_sign(nn.Module):
         return torch.sigmoid(res)
 
 
-class CW_net(nn.Module):
+class CWARNN(nn.Module):
     def __init__(self,
                  model,
                  n_i,
@@ -100,6 +61,7 @@ class CW_net(nn.Module):
                  ):
         super().__init__()
         N = model.N
+        #print("N", N, "n_i", n_i)
         N_i = N - n_i - 1
         self.n_i = n_i
         self.N_i = N_i
@@ -143,7 +105,7 @@ class CW_net(nn.Module):
         torch.nn.init.normal_(self.bias_0, mean=0.0, std=1/N)
 
     def forward(self, x):
-        m_i = x.sum(-1)
+        m_i = x[:, 0]
         res_p = self.bias_p + self.weight_p * torch.unsqueeze(m_i, dim=1)
         res_p = self.weight_0p * torch.logsumexp(res_p, 1)
         res_m = self.bias_m + self.weight_m * torch.unsqueeze(m_i, dim=1)
@@ -152,6 +114,7 @@ class CW_net(nn.Module):
         return torch.sigmoid(res_0 + res_p + res_m)
 
     def set_params_exact(self, model, beta):
+        print("set_params_exact")
         for p in self.parameters():
             p.requires_grad_(False)
         J_N = model.J[0][1] * 2
@@ -182,7 +145,7 @@ class CW_net(nn.Module):
         self.weight_0m[0] = - 1
 
 
-class SK_net_krsb(nn.Module):
+class SK_krsb(nn.Module):
 
     def __init__(self,
                  model,
