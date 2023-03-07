@@ -6,145 +6,6 @@ from python_lib.nets.ann import ANN
 from scipy.special import comb
 
 
-class oneP(nn.Module):
-    def __init__(self,
-                 model,
-                 n_i,
-                 dict_nets={},
-                 dtype=torch.float32,
-                 device="cpu",
-                 ):
-        super().__init__()
-        N = model.N
-        weight = torch.zeros((1), device=device, dtype=dtype)
-        # nn.Parameter is a Tensor that's a module parameter.
-        self.weight = nn.Parameter(weight)
-
-        # initialize weights and biases
-        torch.nn.init.normal_(self.weight, mean=0.0, std=1/N)
-
-    def forward(self, x):
-        res = x.sum(-1) * self.weight
-        return torch.sigmoid(res)
-
-
-class CWARNN_inf(nn.Module):
-    def __init__(self,
-                 model,
-                 n_i,
-                 dict_nets={},
-                 dtype=torch.float32,
-                 device="cpu",
-                 ):
-        super().__init__()
-        N = model.N
-        weight = torch.zeros((2), device=device, dtype=dtype)
-        # nn.Parameter is a Tensor that's a module parameter.
-        self.weight = nn.Parameter(weight)
-
-        # initialize weights and biases
-        torch.nn.init.normal_(self.weight, mean=0.0, std=1/N)
-
-    def forward(self, x):
-        res = x.sum(-1) * self.weight[0] + \
-            self.weight[1] * torch.sign(x.sum(-1))
-        return torch.sigmoid(res)
-
-
-class CWARNN(nn.Module):
-    def __init__(self,
-                 model,
-                 n_i,
-                 dict_nets={},
-                 dtype=torch.float32,
-                 device="cpu",
-                 ):
-        super().__init__()
-        N = model.N
-        #print("N", N, "n_i", n_i)
-        N_i = N - n_i - 1
-        self.n_i = n_i
-        self.N_i = N_i
-        if N_i > 0:
-            weight_p = torch.zeros((1, N_i+1), device=device, dtype=dtype)
-            weight_m = torch.zeros((1, N_i+1), device=device, dtype=dtype)
-            bias_p = torch.zeros((1, N_i+1), device=device, dtype=dtype)
-            bias_m = torch.zeros((1, N_i+1), device=device, dtype=dtype)
-            weight_0p = torch.zeros((1), device=device, dtype=dtype)
-            weight_0m = torch.zeros((1), device=device, dtype=dtype)
-            # nn.Parameter is a Tensor that's a module parameter.
-            self.weight_p = nn.Parameter(weight_p)
-            self.bias_p = nn.Parameter(bias_p)
-            self.weight_m = nn.Parameter(weight_m)
-            self.bias_m = nn.Parameter(bias_m)
-            self.weight_0p = nn.Parameter(weight_0p)
-            self.weight_0m = nn.Parameter(weight_0m)
-
-            # initialize weights and biases
-            torch.nn.init.normal_(self.weight_0p, mean=0.0, std=1/N)
-            torch.nn.init.normal_(self.weight_0m, mean=0.0, std=1/N)
-            torch.nn.init.normal_(self.weight_p, mean=0.0, std=1/N)
-            torch.nn.init.normal_(self.bias_p, mean=0.0, std=1/N)
-            torch.nn.init.normal_(self.weight_m, mean=0.0, std=1/N)
-            torch.nn.init.normal_(self.bias_m, mean=0.0, std=1/N)
-        else:
-            self.weight_p = torch.zeros((1, 1), device=device, dtype=dtype)
-            self.weight_m = torch.zeros((1, 1), device=device, dtype=dtype)
-            self.bias_p = torch.zeros((1, 1), device=device, dtype=dtype)
-            self.bias_m = torch.zeros((1, 1), device=device, dtype=dtype)
-            self.weight_0p = torch.zeros((1), device=device, dtype=dtype)
-            self.weight_0m = torch.zeros((1), device=device, dtype=dtype)
-
-        weight_0 = torch.zeros((1), device=device, dtype=dtype)
-        bias_0 = torch.zeros((1), device=device, dtype=dtype)
-        self.weight_0 = nn.Parameter(weight_0)
-        self.bias_0 = nn.Parameter(bias_0)
-
-        # initialize weights and biases
-        torch.nn.init.normal_(self.weight_0, mean=0.0, std=1/N)
-        torch.nn.init.normal_(self.bias_0, mean=0.0, std=1/N)
-
-    def forward(self, x):
-        m_i = x[:, 0]
-        res_p = self.bias_p + self.weight_p * torch.unsqueeze(m_i, dim=1)
-        res_p = self.weight_0p * torch.logsumexp(res_p, 1)
-        res_m = self.bias_m + self.weight_m * torch.unsqueeze(m_i, dim=1)
-        res_m = self.weight_0m * torch.logsumexp(res_m, 1)
-        res_0 = self.bias_0 + self.weight_0 * m_i
-        return torch.sigmoid(res_0 + res_p + res_m)
-
-    def set_params_exact(self, model, beta):
-        print("set_params_exact")
-        for p in self.parameters():
-            p.requires_grad_(False)
-        J_N = model.J[0][1] * 2
-        h = model.H[0]
-        N_i = self.N_i
-        n_i = self.n_i
-        N = N_i + n_i + 1
-        #print(f"n_i={n_i}, N_i={N_i}, N={N}, beta={beta:.2f}, J_2N:{J_2N:.3} ")
-        # if n_i > 0:
-        assert (N == model.N)
-        JJ = beta * J_N
-
-        for k in range(0, N_i+1):
-            m = N_i - 2*k
-            #print(m, comb(N_i, k))
-            b_ = np.log(comb(N_i, k)) + (JJ/2)*m**2 + beta*h*m
-            b_p = b_ + JJ*m
-            b_m = b_ - JJ*m
-            w_ = JJ*m
-            self.weight_p[0][k] = w_
-            self.weight_m[0][k] = w_
-            self.bias_p[0][k] = b_p
-            self.bias_m[0][k] = b_m
-
-        self.weight_0[0] = 2 * JJ
-        self.bias_0[0] = 2 * beta * h
-        self.weight_0p[0] = + 1
-        self.weight_0m[0] = - 1
-
-
 class SK_krsb(nn.Module):
 
     def __init__(self,
@@ -213,7 +74,7 @@ class SK_krsb(nn.Module):
         return 1
 
 
-class list_nets(ANN):
+class h2arnn(ANN):
     def __init__(
         self,
         model,
@@ -230,7 +91,7 @@ class list_nets(ANN):
         for n_i in range(model.N):
             net.append(single_net(model, n_i, device=device,
                        dtype=dtype, dict_nets=dict_nets))
-        super(list_nets, self).__init__(
+        super(h2arnn, self).__init__(
             model, net, dtype=dtype, device=device, eps=eps, print_num_params=False)
         self.input_mask = input_mask.to(dtype=torch.bool)
         if dict_nets["set_exact"]:

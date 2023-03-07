@@ -9,10 +9,10 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=indaco.biazzo@epfl.ch
 
-python="/home/biazzo/miniconda3/envs/sib/bin/python"
-script="/home/biazzo/git/pytorch_test/run.py"
-#python="python"
-#script="run.py"
+#python="/home/biazzo/miniconda3/envs/sib/bin/python"
+#script="/home/biazzo/git/pytorch_test/run.py"
+python="python"
+script="run.py"
 beta_init=0.1
 beta_end=2
 beta_step=39
@@ -25,7 +25,7 @@ batch_iter=20
 stats_step=1
 save_dir="./results/SK/data/"
 N=20
-net_spec="SK_net_0rsb"
+net_spec="SK_0rsb"
 model="SK"
 device="cpu"
 save_net="yes"

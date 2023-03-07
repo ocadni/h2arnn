@@ -7,19 +7,20 @@ import pandas as pd
 import time
 import os
 
-import sys
 import time
-from pathlib import Path
 import argparse
-import warnings
+
 from python_lib.models import spins_model
 import python_lib.graph_gen as graph_gen
-import python_lib.nets as nets
+
+import python_lib.run_lib as run_lib
+
 import python_lib.nets.simple_layer as simple_layer
 import python_lib.nets.made as made
-import python_lib.run_lib as run_lib
-import python_lib.nets.h2_arnn as h2_arnn
-import python_lib.nets.list_nets as list_nets
+
+
+import python_lib.nets.h2arnn as h2arnn
+
 import python_lib.nets.cw_arnn as cw_arnn
 
 
@@ -194,17 +195,17 @@ def CW_case(args):
                             )
         elif net_spec == "1Par":
             net = cw_arnn.oneP(CW_model,
-                              device=device,
-                              )
+                               device=device,
+                               )
         elif net_spec == "CWARNN_inf":
             net = cw_arnn.CWARNN_inf(CW_model,
-                                    device=device,
-                                    )
+                                     device=device,
+                                     )
         elif net_spec == "CWARNN_free":
-            list_n = h2_arnn.CWARNN
+            list_n = h2arnn.CWARNN
             input_mask = torch.tril(J_interaction, diagonal=-1)
             input_mask = input_mask.to(dtype=torch.bool)
-            net = h2_arnn.list_nets(
+            net = h2arnn.list_nets(
                 CW_model, list_n, input_mask, device=device)
         else:
             print("ERROR: Nets not found!")
@@ -263,47 +264,36 @@ def SK_case(args):
         stats = pd.DataFrame(stats)
         stats = stats.add_suffix(suffix)
     else:
-        if net_spec == "SK_rs_learn":
-            dict_nets = {"set_exact": False}
-            list_n = list_nets.SK_net_rs
-            input_mask = torch.tril(J_interaction, diagonal=-1)
-            input_mask = input_mask.to(dtype=torch.bool)
-            net = list_nets.list_nets(
-                SK_model, list_n, input_mask, device=device, dict_nets=dict_nets)
-
-        elif net_spec == "SK_0rsb":
-            list_n = list_nets.SK_net_krsb
+        if net_spec == "SK_0rsb":
+            rho = h2arnn.SK_krsb
             learn = False
-            list_n.learn_first_l = learn
-            list_n.set_params_exact(SK_model, 0.1)
+            # list_n.learn_first_l = learn
+            # list_n.set_params_exact(SK_model, 0.1)
             input_mask = torch.tril(J_interaction, diagonal=-1)
             input_mask = input_mask.to(dtype=torch.bool)
             dict_nets = {"k": 0, "set_exact": learn}
-            net = list_nets.list_nets(
-                SK_model, list_n, input_mask, device=device, dict_nets=dict_nets)
-
+            net = h2arnn.h2arnn(
+                SK_model, rho, input_mask, device=device, dict_nets=dict_nets, learn_first_l=learn)
         elif net_spec == "SK_1rsb":
-            list_n = list_nets.SK_net_krsb
+            rho = h2arnn.SK_krsb
             learn = False
-            list_n.learn_first_l = learn
-            list_n.set_params_exact(SK_model, 0.1)
+            # list_n.learn_first_l = learn
+            # list_n.set_params_exact(SK_model, 0.1)
             input_mask = torch.tril(J_interaction, diagonal=-1)
             input_mask = input_mask.to(dtype=torch.bool)
             dict_nets = {"k": 1, "set_exact": learn}
-            net = list_nets.list_nets(
-                SK_model, list_n, input_mask, device=device, dict_nets=dict_nets)
-
+            net = h2arnn.h2arnn(
+                SK_model, rho, input_mask, device=device, dict_nets=dict_nets, learn_first_l=learn)
         elif net_spec == "SK_2rsb":
-            list_n = list_nets.SK_net_krsb
+            rho = h2arnn.SK_krsb
             learn = False
-            list_n.learn_first_l = learn
-            list_n.set_params_exact(SK_model, 0.1)
+            # list_n.learn_first_l = learn
+            # list_n.set_params_exact(SK_model, 0.1)
             input_mask = torch.tril(J_interaction, diagonal=-1)
             input_mask = input_mask.to(dtype=torch.bool)
             dict_nets = {"k": 2, "set_exact": learn}
-            net = list_nets.list_nets(
-                SK_model, list_n, input_mask, device=device, dict_nets=dict_nets)
-
+            net = h2arnn.h2arnn(
+                SK_model, rho, input_mask, device=device, dict_nets=dict_nets, learn_first_l=learn)
         elif net_spec == "SL":
             net = simple_layer.simple_layer(
                 SK_model, device=device)
@@ -359,7 +349,7 @@ def main():
         stats = SK_case(args)
 
     for ff in vars(args):
-        #print(ff, vars(args)[ff])
+        # print(ff, vars(args)[ff])
         stats[str(ff)] = str(vars(args)[ff])
 
     timestr = time.strftime("%Y%m%d_%H%M%S")
