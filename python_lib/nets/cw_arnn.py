@@ -8,7 +8,13 @@ from scipy.special import comb
 
 
 class oneP_(nn.Module):
+    """_summary_
+
+    Args:
+        nn (_type_): _description_
+    """
     def __init__(self, N, device, dtype):
+        """_summary_"""
         super(oneP_, self).__init__()
         self.N = N
         self.dtype = dtype
@@ -18,6 +24,14 @@ class oneP_(nn.Module):
         torch.nn.init.normal_(self.one_vars, mean=0.0, std=1/N)
 
     def forward(self, x):
+        """_summary_
+
+        Args:
+            x (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
         m = x.shape[0]
         res = torch.zeros((m, self.N),
                           device=self.device, dtype=self.dtype)
@@ -26,10 +40,7 @@ class oneP_(nn.Module):
 
 
 class oneP(ANN):
-    """
-    TODO ass bias for dealing with external field 
-    """
-
+    """_summary_"""
     def __init__(
         self,
         model,
@@ -38,7 +49,15 @@ class oneP(ANN):
         eps=1e-10,
         dict_nets={"bias": False},
     ):
+        """_summary_
 
+        Args:
+            model (_type_): _description_
+            dtype (_type_, optional): _description_. Defaults to torch.float32.
+            device (str, optional): _description_. Defaults to "cpu".
+            eps (_type_, optional): _description_. Defaults to 1e-10.
+            dict_nets (dict, optional): _description_. Defaults to {"bias": False}.
+        """
         net = oneP_(model.N, device=device, dtype=dtype)
         super(oneP, self).__init__(
             model, net, dtype=dtype, device=device, eps=eps)
@@ -62,7 +81,13 @@ class oneP(ANN):
 
 
 class CWARNN_inf_(nn.Module):
+    """_summary_
+
+    Args:
+        nn (_type_): _description_
+    """
     def __init__(self, N, device, dtype):
+        """_summary_"""
         super(CWARNN_inf_, self).__init__()
         self.N = N
         self.dtype = dtype
