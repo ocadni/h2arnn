@@ -86,7 +86,7 @@ The sums over the configurations of the spins $l$ can be carried on easily:
  &=& \sum_{k=0}^{N-i} \binom{N-i}{k} \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} 
   e^{(N-i-2k)*(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t)}\\
 &=& \sum_{k=0}^{N-i} \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\beta h \pm \frac{\beta J}{N}\right)} e^{\frac{\beta J}{N}\left(N-i-2k\right) \sum_s x_s} \\
-&=& \sum_{k=0}^{N-i} e^{a_{i,k}^{\pm} + b_{i,k}^{\pm} \sum_s x_s} 
+&=& \sum_{k=0}^{N-i} e^{b_{i,k}^{\pm} + w_{i,k}^{\pm} \sum_s x_s} 
 \end{eqnarray*}
 where:
 \begin{eqnarray}
@@ -106,12 +106,12 @@ In the thermodynamical limit, the Curie-Weiss model admits an analytical solutio
 \end{align}    
 %\end{widetext}
 
-In the limit $N \gg 1$, and using the Stirling approximation for the binomial factor, we obtain:
+In the limit $N \gg 1$, we obtain:
  \begin{align}
  \rho_i^{\pm} & = 
   \int_{-\eta_i}^{\eta_i} \binom{N\eta_i}{\frac{N(m_i+\eta_i)}{2}} e^{\frac{N \beta J}{2}m_i^{2} \mp \beta J m_i } e^{N \eta_i \beta J \frac{\sum_s x_s}{N-i}} dm_i \\
 \begin{split} 
-  = & \int_{-\eta_i}^{\eta_i} \exp\bigg\{-N\eta_i \big( -\frac{1+\frac{m_i}{\eta_i}}{2} \log\frac{1+\frac{m_i}{\eta_i}}{2} \\
+  \approx & \int_{-\eta_i}^{\eta_i} \exp\bigg\{-N\eta_i \big( -\frac{1+\frac{m_i}{\eta_i}}{2} \log\frac{1+\frac{m_i}{\eta_i}}{2} \\
    & - \frac{1-\frac{m_i}{\eta_i}}{2} \log\frac{1-\frac{m_i}{\eta_i}}{2} 
       - \frac{\beta m_i^2}{2 \eta_i} + \beta m_i \frac{\sum_s x_s}{N-i}\big) \bigg\} e^{\mp \beta J m_i} dm_i
 \end{split} \\
@@ -122,7 +122,7 @@ In the limit $N \gg 1$, and using the Stirling approximation for the binomial fa
     \doteq & e^{\mp \beta J \tilde{m}_{i}} 
 \end{split}
 \end{align}
-Where in the third line I used the saddle point method, assuming $N\gg 1$, where $\tilde{m}_{i}$ is the extreme of the function inside the curly brackets. In the last line, I simplify all the elements that are equal between $\rho_i^{+} $ and $\rho_i^{-}$ that cancel each other in the conditional probability function eq.\ref{eq:conditional_cw}. Deriving by $m_i$ the function inside the curly brackets, we obtain that the extreme $\tilde{m}_{i}$ should satisfy the following equation:
+where in the second line I used the Stirling approximation for the binomial factor, in the third line I used the saddle point method, assuming $N\gg 1$, where $\tilde{m}_{i}$ is the extreme of the function inside the curly brackets. In the last line, I simplify all the elements that are equal between $\rho_i^{+} $ and $\rho_i^{-}$ that cancel each other in the conditional probability function eq.\ref{eq:conditional_cw}. Deriving by $m_i$ the function inside the curly brackets, we obtain that the extreme $\tilde{m}_{i}$ should satisfy the following equation:
 \begin{equation}
 \frac{\tilde{m}_{i}}{\eta_i} = \tanh \left( \beta(\frac{\tilde{m}_{i}}{\eta_i} - \frac{\sum_s x_s}{N-i}) \right)
 \label{eq:extrem_i}

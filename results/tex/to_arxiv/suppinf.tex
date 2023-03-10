@@ -49,7 +49,7 @@ total={6.5in,8.75in}, top=1.2in, left=0.5in, right=0.5in, includefoot,
 
 \section{ANRR architecture of the Curie-Weiss model}
 
-The Curie-Weiss model (CW) is a uniform, fully-connected Ising model. The Hamiltonian of the Curie-Weiss model (CW) with $N$ spins is $H\left(\mathbf{x}\right)=-h\sum_{i=1}^{N}x_{i}-\frac{J}{N}\sum_{i<j}x_{i}x_{j}$. Defining $M_{<i}[\mathbf{x}_{<i}]=\sum_{s=1}^{i-1}x_{s}$ and $M_{>i}=\sum_{l=i+1}^{N}x_{l}$, the conditional probability of a spin $i$, see eq.11 in the main text, of the CW model is:
+The Curie-Weiss model (CW) is a uniform, fully-connected Ising model. The Hamiltonian of the Curie-Weiss model (CW) with $N$ spins is $H\left(\mathbf{x}\right)=-h\sum_{i=1}^{N}x_{i}-\frac{J}{N}\sum_{i<j}x_{i}x_{j}$. Defining $M_{<i}[\mathbf{x}_{<i}]=\sum_{s=1}^{i-1}x_{s}$ and $M_{>i}=\sum_{l=i+1}^{N}x_{l}$, the conditional probability of a spin $i$, see eq.11 in the main text, of the CW model, is:
 \begin{equation}
 %\begin{multline}
 P^{CW}\left(x_{i}=1|\mathbf{x}_{<i}\right) = 
@@ -74,7 +74,7 @@ The sums over the configurations of the spins $l$ can be carried on easily:
  =  \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} \left(e^{\beta h_i^{\pm}[\mathbf{x}_{<i}] + t} + e^{ (-\beta h_i^{\pm}[\mathbf{x}_{<i}] - t)} \right)^{N-i}  \\ 
  \label{eq:rho_last_exact}
  \end{multline} 
- where we used the Hubbard–Stratonovich (HS) transformation to obtain the second equality.\\
+ where we used the Hubbard–Stratonovich (HS) transformation to obtain the second equality. The last equality is obtained just by summing over the variables $x_l$.\\
  First, in the following, we derive the exact feed-forward representation of eq.\ref{eq:conditional_cw} at finite $N$ number of variables, then in the limit of $N\rightarrow \infty$.\\
 
  \subsection{Exact expression of the conditional probability of the CW model}
@@ -86,7 +86,7 @@ The sums over the configurations of the spins $l$ can be carried on easily:
  &=& \sum_{k=0}^{N-i} \binom{N-i}{k} \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} 
   e^{(N-i-2k)*(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t)}\\
 &=& \sum_{k=0}^{N-i} \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\beta h \pm \frac{\beta J}{N}\right)} e^{\frac{\beta J}{N}\left(N-i-2k\right) \sum_s x_s} \\
-&=& \sum_{k=0}^{N-i} e^{a_{i,k}^{\pm} + b_{i,k}^{\pm} \sum_s x_s} 
+&=& \sum_{k=0}^{N-i} e^{b_{i,k}^{\pm} + w_{i,k}^{\pm} \sum_s x_s} 
 \end{eqnarray*}
 where:
 \begin{eqnarray}
@@ -97,33 +97,39 @@ e^{\omega_{i,k}^{\pm}} & = & e^{\frac{\beta J}{N}\left(N-i-2k\right)},
 proving the equation shown in the main text.
 
 \subsection{Thermodynamical limit of the conditional probability of the CW model}
-In the thermodynamical limit, the Curie-Weiss model admits an analytical solution. The order parameter of the system is the magnetization, $m_{\beta}=\frac{1}{N Z}\sum_{\mathbf{x}}\sum_i x_i e^{-\beta H}$ with $Z = \sum_{\mathbf{x}} e^{-\beta H}$. At high temperatures, with zero external fields $h=0$, the magnetization, $m_{\beta}$, is zero up to a critical temperature $\beta_c=1$, where a phase transition occurs, and a non-zero magnetization is observed \cite{kadanoff2000statistical}. Considering the following variables: $\rho_i = \frac{N-i}{N}$, $m_i = -\frac{N-i-2k}{N}$, and for simplicity, the $h=0$ case, we can rewrite the expression, eq.\ref{eq:rho_last_exact}, as:
+In the thermodynamical limit, the Curie-Weiss model admits an analytical solution. The order parameter of the system is the magnetization, $m_{\beta}=\frac{1}{N Z}\sum_{\mathbf{x}}\sum_i x_i e^{-\beta H}$ with $Z = \sum_{\mathbf{x}} e^{-\beta H}$. At high temperatures, with zero external fields $h=0$, the magnetization, $m_{\beta}$, is zero up to a critical temperature $\beta_c=\frac{1}{J}$, where a phase transition occurs, and a non-zero magnetization is observed \cite{kadanoff2000statistical}. Considering the following variables: $\eta_i = \frac{N-i}{N}$, $m_i = -\frac{N-i-2k}{N}$, and for simplicity, the $h=0$ case, we can rewrite the expression, eq.\ref{eq:rho_last_exact}, as:
 %\begin{widetext}
 \begin{align}
     \rho_i^{\pm}[\mathbf{x}_{<i}] &= \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} 
     \sum_{k=0}^{N-i} \binom{N-i}{k} e^{(N-i-2k)*(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t)}\\ \label{eq:rho_last_exact2} &= \sum_{k=0}^{N-i} \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\pm\frac{\beta J}{N}\right)} e^{\frac{\beta J}{N}\left(N-i-2k\right) \sum_s x_s}  \\
-    &= \sum_{m_i=-\rho_i}^{\rho_i} \binom{N\rho_i}{\frac{N(m_i+\rho_i)}{2}} e^{\frac{N \beta J}{2}m_i^{2} \mp \beta J m_i } e^{N \rho_i \beta J \frac{\sum_s x_s}{N-i}}
+    &= \sum_{m_i=-\eta_i}^{\eta_i} \binom{N \eta_i}{\frac{N(m_i+\eta_i)}{2}} e^{\frac{N \beta J}{2}m_i^{2} \mp \beta J m_i } e^{N \eta_i \beta J \frac{\sum_s x_s}{N-i}}
 \end{align}    
 %\end{widetext}
 
-In the limit $N \gg 1$, and using the Stirling approximation for the binomial factor, we obtain:
+In the limit $N \gg 1$, we obtain:
  \begin{align}
  \rho_i^{\pm} & = 
-  \int_{-\rho_i}^{\rho_i} \binom{N\rho_i}{\frac{N(m_i+\rho_i)}{2}} e^{\frac{N \beta J}{2}m_i^{2} \mp \beta J m_i } e^{N \rho_i \beta J \frac{\sum_s x_s}{N-i}} dm_i \\
+  \int_{-\eta_i}^{\eta_i} \binom{N\eta_i}{\frac{N(m_i+\eta_i)}{2}} e^{\frac{N \beta J}{2}m_i^{2} \mp \beta J m_i } e^{N \eta_i \beta J \frac{\sum_s x_s}{N-i}} dm_i \\
 \begin{split} 
-  = & \int_{-\rho_i}^{\rho_i} \exp\bigg\{-N\rho\big( -\frac{1+\frac{m_i}{\rho_i}}{2} \log\frac{1+\frac{m_i}{\rho_i}}{2} \\
-   & - \frac{1-\frac{m_i}{\rho_i}}{2} \log\frac{1-\frac{m_i}{\rho_i}}{2} 
-      - \frac{\beta m_i^2}{2 \rho_i} + \beta m_i \frac{\sum_s x_s}{N-i}\big) \bigg\} e^{\mp \beta J m_i}
+  \approx & \int_{-\eta_i}^{\eta_i} \exp\bigg\{-N\eta_i \big( -\frac{1+\frac{m_i}{\eta_i}}{2} \log\frac{1+\frac{m_i}{\eta_i}}{2} \\
+   & - \frac{1-\frac{m_i}{\eta_i}}{2} \log\frac{1-\frac{m_i}{\eta_i}}{2} 
+      - \frac{\beta m_i^2}{2 \eta_i} + \beta m_i \frac{\sum_s x_s}{N-i}\big) \bigg\} e^{\mp \beta J m_i} dm_i
+\end{split} \\
+\begin{split} 
+  \approx & \exp\bigg\{-N\eta_i \big( -\frac{1+\frac{\tilde{m}_{i}}{\eta_i}}{2} \log\frac{1+\frac{\tilde{m}_{i}}{\eta_i}}{2} \\
+   & - \frac{1-\frac{\tilde{m}_{i}}{\eta_i}}{2} \log\frac{1-\frac{\tilde{m}_{i}}{\eta_i}}{2} 
+      - \frac{\beta \tilde{m}_{i}^2}{2 \eta_i} + \beta \tilde{m}_{i} \frac{\sum_s x_s}{N-i}\big) \bigg\} e^{\mp \beta J \tilde{m}_{i}} \\
+    \doteq & e^{\mp \beta J \tilde{m}_{i}} 
 \end{split}
 \end{align}
-Solving the above integral using the saddle point method is possible by computing the extremes of the function inside the curly brackets. Deriving by $m_i$, we obtain that the extremes should satisfy the following equation:
+where in the second line I used the Stirling approximation for the binomial factor, in the third line I used the saddle point method, assuming $N\gg 1$, where $\tilde{m}_{i}$ is the extreme of the function inside the curly brackets. In the last line, I simplify all the elements that are equal between $\rho_i^{+} $ and $\rho_i^{-}$ that cancel each other in the conditional probability function eq.\ref{eq:conditional_cw}. Deriving by $m_i$ the function inside the curly brackets, we obtain that the extreme $\tilde{m}_{i}$ should satisfy the following equation:
 \begin{equation}
-\frac{m_i}{\rho_i} = \tanh \left( \beta(\frac{m_i}{\rho_i} - \frac{\sum_s x_s}{N-i}) \right)
+\frac{\tilde{m}_{i}}{\eta_i} = \tanh \left( \beta(\frac{\tilde{m}_{i}}{\eta_i} - \frac{\sum_s x_s}{N-i}) \right)
 \label{eq:extrem_i}
 \end{equation}
-In the $N$ large limit, and for a typical sample, we assume that: $\frac{\sum_s x_s}{N-i} \approx |\tilde{m}_{\beta}| \text{sgn}(\sum_s x_s)$, where the $m_{\beta}$ is the magnetization of the Curie-Weiss system at inverse temperature $\beta$ and $\text{sgn(x)} = \frac{|x|}{x}$ is the sign function.
+In the $N$ large limit, and for a typical sample, I assume that: $\frac{\sum_s x_s}{N-i} \approx |\tilde{m}_{\beta}| \text{sgn}(\sum_s x_s)$, where the $m_{\beta}$ is the magnetization of the Curie-Weiss system at inverse temperature $\beta$ and $\text{sgn(x)} = \frac{|x|}{x}$ is the sign function.
 We can distinguish two cases when the magnetization of the system is zero or not. 
-In the first case, when $\beta\leq 1$, the solution of eq.\ref{eq:extrem_i} is zero as well, and $\log(\rho_i^{+}) - \log(\rho_i^{-})=0$ because the only term that makes the two quantities different, $\mp \beta J m_i$, vanish.\\ 
+In the first case, when $\beta\leq 1/J$, the solution of eq.\ref{eq:extrem_i} is zero as well, and $\log(\rho_i^{+}) - \log(\rho_i^{-})=0$ because the only term that makes the two quantities different, $\mp \beta J m_i$, vanish.\\ 
 When instead the system acquires a magnetization $m_{\beta}$ different from zero, the eq.\ref{eq:extrem_i} admit one maximum that depends on the two possible symmetric values of $\frac{\sum_s x_s}{N-i}\approx |\tilde{m}_{\beta}| \text{sign}(\sum_q x_q)$. 
 The solution of eq.\ref{eq:extrem_i}, $\pm \tilde{m}_{\text{extrem}}$ depends again on $\text{sign}(\sum_s x_s)$, and we can write the maximum solution as $\tilde{m}_{i}=|\tilde{m}_i| \text{sgn}(\sum_s x_s)$. 
 Easily we obtain that $\log(\rho_i^{+}) - \log(\rho_i^{-}) = -2\beta J|\tilde{m}_i| \text{sgn}(\sum_s x_s)$, demostrating the formula in the main text.
@@ -394,7 +400,7 @@ Where in the last equation I renamed the variational parameters, for instance, $
         & b_0^{l^{\pm}} + w_0^{l^{\pm}} \log \sigma (b_1^{l^{\pm}} + w_1^{l^{\pm}} \log \sigma (b_2^{l^{\pm}} + w_2^{l^{\pm}} (h_l^{\pm}))).
 %        \int dx e^{\frac{x^2}{a}} \log\sigma (a_1 + b_1 \log \sigma (a_2 + b_2 (h+x))) & \approx a_0 +b_0 \log \sigma (a'_1 + b'_1 \log \sigma (a'_2 + b'_2 (h))) 
 \end{align}
-The set of parameters $(\mathbf{b_0^{{\pm}}},\mathbf{w_0^{{\pm}}},\mathbf{b_1^{{\pm}}},\mathbf{w_1^{{\pm}}},\mathbf{b_2^{{\pm}}},\mathbf{w_2^{{\pm}}})$ are free parameters to be determined by the learning procedures. The gaussian convolution integrals are substituted by feed-forward non-linear operations, enlarging the space of parameters. In the section \ref{sec:num_evidence} numerical evidence for the goodness of the above approximations is shown. For the 1RSB case, we use the following architecture:
+The set of parameters $(\mathbf{b_0^{{\pm}}},\mathbf{w_0^{{\pm}}},\mathbf{b_1^{{\pm}}},\mathbf{w_1^{{\pm}}},\mathbf{b_2^{{\pm}}},\mathbf{w_2^{{\pm}}})$ are free parameters to be determined by the learning procedures. The gaussian convolution integrals are substituted by feed-forward non-linear operations, enlarging the space of parameters. In section \ref{sec:num_evidence} numerical evidence for the goodness of the above approximations is shown. For the 1RSB case, we use the following architecture:
 \begin{multline*}
     Q^{1RSB}\left(x_{i}=1|\mathbf{x}_{<i}\right) = \sigma\left( 
         x_i^1(\mathbf{x}_{<i}) +\log(\rho_i^+) - \log(\rho_i^-)
@@ -445,7 +451,7 @@ As before, the function $f(x)$ is fitted with the l.h.s of the above expression,
 
 
 \section{Monte Carlo sampling of the SK model}
-In the main text, in the section results, in order to check the correlation between the weights of the first layer of the SK$_{1RSB}$ architecture with the coupling of the hamiltonian, 10,000 samples were generated through the Monte-Carlo Metropolis algorithm \cite{doi:10.1063/1.1887186}. The samples are generated for a system with $N=200$ variables at $\beta=2$. Each configuration is sampled after $stf = 200*N$ spin trail flip.  I observe that, for the system under study, for this number of trail spin flip of the Metropolis algorithm the autocorrelation time between the configurations drops below 0.5. The training of the SK$_{1RSB}$ was done minimizing, over the parameters of the SK$_{1RSB}$, the average of the negative log-likelihood (LL) of the generated $m$ samples:
+In the main text, in the section results, in order to check the correlation between the weights of the first layer of the SK$_{1RSB}$ architecture with the coupling of the hamiltonian, 10,000 samples were generated through the Monte-Carlo Metropolis algorithm \cite{doi:10.1063/1.1887186}. The samples are generated for a system with $N=200$ variables at $\beta=2$. Each configuration is sampled after $stf = 200*N$ spin trail flip.  I observe that, for the system under study, for this number of trail spin flips of the Metropolis algorithm the autocorrelation time between the configurations drops below 0.5. The training of the SK$_{1RSB}$ was done minimizing, over the parameters of the SK$_{1RSB}$, the average of the negative log-likelihood (LL) of the generated $m$ samples:
 \begin{equation}
     LL = - \frac{1}{m} \sum_{m}\log(Q_{1RSB})
 \end{equation}  

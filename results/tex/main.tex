@@ -149,13 +149,14 @@ where:
 \label{eq:rho_ghann}
 \end{equation}
 The set of elements $H_{ss}$ cancels out.
-The conditional probability, eq.\ref{eq:conditional_ghann}, can be interpreted as a feed-forward neural, following, starting from the input, the operation done on the variables $\mathbf{x}_{<i}$; the network has the following architecture (see fig.\ref{fig:arch}):
+The conditional probability, eq.\ref{eq:conditional_ghann}, can be interpreted as
+ a feed-forward neural network, following, starting from the input, the operation done on the variables $\mathbf{x}_{<i}$; the network has the following architecture (see fig.\ref{fig:arch}):
 %\begin{equation}
 \begin{multline}
     \label{eq:H2ANN}
         P_i\left(x_i=1 | \mathbf{x}_{<i}\right) = 
      \sigma \bigg\{ x_i^1 + \log\big[ \sum_{c} e^{b_c^+ + \sum_{l=i+1}^{N} w_{cl} x_{il}^1}\big]\\
-     +\log\big[ \sum_{c} e^{b_c^- + \sum_{l=i+1}^{N} w_{cl} x_{il}^1}\big] \bigg\},
+     -\log\big[ \sum_{c} e^{b_c^- + \sum_{l=i+1}^{N} w_{cl} x_{il}^1}\big] \bigg\},
 \end{multline}
 %\end{equation}
 where:
@@ -224,7 +225,7 @@ Defining $h_i^{\pm}[\mathbf{x}_{<i}] =h\pm\frac{J}{N}+\frac{J}{N}\sum_{s=1}^{i-1
 As shown in the appendix, the summations over $\mathbf{x_{>i}}$ can be easily done, finding the following expression:
 
  \begin{eqnarray*}
- \rho_i^{\pm}[\mathbf{x}_{<i}] = \sum_{k=0}^{N-i} e^{a_{i,k}^{\pm} + b_{i,k}^{\pm} \sum_s x_s} 
+ \rho_i^{\pm}[\mathbf{x}_{<i}] = \sum_{k=0}^{N-i} e^{b_{i,k}^{\pm} + w_{i,k}^{\pm} \sum_s x_s} 
 \end{eqnarray*}
 where we defined:
 \begin{align}
@@ -239,9 +240,9 @@ b_{i,k}^{\pm} & = \log\left(\binom{N-i}{k}\right) + \frac{\beta J}{2N}\left(N-i-
 The final feed-forward architecture of the Curie-Weiss Autoregressive Neural Network (CW$_N$) architecture is:
 \begin{multline*}
 %\label{eq:curie_weiss_cond}
-P^{CW_{N}}\left(x_{i}=+1|\mathbf{x}_{<i}\right)  =   \sigma \bigg[b_{0}+\omega_{0}\sum_{s=1}^{i-1}x_{s}\\
--\log\big(\sum_{k=0}^{N-i}e^{b_{i,k}^{+} + 
-w_{i,k}^{+}\sum_{s=1}^{i-1}x_{s}}\big)+\log\big(\sum_{k=0}^{N-i}e^{b_{i,k}^{-} + w_{i,k}^{-}\sum_{s=1}^{i-1}x_{s}}\big)\bigg],
+P^{CW_{N}}\left(x_{i}=+1|\mathbf{x}_{<i}\right)  =   \sigma \bigg[b_{0}+\omega_{0}\sum_{s=1}^{i-1}x_{s} \\
+ + \log\big(\sum_{k=0}^{N-i}e^{b_{i,k}^{+} + 
+w_{i,k}^{+}\sum_{s=1}^{i-1}x_{s}}\big)-\log\big(\sum_{k=0}^{N-i}e^{b_{i,k}^{-} + w_{i,k}^{-}\sum_{s=1}^{i-1}x_{s}}\big)\bigg],
 \end{multline*}
 where $b^0=2\beta h$, $\omega^0_i = \frac{2\beta J}{N}$ are the same, and so shared, among all the conditional probability functions, see fig.\ref{fig:CW_arch}. Their parameters have an analytic dependence on the parameters $J$ and $h$ of the Hamiltonian of the systems. 
 %The set of parameters ($b_i, b_i^{k\pm}, \omega_i, \omega_i^{k\pm}$) can be consider as free parameters trained to minimize the KL divergence with the true probability distribution. 
@@ -271,14 +272,14 @@ The SK Hamiltonian, with zero external fields for simplicity, is given by:
 \begin{equation}
 H\left(\mathbf{x}\right)=-\sum_{i<j}J_{ij}x_{i}x_{j}
 \end{equation}
-where the set of $\underline{J}$ are i.i.d. random variable extracted from a Gaussian probability distribution $P(J)= \mathcal{N}(0, J^2/N)$. \\
+where the set of couplings, $\underline{J}$, are i.i.d. random variable extracted from a Gaussian probability distribution $P(J)= \mathcal{N}(0, J^2/N)$. \\
 To find a feed-forward representation of the conditional probability of its Boltzmann distribution we have to compute the quantities in eq.\ref{eq:rho_ghann}, that, defining $h_l^{\pm}[\mathbf{x}_{<i}] =\pm J_{il} + \sum_{s=1}^{i-1} J_{sl} x_s$, can be written as:
 \begin{align*}
     \rho_i^{\pm} [\mathbf{x}_{<i}]  = \sum_{\mathbf{x}_{>i}}  \exp \bigg(
     \beta\sum_{l=i+1}^{N} h_l^{\pm}[\mathbf{x}_{<i}] x_l
     + \sum_{l'>l>i}^{N} J_{ll'} x_l x_{l'} \bigg)
 \end{align*}
-The above equation can be interpret as a SK model over the variables $\mathbf{x}_{>i}$ with external fields depending on nodes $h_l^{\pm}[\mathbf{x}_{<i}]$. 
+The above equation can be interpreted as a SK model over the variables $\mathbf{x}_{>i}$ with site depends external fields $h_l^{\pm}[\mathbf{x}_{<i}]$. 
 I will use the replica trick \cite{10.1142/0271}, which is usually applied together with the average over the system's disorder. In our case, we deal with a single instance of disorder, the set of couplings is fixed. In the following I will assume that $N-i \gg 1$, and the average over the disorder $\mathbb{E}$ is taken on the coupling parameters $J_{ll'}$ with $l,l'>i$. In practice I will use the following approximation to compute the quantity:
 \[
 \log\rho_i^{\pm} \sim \mathbb{E}\left[  \log\rho_i^{\pm} \right] = \lim_{n\rightarrow 0} \frac{  \log(\mathbb{E}\left[(\rho_i^{\pm})^n \right])}{n}
@@ -357,14 +358,15 @@ The CW$_N$, CW$_{\infty}$ and SK$_{RS/kRSB}$ architectures, presented in previou
 \begin{itemize}
     \item The one parameter (1P) architecture, where a single weight parameter is multiplied by the sums of the input variables, and then the sigma function is applied. This architecture was already used for the CW system in \cite{https://doi.org/10.48550/arxiv.2210.11145}. The total number of parameters scales as $N$.
     \item The single layer (1L) architecture, where a fully connected single linear layer parametrizes the whole probability distribution, where a mask is applied to a subset of the weights in order to preserve the autoregressive properties. The width of the layer is $N$, and the total number of parameters scale as $N^2$ \cite{pmlr-v37-germain15}.
-    \item The MADE architecture \cite{pmlr-v37-germain15}, where the whole probability distribution is represented with a deep sequence of fully connected layers, with non-linear activation functions and masks in between them, to assure the autoregressive properties. Respect the 1L the deep architecture of MADE enhances the expressive power. The MADE$_{dw}$ used has $d$ hidden layers, each of them with width $w$ times the input variables $N$. For instance, the 1L architecture is equivalent to the MADE$_{11}$ and MADE$_{23}$ has two hidden fully-connected layers, each of them of width $3N$. 
+    \item The MADE architecture\cite{pmlr-v37-germain15}, where the whole probability distribution is represented with a deep sequence of fully connected layers, with non-linear activation functions and masks in between them, to assure the autoregressive properties. Respect the 1L the deep architecture of MADE enhances the expressive power. The MADE$_{dw}$ used has $d$ hidden layers, each of them with width $w$ times the input variables $N$. For instance, the 1L architecture is equivalent to the MADE$_{11}$ and MADE$_{23}$ has two hidden fully-connected layers, each of them of width $3N$. 
 \end{itemize}
 
 The parameters of the ARNN are trained using the Kullback-Leibler divergence or equivalently the variational free energy, see equation \ref{eq:kl}. Given an ARNN, $Q^{\theta}$, that depend on a set of parameters $\theta$ and the Boltzmann distribution $P$, the variational free energy can be estimates as:
-$$
-F[Q^{\theta}]= \sum_{\left\{ \mathbf{x} \right\}}Q^{\theta}\left[\frac{1}{\beta}\log Q^{\theta} + H[\mathbf{x}] \right] \approx \sum_{\mathbf{x} \sim Q^{\theta}} \left[ \frac{1}{\beta}\log Q^{\theta} + H[\mathbf{x}]\right].
-$$
-The samples are extracted, thanks to the ancestral sampling, from the ARNN $Q^{\theta}$. At each step of the training, the derivative of the variational free energy with respect to the parameters $\theta$ is estimated and used to update the parameters of the ARNN. Then a new batch of samples is extracted from the ARNN and used again to compute the derivative of the variational free energy and update the parameters\cite{Wu2019}. This process was repeated until a stop criterion is meet or a maximum number of steps are reached. For each model and temperature, a maximum number of $1000$ epochs are allowed, with a batch size of $2000$ samples, and a learning rate of $0.001$. The ADAM algorithm was applied for the optimization of the ARNN parameters. An annealing procedure was used to improve the performances and avoid mode-collapse problems\cite{Wu2019}, where the inverse temperature $\beta$ was increased from $0.1$ to $2.0$ with a step of $0.05$. The code was written using the PyTorch framework \cite{NEURIPS2019_bdbca288}, and it is open-source, released in \cite{mygithub}.
+\begin{align*}
+F[Q^{\theta}] & = \sum_{\left\{ \mathbf{x} \right\}}Q^{\theta}\left[\frac{1}{\beta}\log Q^{\theta} + H[\mathbf{x}] \right]\\
+& \approx \sum_{\mathbf{x} \sim Q^{\theta}} \left[ \frac{1}{\beta}\log Q^{\theta} + H[\mathbf{x}]\right].
+\end{align*}
+The samples are extracted, thanks to the ancestral sampling, from the ARNN $Q^{\theta}$. At each step of the training, the derivative of the variational free energy with respect to the parameters $\theta$ is estimated and used to update the parameters of the ARNN. Then a new batch of samples is extracted from the ARNN and used again to compute the derivative of the variational free energy and update the parameters\cite{Wu2019}. This process was repeated until a stop criterion is meet or a maximum number of steps is reached. For each model and temperature, a maximum number of $1000$ epochs are allowed, with a batch size of $2000$ samples, and a learning rate of $0.001$. The ADAM algorithm\cite{kingma2014adam} was applied for the optimization of the ARNN parameters. An annealing procedure was used to improve the performances and avoid mode-collapse problems\cite{Wu2019}, where the inverse temperature $\beta$ was increased from $0.1$ to $2.0$ with a step of $0.05$. The code was written using the PyTorch framework\cite{NEURIPS2019_bdbca288}, and it is open-source, released in \cite{mygithub}.
 
 The CW$_N$ has all its parameters fixed and precomputed analytically, see eq.\ref{eq:params}. The CW$_{\infty}$ has one free parameter for each of its conditional probability distributions, and 1 shared parameter to be trained, see eq.\ref{eq:curie_weiss_cond2}. The parameters of the first layer of the SK$_{RS/kRSB}$ architecture are shared and fixed by the values of the couplings and fields of the hamiltonian. The parameters of the hidden layers are free and trained. The parameters of the MADE$_{dw}$, 1L and 1P architectures are free and trained.
 
@@ -380,7 +382,7 @@ The results on the CW model, with $J=1$ and $h=0$, are shown in fig.\ref{fig:cur
     \label{fig:curie_weiss}
 \end{figure} 
 
-The plots A1, A2, and A3, in the first row, show the relative error of the free energy density ($fe[P] = F[P]/N$), with respect to the exact one, computed analytically \cite{kadanoff2000statistical}, see SI for details, for different system sizes $N$.  
+The plots A1, A2, and A3, in the first row, show the relative error of the free energy density ($fe[P] = F[P]/N$), with respect to the exact one, computed analytically \cite{kadanoff2000statistical}, see appendix for details, for different system sizes $N$.  
 The variational free energy density estimated from samples generated with the CW$_N$ architecture does not have an appreciable difference with the analytic solution, and for the CW$_{\infty}$, it improves as the system size increases. Fig.\ref{fig:curie_weiss}.B plots the error, in the estimation of the free energy density for the architectures with fewer parameters, 1P and CW$_{\infty}$ (both scaling linearly with the system's size); It shows clearly that a deep architecture, in this case with only one more parameter, improves the accuracy by orders of magnitude. The need for deep architectures, already on a simple model as the CW, is indicated by the poor performance of the 1L architecture, despite its scaling of parameters as $N^2$, it achieves similar results to the 1P. The MADE architecture obtains good results but was not comparable to CW$_N$, even though having a similar number of parameters. The plot in fig.\ref{fig:curie_weiss}.c shows the distribution of the overlaps, $q_{\mathbf{a}, \mathbf{b}}=\frac{1}{N}\sum_{i} a_i b_i$ where $a_i, b_i$ are two system configurations, between the samples generated by the ARNNs. The distribution is computed at $\beta=1.3$ for $N=200$. It can be seen as the poor performance of the 1-layer networks (1P, 1L) is due to the difficulty of correctly representing the configurations with magnetization different from zero in the proximity of the phase transition. This could be due to mode collapse problems \cite{https://doi.org/10.48550/arxiv.2210.11145}, which do not affect the deeper ARNN architectures tested.
 \paragraph{SK model}
 In figure \ref{fig:SK}, the result of the SK model, with $J=1$ and $h=0$ are shown; as before in the first row there is the relative error in the estimation of the free energy density at different system sizes. 
