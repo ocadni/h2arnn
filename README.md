@@ -1,8 +1,13 @@
-# H2-ARNN
-testing pytorch functionality
-# README for Repository H2ARNN
+# H2ARNN 
+## Pairwise interacting systems (H2) AutoRegressive Neural Network
 
-This repository contains the code used to generate the images and results presented in the paper "The autoregressive neural network architecture of the Boltzmann distribution of pairwise interacting spins systems" ([link to arxiv paper](https://arxiv.org/pdf/2302.08347.pdf)).
+This repository contains a python package to train Autoregressive Neural Networks (arnn) to learn to generate according to the classical Boltzmann distribution of a generic pairwise interacting spins system.  The architectures of the autoregressive neural newtorks implemented so far are the MADE architecture, the CW architecture, the SK-krsb architecture. New architectures can be easily added.
+This repository contains the code used to generate the images and results presented in the paper: 
+
+ > The autoregressive neural network architecture of the Boltzmann distribution of pairwise interacting spins systems.
+ >
+ > Indaco Biazzo [[arXiv:2302.08347](https://arxiv.org/abs/2302.08347)]
+
 
 ## Requirements
 Tested with python 3.10.4 and:
@@ -12,21 +17,29 @@ Tested with python 3.10.4 and:
 - pandas==1.4.4
 - scipy==1.9.1
 - torch==1.13.1
+
+[see requirements.txt]
+
 ## Usage
-- Instructions on how to use the code and generate the results presented in the paper.
+- Look at the notebook `simple_example.ipynb`
 
 ## Files
-- List of the main files in the repository and a brief description of their purpose.
+- `python_lib` [the main code of the package] 
+- `results` [the code to reproduce results and image of the [paper]()] 
 
 ## Results
-- Description of the results obtained by running the code, including any figures or tables generated.
-- Any additional notes on the results and their interpretation.
+- In the directory `results/SK/` type `./run_many_sk.sh` to produce the data for the SK model. 
+- In the directory `results/CW/` type `./run_many_cw.sh` to produce the data for the CW model. 
+- The data for the MonteCarlo experiment is produced by the notebook `./results/SK/SK_MC.ipynb` 
+- The images can be created running the notebooks:
+    1. `./results/SK/SK_plots.ipynb`
+    2. `./results/CW/CW_plots.ipynb`
 
 ## Citation
-- A citation for the paper on arxiv that this code was used to generate.
+- If you use the code please cite the paper:
 
-## Contact Information
-- Contact information for the authors or maintainers of the repository, in case anyone has questions or wants to collaborate.
+
+Biazzo, Indaco. *"The autoregressive neural network architecture of the Boltzmann distribution of pairwise interacting spins systems."* arXiv preprint [[arXiv:2302.08347](https://arxiv.org/abs/2302.08347)] (2023).
 
 ## License
-- The license under which the code is released.
+- MIT License. See the LICENSE file for details.
