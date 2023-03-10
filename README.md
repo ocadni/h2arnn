@@ -36,7 +36,7 @@ Tested with python 3.10.4 and:
     2. `./results/CW/CW_plots.ipynb`
 
 ## Citation
-- If you use the code please cite the paper:
+If you use the code please cite the paper:
 
 
 Biazzo, Indaco. *"The autoregressive neural network architecture of the Boltzmann distribution of pairwise interacting spins systems."* arXiv preprint [[arXiv:2302.08347](https://arxiv.org/abs/2302.08347)] (2023).
