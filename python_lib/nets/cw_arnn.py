@@ -13,6 +13,7 @@ class oneP_(nn.Module):
     Args:
         nn (_type_): _description_
     """
+
     def __init__(self, N, device, dtype):
         """_summary_"""
         super(oneP_, self).__init__()
@@ -41,6 +42,7 @@ class oneP_(nn.Module):
 
 class oneP(ANN):
     """_summary_"""
+
     def __init__(
         self,
         model,
@@ -86,6 +88,7 @@ class CWARNN_inf_(nn.Module):
     Args:
         nn (_type_): _description_
     """
+
     def __init__(self, N, device, dtype):
         """_summary_"""
         super(CWARNN_inf_, self).__init__()
@@ -215,14 +218,14 @@ class CWARNN_(nn.Module):
         N_i = self.N_i
         n_i = self.n_i
         N = N_i + n_i + 1
-        #print(f"n_i={n_i}, N_i={N_i}, N={N}, beta={beta:.2f}, J_2N:{J_2N:.3} ")
+        # print(f"n_i={n_i}, N_i={N_i}, N={N}, beta={beta:.2f}, J_2N:{J_2N:.3} ")
         # if n_i > 0:
         assert (N == model.N)
         JJ = beta * J_N
 
         for k in range(0, N_i+1):
             m = N_i - 2*k
-            #print(m, comb(N_i, k))
+            # print(m, comb(N_i, k))
             b_ = np.log(comb(N_i, k)) + (JJ/2)*m**2 + beta*h*m
             b_p = b_ + JJ*m
             b_m = b_ - JJ*m

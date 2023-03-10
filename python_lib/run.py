@@ -17,10 +17,7 @@ import python_lib.run_lib as run_lib
 
 import python_lib.nets.simple_layer as simple_layer
 import python_lib.nets.made as made
-
-
 import python_lib.nets.h2arnn as h2arnn
-
 import python_lib.nets.cw_arnn as cw_arnn
 
 
@@ -349,7 +346,7 @@ def main():
         stats = SK_case(args)
 
     for ff in vars(args):
-        # print(ff, vars(args)[ff])
+        print(ff, vars(args)[ff])
         stats[str(ff)] = str(vars(args)[ff])
 
     timestr = time.strftime("%Y%m%d_%H%M%S")

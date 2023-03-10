@@ -5,7 +5,7 @@ import time
 
 
 def compute_stats(x, loss, log_prob, energy, beta, model, step=0, ifprint=True, times={}):
-    #x = x.to("cpu")
+    # x = x.to("cpu")
     tt = time.time()
     with torch.no_grad():
         loss = loss.cpu().detach().numpy()
@@ -44,26 +44,30 @@ def compute_stats(x, loss, log_prob, energy, beta, model, step=0, ifprint=True, 
 
 
 class ANN(nn.Module):
-    """Class """
+    """Abstract class for a autoregressive neural networks."""
 
     def __init__(
         self,
         model,
         net,
-        # input_mask,
         dtype=torch.float32,
         device="cpu",
         eps=1e-10,
         print_num_params=True
     ):
         """Initialize the class. 
-        Args:model: model class, net: neural network class, input_mask: input mask, dtype: data type, device: device, eps: epsilon, print_num_params: print number of parameters"""
+        model: the model class [the model class should have the method energy(x)]
+        net: the single autoregressive conditional neural network
+        device: the device to run the model
+        eps: the small number to avoid log(0)
+        print_num_params: print the number of parameters
+        """
         # print(model)
         super().__init__()
         self.N = model.N
         self.model = model
         self.net = net
-        #self.input_mask = input_mask
+        # self.input_mask = input_mask
         self.dtype = dtype
         self.device = device
         self.eps = eps
@@ -106,8 +110,8 @@ class ANN(nn.Module):
                             device=self.device, dtype=self.dtype)
         with torch.no_grad():
             for n_i in range(self.N):
-                #mask_n_i = self.input_mask[n_i, :]
-                #input_x = mask_n_i * x
+                # mask_n_i = self.input_mask[n_i, :]
+                # input_x = mask_n_i * x
                 x_hat[:, n_i] = self.forward(x)[:, n_i]
                 x[:, n_i] = torch.bernoulli(x_hat[:, n_i]) * 2 - 1
         return x, x_hat
@@ -222,7 +226,7 @@ class ANN(nn.Module):
                 stats_iter_done += 1
             if stats["free_energy_std"] < std_fe_limit and stats_iter_done >= batch_iter:
                 break
-        #print(stats_list, step)
+        # print(stats_list, step)
         res_stats = self.avg_stats_(stats_list, batch_iter=batch_iter)
         res_stats["fe_run"] = fe_run
         res_stats["fe_std_run"] = fe_std_run
@@ -299,7 +303,7 @@ class ANN(nn.Module):
                 stats_iter_done += 1
             if stats["free_energy_std"] < std_fe_limit and stats_iter_done >= batch_iter:
                 break
-        #print(stats_list, step)
+        # print(stats_list, step)
         res_stats = self.avg_stats_(stats_list, batch_iter=batch_iter)
         res_stats["fe_run"] = fe_run
         res_stats["fe_std_run"] = fe_std_run

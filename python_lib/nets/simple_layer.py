@@ -46,8 +46,8 @@ class simple_layer(ANN):
         params = list(net.parameters())
         params = list(filter(lambda p: p.requires_grad, params))
         nparams = int(sum([np.prod(p.shape) for p in params]))
-        #print(f'Total number of trainable parameters: {nparams}')
-        #input_mask = torch.tril(J_interaction, diagonal=-1)
+        # print(f'Total number of trainable parameters: {nparams}')
+        # input_mask = torch.tril(J_interaction, diagonal=-1)
         super(simple_layer, self).__init__(
             model, net, dtype=dtype, device=device, eps=eps)
         self.net.params = params

@@ -3,12 +3,6 @@ import numpy as np
 import math
 from scipy.special import logsumexp, comb
 
-# int32 = np.int32
-# int64 = np.int64
-# float64 = np.float64
-# type_default = torch.float64
-# device = "cpu"
-
 
 def binary(x, bits):
     mask = 2 ** torch.arange(bits).to(x.device, x.dtype)
@@ -16,6 +10,8 @@ def binary(x, bits):
 
 
 class model:
+    '''This is the model class for the Ising model.'''
+
     def __init__(
         self,
         N,
@@ -25,6 +21,14 @@ class model:
         device="cpu",
         dtype=torch.float,
     ):
+        '''Initialize the model. N is the number of spins. H is the field. J is the interaction. J_interaction is the interaction between spins.
+        N: int, number of spins
+        H: array, field
+        J: matrix, coupling values
+        J_interaction: matrix, interaction between spins [1 when is present 0 otherwise]
+        device: str, device to use
+        dtype: torch.dtype, data type to use
+        '''
         self.N = N
         self.device = device
         self.dtype = dtype
