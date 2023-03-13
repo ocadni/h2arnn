@@ -88,15 +88,21 @@ class h2arnn(ANN):
     ):
 
         net = []
+
         for n_i in range(model.N):
             net.append(single_net(model, n_i, device=device,
                        dtype=dtype, dict_nets=dict_nets))
+
         super(h2arnn, self).__init__(
             model, net, dtype=dtype, device=device, eps=eps, print_num_params=False)
+
         self.input_mask = input_mask.to(dtype=torch.bool)
+
         if dict_nets["set_exact"]:
             self.set_params_exact(model, 0.1)
+
         self.J = model.J.clone()
+
         self.learn_first_l = learn_first_l
         if self.learn_first_l:
             self.J = nn.Parameter(self.J)
@@ -111,6 +117,7 @@ class h2arnn(ANN):
             self.J = model.J.clone()
 
     def first_l(self, x, n_i):
+        '''consider populated the lower triangular values of the matrix J'''
         return F.linear(x, self.J[n_i:, 0:n_i])
 
     def parameters(self):

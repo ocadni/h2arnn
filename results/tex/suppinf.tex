@@ -102,35 +102,35 @@ In the thermodynamical limit, the Curie-Weiss model admits an analytical solutio
 \begin{align}
     \rho_i^{\pm}[\mathbf{x}_{<i}] &= \sqrt{\frac{N}{2\pi \beta J}}\int dt e^{-\frac{N}{2J \beta}t^{2}} 
     \sum_{k=0}^{N-i} \binom{N-i}{k} e^{(N-i-2k)*(\beta h_i^{\pm}[\mathbf{x}_{<i}] + t)}\\ \label{eq:rho_last_exact2} &= \sum_{k=0}^{N-i} \binom{N-i}{k}e^{\frac{\beta J}{2N}\left(N-i-2k\right)^{2}+\left(N-i-2k\right)\left(\pm\frac{\beta J}{N}\right)} e^{\frac{\beta J}{N}\left(N-i-2k\right) \sum_s x_s}  \\
-    &= \sum_{m_i=-\eta_i}^{\eta_i} \binom{N \eta_i}{\frac{N(m_i+\eta_i)}{2}} e^{\frac{N \beta J}{2}m_i^{2} \mp \beta J m_i } e^{N \eta_i \beta J \frac{\sum_s x_s}{N-i}}
+    &= \sum_{m_i=-\eta_i}^{\eta_i} \binom{N \eta_i}{\frac{N(m_i+\eta_i)}{2}} e^{\frac{N \beta J}{2}m_i^{2} \mp \beta J m_i } e^{- N \beta J \frac{\sum_s x_s}{N}}
 \end{align}    
 %\end{widetext}
 
 In the limit $N \gg 1$, we obtain:
  \begin{align}
  \rho_i^{\pm} & = 
-  \int_{-\eta_i}^{\eta_i} \binom{N\eta_i}{\frac{N(m_i+\eta_i)}{2}} e^{\frac{N \beta J}{2}m_i^{2} \mp \beta J m_i } e^{N \eta_i \beta J \frac{\sum_s x_s}{N-i}} dm_i \\
+  \int_{-\eta_i}^{\eta_i} \binom{N\eta_i}{\frac{N(m_i+\eta_i)}{2}} e^{\frac{N \beta J}{2}m_i^{2} \mp \beta J m_i } e^{N \beta J \frac{\sum_s x_s}{N}} dm_i \\
 \begin{split} 
   \approx & \int_{-\eta_i}^{\eta_i} \exp\bigg\{-N\eta_i \big( -\frac{1+\frac{m_i}{\eta_i}}{2} \log\frac{1+\frac{m_i}{\eta_i}}{2} \\
    & - \frac{1-\frac{m_i}{\eta_i}}{2} \log\frac{1-\frac{m_i}{\eta_i}}{2} 
-      - \frac{\beta m_i^2}{2 \eta_i} + \beta m_i \frac{\sum_s x_s}{N-i}\big) \bigg\} e^{\mp \beta J m_i} dm_i
+      - \frac{\beta m_i^2}{2 \eta_i} + \beta m_i \frac{\sum_s x_s}{N}\big) \bigg\} e^{\mp \beta J m_i} dm_i
 \end{split} \\
 \begin{split} 
   \approx & \exp\bigg\{-N\eta_i \big( -\frac{1+\frac{\tilde{m}_{i}}{\eta_i}}{2} \log\frac{1+\frac{\tilde{m}_{i}}{\eta_i}}{2} \\
    & - \frac{1-\frac{\tilde{m}_{i}}{\eta_i}}{2} \log\frac{1-\frac{\tilde{m}_{i}}{\eta_i}}{2} 
-      - \frac{\beta \tilde{m}_{i}^2}{2 \eta_i} + \beta \tilde{m}_{i} \frac{\sum_s x_s}{N-i}\big) \bigg\} e^{\mp \beta J \tilde{m}_{i}} \\
+      - \frac{\beta \tilde{m}_{i}^2}{2 \eta_i} + \beta \tilde{m}_{i} \frac{\sum_s x_s}{N}\big) \bigg\} e^{\mp \beta J \tilde{m}_{i}} \\
     \doteq & e^{\mp \beta J \tilde{m}_{i}} 
 \end{split}
 \end{align}
 where in the second line I used the Stirling approximation for the binomial factor, in the third line I used the saddle point method, assuming $N\gg 1$, where $\tilde{m}_{i}$ is the extreme of the function inside the curly brackets. In the last line, I simplify all the elements that are equal between $\rho_i^{+} $ and $\rho_i^{-}$ that cancel each other in the conditional probability function eq.\ref{eq:conditional_cw}. Deriving by $m_i$ the function inside the curly brackets, we obtain that the extreme $\tilde{m}_{i}$ should satisfy the following equation:
 \begin{equation}
-\frac{\tilde{m}_{i}}{\eta_i} = \tanh \left( \beta(\frac{\tilde{m}_{i}}{\eta_i} - \frac{\sum_s x_s}{N-i}) \right)
+\frac{\tilde{m}_{i}}{\eta_i} = \tanh \left( \beta(\frac{\tilde{m}_{i}}{\eta_i} - \frac{\sum_s x_s}{N}) \right)
 \label{eq:extrem_i}
 \end{equation}
-In the $N$ large limit, and for a typical sample, I assume that: $\frac{\sum_s x_s}{N-i} \approx |\tilde{m}_{\beta}| \text{sgn}(\sum_s x_s)$, where the $m_{\beta}$ is the magnetization of the Curie-Weiss system at inverse temperature $\beta$ and $\text{sgn(x)} = \frac{|x|}{x}$ is the sign function.
+In the $N$ large limit, and for a typical sample, I assume that: $ \frac{\sum_s x_s}{N} = \frac{i}{N} \frac{\sum_s x_s}{i}  \approx \frac{i}{N} |\tilde{m}_{\beta}| \text{sgn}(\sum_s x_s)$, where the $m_{\beta}$ is the magnetization of the Curie-Weiss system at inverse temperature $\beta$ and $\text{sgn(x)} = \frac{|x|}{x}$ is the sign function.
 We can distinguish two cases when the magnetization of the system is zero or not. 
 In the first case, when $\beta\leq 1/J$, the solution of eq.\ref{eq:extrem_i} is zero as well, and $\log(\rho_i^{+}) - \log(\rho_i^{-})=0$ because the only term that makes the two quantities different, $\mp \beta J m_i$, vanish.\\ 
-When instead the system acquires a magnetization $m_{\beta}$ different from zero, the eq.\ref{eq:extrem_i} admit one maximum that depends on the two possible symmetric values of $\frac{\sum_s x_s}{N-i}\approx |\tilde{m}_{\beta}| \text{sign}(\sum_q x_q)$. 
+When instead the system acquires a magnetization $m_{\beta}$ different from zero, the eq.\ref{eq:extrem_i} admit one maximum that depends on the two possible symmetric values of $\frac{i}{N} \frac{\sum_s x_s}{i}\approx \frac{i}{N} |\tilde{m}_{\beta}| \text{sign}(\sum_q x_q)$. 
 The solution of eq.\ref{eq:extrem_i}, $\pm \tilde{m}_{\text{extrem}}$ depends again on $\text{sign}(\sum_s x_s)$, and we can write the maximum solution as $\tilde{m}_{i}=|\tilde{m}_i| \text{sgn}(\sum_s x_s)$. 
 Easily we obtain that $\log(\rho_i^{+}) - \log(\rho_i^{-}) = -2\beta J|\tilde{m}_i| \text{sgn}(\sum_s x_s)$, demostrating the formula in the main text.
 

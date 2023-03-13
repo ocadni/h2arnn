@@ -213,6 +213,7 @@ class CWARNN_(nn.Module):
     def set_params_exact(self, model, beta):
         for p in self.parameters():
             p.requires_grad_(False)
+        # Put the factor 2 here, because the matrix of Js is symmetric, but in the derivation of the exact solution, we only have the upper triangular matrix
         J_N = model.J[0][1] * 2
         h = model.H[0]
         N_i = self.N_i

@@ -228,7 +228,7 @@ class model:
         if self.Z:
             return torch.exp(-beta * self.energy(samples)) / self.Z
         else:
-            print("compute model.exact() frist")
+            print("compute model.exact() first")
             return 0
 
 
