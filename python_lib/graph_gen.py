@@ -113,10 +113,10 @@ def grid_2d_interaction(n, m, periodic=False):
 
 
 def set_J(J_inter, value_func):
-    '''Set the lower-triangular-matrix values of J'''
+    '''Set the upper-triangular-matrix values of J'''
     J = np.zeros(J_inter.shape)
-    for i in range(len(J)):
-        for j in range(i):
+    for j in range(len(J)):
+        for i in range(j):
             if J_inter[i][j] != 0:
                 J[i][j] = value_func()
     # J = (J + J.transpose())
