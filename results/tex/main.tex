@@ -38,13 +38,12 @@ text={7in,10in},centering,
 
 \begin{document}
 
-%\title{Autoregressive neural network of spins system: the deepness of Mean-Field models}
 \title{The autoregressive neural network architecture of the Boltzmann distribution of pairwise interacting spins systems}
 \author{Indaco, Biazzo}
 \email{indaco.biazzo@epfl.ch}
-\affiliation{%
+\affiliation{
 Ecole Polytechnique Fédérale de Lausanne (EPFL). Statistical Physics of Computation (SPOC) lab.
-}% %Lines break automatically or can be forced with \\
+}
 
 \begin{abstract}
     Generative Autoregressive Neural Networks (ARNN) have recently demonstrated exceptional results in image and language generation tasks, contributing to the growing popularity of generative models in both scientific and commercial applications. This work presents a physical interpretation of the ARNNs by reformulating the Boltzmann distribution of binary pairwise interacting systems into autoregressive form. The resulting ARNN architecture has weights and biases of its first layer corresponding to the Hamiltonian's couplings and external fields, featuring widely used structures like the residual connections and a recurrent architecture with clear physical meanings. However, the exponential growth, with system size, of the number of parameters of the hidden layers makes its direct application unfeasible. Nevertheless, its architecture's explicit formulation allows using statistical physics techniques to derive new ARNNs for specific systems. As examples, new effective ARNN architectures are derived from two well-known mean-field systems, the Curie-Weiss and Sherrington-Kirkpatrick models, showing superior performances in approximating the Boltzmann distributions of the corresponding physics model compared to other commonly used ARNN architectures. The connection established between the physics of the system and the ARNN architecture provides a way to derive new neural network architectures for different interacting systems and interpret existing ones from a physical perspective.
@@ -54,7 +53,7 @@ Ecole Polytechnique Fédérale de Lausanne (EPFL). Statistical Physics of Comput
                                   %display desired
     
 \maketitle
-\tableofcontents
+%\tableofcontents
 \section{Introduction} 
 The cross-fertilization between machine learning and statistical physics, in particular of disordered systems, has a long history \cite{doi:10.1073/pnas.79.8.2554, PhysRevA.32.1007}.
 Recently, the development of deep neural network frameworks \cite{bengioNatureDeepLearning2015} have been applied to statistical physics problems \cite{RevModPhys.91.045002} spanning a wide range of domains, including quantum mechanics \cite{doi:10.1126/science.aag2302, Nieuwenburg2017}, 
@@ -62,21 +61,20 @@ classical statistical physics \cite{Carrasquilla2017, Wu2019}, chemical and biol
 On the other hand, techniques borrowed from statistical physics have been used to shed light on the behavior of Machine Learning algorithms \cite{doi:10.1080/00018732.2016.1211393, Nguyen2017}, and even to suggest training or architecture frameworks \cite{Chaudhari_2019, pmlr-v37-sohl-dickstein15}.
 In recent years, the introduction of deep generative autoregressive models \cite{pmlr-v37-germain15, NIPS2016_b1301141}, like transformers \cite{NIPS2017_3f5ee243}, has been a breakthrough in the field, generating images and text with a quality comparable to human-generated ones \cite{https://doi.org/10.48550/arxiv.2005.14165}.  
 The introduction of deep ARNNs was motivated as a flexible and general approach to sample generation from a probability distribution learned from data \cite{pmlr-v32-gregor14, pmlr-v15-larochelle11a, pmlr-v48-oord16}. 
+
 In classical statistical physics, the ARNN was introduced, in a variational setting, to sample from a Boltzmann distribution (or equivalently, in the computer science literature, usually called an energy model \cite{pmlr-v97-durkan19a}) as an improvement over the standard variational approach relying on the high expressiveness of the ARNNs \cite{Wu2019}. 
- Then similar approaches have been used in different contexts, and domains of classical \cite{10.1103/physreve.101.023304,PhysRevE.101.053312,PhysRevE.103.012103,PhysRevResearch.3.L042024,10.1038/s42256-021-00401-3} and quantum statistical physics \cite{10.1103/physrevlett.128.090501,PhysRevA.102.062413,PhysRevLett.124.020503,PhysRevResearch.2.023358, Liu_2021, Barrett2022, Cha_2022}. The ability of the ARNNs to efficiently generate samples, thanks to the ancestral sampling procedure, opened the way to overcome the slowdown of Monte-Carlo methods for frustrated or complex systems, although two recent works questioned the real gain in very frustrated systems \cite{condmat7020038,https://doi.org/10.48550/arxiv.2210.11145}.
-%The main idea behind these models is to use a neural network to predict the next element in a sequence given all previous elements. 
-The use of ARNNs in statistical physics problems has largely relied on pre-existing neural network architectures which may not be well-suited for the particular problem at hand. This work aims to demonstrate how the knowledge of the physics model can inform the design of more effective ARNN architectures. The derivation of an exact ARNN architecture for the classical Boltzmann distribution of a general pairwise interacting Hamiltonian of binary variables will be presented. Despite the generality of the Hamiltonian, the resulting architecture displays interesting properties: the first layer parameters are directly related to the Hamiltonian parameters and the emergence of residual connections and recurrent structures with clear physical interpretations.\\
+
+Then similar approaches have been used in different contexts, and domains of classical \cite{10.1103/physreve.101.023304,PhysRevE.101.053312,PhysRevE.103.012103,PhysRevResearch.3.L042024,10.1038/s42256-021-00401-3} and quantum statistical physics \cite{10.1103/physrevlett.128.090501,PhysRevA.102.062413,PhysRevLett.124.020503,PhysRevResearch.2.023358, Liu_2021, Barrett2022, Cha_2022}. The ability of the ARNNs to efficiently generate samples, thanks to the ancestral sampling procedure, opened the way to overcome the slowdown of Monte-Carlo methods for frustrated or complex systems, although two recent works questioned the real gain in very frustrated systems \cite{condmat7020038,https://doi.org/10.48550/arxiv.2210.11145}. 
+
+The use of ARNNs in statistical physics problems has largely relied on pre-existing neural network architectures which may not be well-suited for the particular problem at hand. This work aims to demonstrate how the knowledge of the physics model can inform the design of more effective ARNN architectures. The derivation of an exact ARNN architecture for the classical Boltzmann distribution of a general pairwise interacting Hamiltonian of binary variables will be presented. Despite the generality of the Hamiltonian, the resulting architecture displays interesting properties: the first layer parameters are directly related to the Hamiltonian parameters and the emergence of residual connections and recurrent structures with clear physical interpretations.
 The resulting deep ARNN architecture has the number of parameters of the hidden layers scaling exponentially with the system's size. 
-However, the clear physical picture of the architecture allows us to use standard statistical physics techniques to find new feasible ARNN architecture for specific Hamiltonian or energy models. To show the potential of the derived representation, the ARNN architectures for two well-known mean-field models are derived: the Curie-Weiss model (CW) and the Sherrington-Kirkpatrick model (SK). These fully connected models are chosen due to their paradigmatic role in the history of statistical physics systems. The CW model, despite its straightforward Hamiltonian, was one of the first models explaining the behavior of ferromagnet systems, displaying a second-order phase transition \cite{kadanoff2000statistical}. In this case, an exact ARNN architecture at finite N and in the thermodynamic limit is obtained with the number of parameters scaling polynomially with the system's size.
-
-The SK model \cite{PhysRevLett.35.1792} is a fully connected spin glass model of disordered magnetic materials. The system admits an analytical solution in the thermodynamic limit, the celebrated \cite{Nobel2021} k-step replica symmetric breaking (k-RSB) solution \cite{PARISI1979203, PhysRevLett.43.1754} of Parisi. The complex many-valley landscape of the Boltzmann probability distribution captured by the k-RSB solution of the SK model is the key concept that unifies the description of many different problems, and similar replica computations are applied to very different domains like neural networks \cite{Gardner_1987, PhysRevLett.55.1530}, optimizations \cite{doi:10.1126/science.1073287}, inference problems \cite{doi:10.1080/00018732.2016.1211393}, or in characterizing the jamming of hard spheres \cite{RevModPhys.82.789, PhysRevLett.102.195701}. 
-
-In the following, I will derive an ARNN architecture for the Boltzmann distribution of the SK model for a single instance of disorder, with a finite number of variables. The derivation is based on the k-RSB solution, resulting in a deep ARNN architecture with parameters scaling polynomially with the system size. \\
+However, the clear physical picture of the architecture allows us to use standard statistical physics techniques to find new feasible ARNN architecture for specific Hamiltonian or energy models. To show the potential of the derived representation, the ARNN architectures for two well-known mean-field models are derived: the Curie-Weiss model (CW) and the Sherrington-Kirkpatrick model (SK). These fully connected models are chosen due to their paradigmatic role in the history of statistical physics systems. The CW model, despite its straightforward Hamiltonian, was one of the first models explaining the behavior of ferromagnet systems, displaying a second-order phase transition \cite{kadanoff2000statistical}. In this case, an exact ARNN architecture at finite N and in the thermodynamic limit is obtained with the number of parameters scaling polynomially with the system's size. 
+The SK model \cite{PhysRevLett.35.1792} is a fully connected spin glass model of disordered magnetic materials. The system admits an analytical solution in the thermodynamic limit, the celebrated \cite{Nobel2021} k-step replica symmetric breaking (k-RSB) solution \cite{PARISI1979203, PhysRevLett.43.1754} of Parisi. The complex many-valley landscape of the Boltzmann probability distribution captured by the k-RSB solution of the SK model is the key concept that unifies the description of many different problems, and similar replica computations are applied to very different domains like neural networks \cite{Gardner_1987, PhysRevLett.55.1530}, optimizations \cite{doi:10.1126/science.1073287}, inference problems \cite{doi:10.1080/00018732.2016.1211393}, or in characterizing the jamming of hard spheres \cite{RevModPhys.82.789, PhysRevLett.102.195701}. In this work, an ARNN architecture of the Boltzmann distribution of the SK model for a single instance of disorder, with a finite number of variables will be shown. The derivation will be based on the k-RSB solution, resulting in a deep ARNN architecture with parameters scaling polynomially with the system size. 
             
-\section{Autoregressive form of the Boltzmann distribution of the pairwise interacting systems}
+\section{Autoregressive architecture of the Boltzmann distribution of the pairwise interacting systems}
 \label{sec:ARNN_boltzmann}
 The Boltzmann probability distribution of a given Hamiltonian $H[\mathbf{x}]$ of a set of $N$ binary variables $\mathbf{x}=\{x_1, x_2,...x_N\}$ at inverse temperature $\beta$ is $P_{B}(\mathbf{x}) = \nicefrac{e^{-\beta H\left(\mathbf{x}\right)}}{Z}$. The $Z=\sum_{\mathbf{x}}e^{-\beta H\left(\mathbf{x}\right)}$ is the normalization factor.
-It is generally challenging to compute marginals and average quantities when $N$ is large and generate samples on frustrated systems. Defining the sets of variables $\mathbf{x}_{<i}=\left(x_{1},x_{2}\dots x_{i-1}\right)$ and $\mathbf{x}_{>i}=\left(x_{i+1},x_{i+2}\dots x_{N}\right)$ respectively with an index smaller and larger than $i$, then if we can rewrite the Boltzmann distribution in the autoregressive form:
+It is generally challenging to compute marginals and average quantities when $N$ is large and in particular generate samples on frustrated systems. Defining the sets of variables $\mathbf{x}_{<i}=\left(x_{1},x_{2}\dots x_{i-1}\right)$ and $\mathbf{x}_{>i}=\left(x_{i+1},x_{i+2}\dots x_{N}\right)$ respectively with an index smaller and larger than $i$, then if we can rewrite the Boltzmann distribution in the autoregressive form:
 $
 P_{B}\left(\mathbf{x}\right)=\prod_{i}P\left(x_{i}|\mathbf{x}_{<i}\right),
 $
@@ -85,7 +83,7 @@ $
 Q^{\theta}\left(\mathbf{x}\right)=\prod_{i}Q^{\theta_i}\left(x_{i}|\mathbf{x}_{<i}\right)
 $.
 The parameters ${\theta}$ can be learned minimizing the (inverse) Kullback-Leibler divergence $D_{KL}$,
-with the true probability function:
+with the Boltzmann distribution as the target:
 \begin{equation}
 \begin{split}
 & D_{KL}\left(Q^{\theta}| P_{B}\right) =  \sum_{\left\{ \mathbf{x} \right\} } Q^{\theta} [\mathbf{x}]\ln\left(\frac{Q^{\theta}[\mathbf{x}]}{P_{B}[\mathbf{x}]}\right)  \\
@@ -93,12 +91,11 @@ with the true probability function:
 \end{split}
 \label{eq:kl}    
 \end{equation}
-%& = \sum_{\mathbf{x}\sim Q^{\theta}}\left[\ln\left(Q^{\theta}\left(\mathbf{x} \right)\right) + \beta H \right]\\
 where:
 $$
 F[P]= \sum_{\left\{ \mathbf{x} \right\}}P[\mathbf{x}]\left[\frac{1}{\beta}\log P[\mathbf{x}] + H[\mathbf{x}] \right] 
 $$
-is the variational free energy of the system. The Kullback-Leibler divergence is always larger or equal to zero, so the variational free energy $F[Q^{\theta}]$ is always an upper bound of the free energy of the system $F[P_{B}]$ \cite{Wu2019}. Minimizing the KL divergence with respect to the parameters of the ARNN is equivalent to minimizing the variational free energy $F[Q^{\theta}]$. The computation of $F[Q^{\theta}]$ and their derivatives with respect to the ARNN's parameters involve a summation over all the configurations of the systems, that grows exponentially with the system's size, making it unfeasible after a few numbers of parameters. In practice, they are estimated summing over a subset of configurations sampled directly from the ARNN thanks to the ancestral sampling procedure\cite{Wu2019}. Usually, an annealing procedure is applied, starting at a high temperature and slowly decreasing it.
+is the variational free energy of the system. The Kullback-Leibler divergence is always larger or equal to zero, so the variational free energy $F[Q^{\theta}]$ is always an upper bound of the free energy of the system $F[P_{B}]$ \cite{Wu2019}. Minimizing the KL divergence with respect to the parameters of the ARNN is equivalent to minimizing the variational free energy $F[Q^{\theta}]$. The computation of $F[Q^{\theta}]$ and their derivatives with respect to the ARNN's parameters involve a summation over all the configurations of the systems, that grows exponentially with the system's size, making it unfeasible after a few numbers of spins. In practice, they are estimated summing over a subset of configurations sampled directly from the ARNN thanks to the ancestral sampling procedure\cite{Wu2019}. 
 Apart from the minimization procedure, the choice of the architecture of the neural networks is crucial to obtain a good approximation of the Boltzmann distribution.
 
 \subsection{The single variable conditional probability}
@@ -196,15 +193,13 @@ Nevertheless, the $\text{H}_2\text{ARNN}$ architecture shows some interesting fe
     \end{equation}
     The neurons $x^1_{il}$ in the first layer of each conditional probability in the $\text{H}_2\text{ARNN}$ architecture depend on the output of the first layer, $x^1_{i-1,l}$, of the previous conditional probability.
 \end{itemize}
-%This dependence on the size of the system appears reasonable because, otherwise, it could be possible to sample to whatever pairwise Hamiltonian in polynomial time, and as long we assume that $P\neq NP$ it could not be possible. 
-%The computational cost of the sum over all the configuration of spins $x_l$ grows exponentially with the system's size making it unfeasible, after a few spins, the explicit computations. The idea is to find feed-forward neural network architectures representing these functions with a polynomial number of free parameters. \\
 The number of parameters of the layers of the feed-forward neural network representations of the $\rho_i^{\pm}$ functions, eq.\ref{eq:rho_ghann}, scale exponentially with the system's size, proportionally to $2^{N-i}$. 
 The functions $\rho_i^{\pm}$ take into account the effect of the interactions among $\mathbf{x}_{<i}$ and $\mathbf{x}_{>i}$ on the variable $x_i$. 
 The $\rho_i^{\pm}$ function can be interpreted as the partition function of a system, where the variables are the $\mathbf{x}_{>i}$ and the external fields are determined by the values of the variables $\mathbf{x}_{<i}$.
-Starting from this observation, in the following, I will show how to use standard tools of statistical physics to derive deep AR-NN architectures that eliminates the exponential growth of the number of parameters.  \\
+Starting from this observation, in the following, I will show how to use standard tools of statistical physics to derive deep AR-NN architectures that eliminate the exponential growth of the number of parameters. 
 
 \section{Models}
-\subsection{The Curie-Weiss model}
+\subsection{The Curie-Weiss (CW) model}
 
 The Curie-Weiss model (CW) is a uniform, fully-connected Ising model. The Hamiltonian, with $N$ spins, is $H\left(\mathbf{x}\right)=-h\sum_{i=1}^{N}x_{i}-\frac{J}{N}\sum_{i<j}x_{i}x_{j}$. The conditional probability of a spin $i$, eq.\ref{eq:conditional_ghann}, of the CW model is:
 \begin{multline}
@@ -255,7 +250,8 @@ where $b^0=2\beta h$, $\omega^0_i = \frac{2\beta J}{N}$ are the same, and so sha
 
 The number of parameters of a single conditional probability of the CW$_N$ is $2+4(N-i)$, decreasing as $i$ increases. %This result is, somehow, the opposite of what the neural network architecture usually should take care of, increasing the number of input variables the number of parameters should also increase to describe the complexity of the function. Still, it is compatible with what was derived for the general case, where the number of parameters needed for $\rho^{\pm}$ decreases, in that case exponentially, with the index $i$. 
 The CW-ARNN depends only on the sum of the input variables.
-The total number of parameters of the whole conditional probability distribution scales as $2N^2+ O(N)$. \\
+The total number of parameters of the whole conditional probability distribution scales as $2N^2+ O(N)$. 
+
 If we consider the thermodynamical limit, $N \gg 1$, the ARNN architecture of the CW model, simplify (see sec.IB of the appendix for details) to the following expression:
 \begin{equation}
     \label{eq:curie_weiss_cond2}
@@ -266,13 +262,14 @@ where $b^0=2\beta h$, $\omega^0_i = \frac{2\beta J}{N}$ are the same as before, 
 The total number of parameters of the CW$_{\infty}$ scale as $N+2$.
     
 
-\subsection{The Sherrington-Kirkpatrick model}
+\subsection{The Sherrington-Kirkpatrick (SK) model}
 \label{sec:SK}
 The SK Hamiltonian, with zero external fields for simplicity, is given by:
 \begin{equation}
 H\left(\mathbf{x}\right)=-\sum_{i<j}J_{ij}x_{i}x_{j}
 \end{equation}
-where the set of couplings, $\underline{J}$, are i.i.d. random variable extracted from a Gaussian probability distribution $P(J)= \mathcal{N}(0, J^2/N)$. \\
+where the set of couplings, $\underline{J}$, are i.i.d. random variable extracted from a Gaussian probability distribution $P(J)= \mathcal{N}(0, J^2/N)$. 
+
 To find a feed-forward representation of the conditional probability of its Boltzmann distribution we have to compute the quantities in eq.\ref{eq:rho_ghann}, that, defining $h_l^{\pm}[\mathbf{x}_{<i}] =\pm J_{il} + \sum_{s=1}^{i-1} J_{sl} x_s$, can be written as:
 \begin{align*}
     \rho_i^{\pm} [\mathbf{x}_{<i}]  = \sum_{\mathbf{x}_{>i}}  \exp \bigg(
@@ -361,19 +358,16 @@ The CW$_N$, CW$_{\infty}$ and SK$_{RS/kRSB}$ architectures, presented in previou
     \item The MADE architecture\cite{pmlr-v37-germain15}, where the whole probability distribution is represented with a deep sequence of fully connected layers, with non-linear activation functions and masks in between them, to assure the autoregressive properties. Respect the 1L the deep architecture of MADE enhances the expressive power. The MADE$_{dw}$ used has $d$ hidden layers, each of them with width $w$ times the input variables $N$. For instance, the 1L architecture is equivalent to the MADE$_{11}$ and MADE$_{23}$ has two hidden fully-connected layers, each of them of width $3N$. 
 \end{itemize}
 
-The parameters of the ARNN are trained using the Kullback-Leibler divergence or equivalently the variational free energy, see equation \ref{eq:kl}. Given an ARNN, $Q^{\theta}$, that depend on a set of parameters $\theta$ and the Boltzmann distribution $P$, the variational free energy can be estimates as:
+The parameters of the ARNN are trained using the Kullback-Leibler divergence or equivalently the variational free energy, see equation \ref{eq:kl}. Given an ARNN, $Q^{\theta}$, that depend on a set of parameters $\theta$ and the Hamiltonian of the system $H$, the variational free energy can be estimates as:
 \begin{align*}
 F[Q^{\theta}] & = \sum_{\left\{ \mathbf{x} \right\}}Q^{\theta}\left[\frac{1}{\beta}\log Q^{\theta} + H[\mathbf{x}] \right]\\
 & \approx \sum_{\mathbf{x} \sim Q^{\theta}} \left[ \frac{1}{\beta}\log Q^{\theta} + H[\mathbf{x}]\right].
 \end{align*}
-The samples are extracted, thanks to the ancestral sampling, from the ARNN $Q^{\theta}$. At each step of the training, the derivative of the variational free energy with respect to the parameters $\theta$ is estimated and used to update the parameters of the ARNN. Then a new batch of samples is extracted from the ARNN and used again to compute the derivative of the variational free energy and update the parameters\cite{Wu2019}. This process was repeated until a stop criterion is meet or a maximum number of steps is reached. For each model and temperature, a maximum number of $1000$ epochs are allowed, with a batch size of $2000$ samples, and a learning rate of $0.001$. The ADAM algorithm\cite{kingma2014adam} was applied for the optimization of the ARNN parameters. An annealing procedure was used to improve the performances and avoid mode-collapse problems\cite{Wu2019}, where the inverse temperature $\beta$ was increased from $0.1$ to $2.0$ with a step of $0.05$. The code was written using the PyTorch framework\cite{NEURIPS2019_bdbca288}, and it is open-source, released in \cite{mygithub}.
-
-The CW$_N$ has all its parameters fixed and precomputed analytically, see eq.\ref{eq:params}. The CW$_{\infty}$ has one free parameter for each of its conditional probability distributions, and 1 shared parameter to be trained, see eq.\ref{eq:curie_weiss_cond2}. The parameters of the first layer of the SK$_{RS/kRSB}$ architecture are shared and fixed by the values of the couplings and fields of the hamiltonian. The parameters of the hidden layers are free and trained. The parameters of the MADE$_{dw}$, 1L and 1P architectures are free and trained.
-
-
-As explained in sec.\ref{sec:ARNN_boltzmann}, the variational free energy $F[Q^{\theta}]$ is always an upper bound of the free energy of the system, and its values will be used, in the following, as a benchmark of the performance of the ARNN architecture tested to approximate the Boltzmann distribution; after the training procedure, the variational free energy was estimated using 20,000 configurations sampled from each of the ARNN architecture considered. 
+The samples are extracted, thanks to the ancestral sampling, from the trial ARNN, $Q^{\theta}$. At each step of the training, the derivative of the variational free energy with respect to the parameters $\theta$ is estimated and used to update the parameters of the ARNN. Then a new batch of samples is extracted from the ARNN and used again to compute the derivative of the variational free energy and update the parameters\cite{Wu2019}. This process was repeated until a stop criterion is meet or a maximum number of steps is reached. For each model and temperature, a maximum number of $1000$ epochs are allowed, with a batch size of $2000$ samples, and a learning rate of $0.001$. The ADAM algorithm\cite{kingma2014adam} was applied for the optimization of the ARNN parameters. An annealing procedure was used to improve the performances and avoid mode-collapse problems\cite{Wu2019}, where the inverse temperature $\beta$ was increased from $0.1$ to $2.0$ with a step of $0.05$. The code was written using the PyTorch framework\cite{NEURIPS2019_bdbca288}, and it is open-source, released in \cite{mygithub}.
+The CW$_N$ has all its parameters fixed and precomputed analytically, see eq.\ref{eq:params}. The CW$_{\infty}$ has one free parameter for each of its conditional probability distributions to be trained, and one shared parameter, see eq.\ref{eq:curie_weiss_cond2}. The parameters of the first layer of the SK$_{RS/kRSB}$ architecture are shared and fixed by the values of the couplings and fields of the hamiltonian. The parameters of the hidden layers are free and trained. The parameters of the MADE$_{dw}$, 1L and 1P architectures are free and trained.
+As explained in sec.\ref{sec:ARNN_boltzmann}, the variational free energy $F[Q^{\theta}]$ is always an upper bound of the free energy of the system, and its values will be used, in the following, as a benchmark of the performance of the ARNN architecture in approximating the Boltzmann distribution; after the training procedure, the variational free energy was estimated using 20,000 configurations sampled from each of the ARNN architecture considered. 
 The training procedure was the same for all the experiments unless conversely specified.
-\paragraph{CW model}
+\subsection{The CW model}
 The results on the CW model, with $J=1$ and $h=0$, are shown in fig.\ref{fig:curie_weiss}. 
 \begin{figure}[h]
     \centering
@@ -381,10 +375,9 @@ The results on the CW model, with $J=1$ and $h=0$, are shown in fig.\ref{fig:cur
     \caption{\textbf{Results for CW model.} The CW model considered has $J=1$ and $h=0$ (see the text for details). The system undergoes a second-order phase transition at $\beta=1$ where a spontaneous magnetization appears\cite{kadanoff2000statistical}. [\textbf{A1, A2, A3}] Relative error in the estimation of the free energy for different system sizes with respect to the analytic solution. [\textbf{B}] Scaling with $N$ of the mean and max relative error of the two smaller architecture $1P$ and CW$_{\infty}$, both scaling linearly with the system's size. [\textbf{C}] Distribution of the overlaps of the samples generated by the ARNNs for the CW system with $N=200$ variables and $\beta=1.3$}
     \label{fig:curie_weiss}
 \end{figure} 
-
 The plots A1, A2, and A3, in the first row, show the relative error of the free energy density ($fe[P] = F[P]/N$), with respect to the exact one, computed analytically \cite{kadanoff2000statistical}, see appendix for details, for different system sizes $N$.  
 The variational free energy density estimated from samples generated with the CW$_N$ architecture does not have an appreciable difference with the analytic solution, and for the CW$_{\infty}$, it improves as the system size increases. Fig.\ref{fig:curie_weiss}.B plots the error, in the estimation of the free energy density for the architectures with fewer parameters, 1P and CW$_{\infty}$ (both scaling linearly with the system's size); It shows clearly that a deep architecture, in this case with only one more parameter, improves the accuracy by orders of magnitude. The need for deep architectures, already on a simple model as the CW, is indicated by the poor performance of the 1L architecture, despite its scaling of parameters as $N^2$, it achieves similar results to the 1P. The MADE architecture obtains good results but was not comparable to CW$_N$, even though having a similar number of parameters. The plot in fig.\ref{fig:curie_weiss}.c shows the distribution of the overlaps, $q_{\mathbf{a}, \mathbf{b}}=\frac{1}{N}\sum_{i} a_i b_i$ where $a_i, b_i$ are two system configurations, between the samples generated by the ARNNs. The distribution is computed at $\beta=1.3$ for $N=200$. It can be seen as the poor performance of the 1-layer networks (1P, 1L) is due to the difficulty of correctly representing the configurations with magnetization different from zero in the proximity of the phase transition. This could be due to mode collapse problems \cite{https://doi.org/10.48550/arxiv.2210.11145}, which do not affect the deeper ARNN architectures tested.
-\paragraph{SK model}
+\subsection{The SK model}
 In figure \ref{fig:SK}, the result of the SK model, with $J=1$ and $h=0$ are shown; as before in the first row there is the relative error in the estimation of the free energy density at different system sizes. 
 \begin{figure}[h]
     \centering 
@@ -412,8 +405,9 @@ In this study, the exact architecture  Autoregressive Neural Network (ARNN) arch
 
 The results, checking the ability of the ARNN architecture to learn the Boltzmann distribution of the CW and SK models, indicate that the derived architectures outperform commonly used ARNNs. Furthermore, the close connection between the physics of the problem and the neural network architecture is shown in the results of fig.\ref{fig:SK_MC}. In this case, the  SK$_{1RSB}$ architecture was trained on samples generated with Monte-Carlo technique from the Boltzmann distribution of an SK model; the weights of the first layer of the SK$_{1RSB}$ were found to have a strong correlation with the coupling parameters of the Hamiltonian.
 
-Even though the derivation of a simple and compact ARNN architecture is not always feasible for all types of pairwise interactions and exactly solvable physics systems are rare, the explicit form of the H$_2$ARNN and its clear physical interpretation provides a means to derive approximate architectures for specific Boltzmann distributions. \\
-In this work, while the ARNN architecture of an SK model was derived, its learnability was not thoroughly examined. The problem of finding the configurations of minimum energy for the SK model is known to belong to the NP-hard class, and the effectiveness of the ARNN approach in solving this problem is still uncertain and a matter of ongoing research \cite{https://doi.org/10.48550/arxiv.2210.11145, 10.1038/s42256-021-00401-3, condmat7020038}. Further systematic studies are needed to fully understand the learnability of the ARNN architecture presented in this work at very low temperatures and also on different systems.\\
+Even though the derivation of a simple and compact ARNN architecture is not always feasible for all types of pairwise interactions and exactly solvable physics systems are rare, the explicit form of the H$_2$ARNN and its clear physical interpretation provides a means to derive approximate architectures for specific Boltzmann distributions. 
+
+In this work, while the ARNN architecture of an SK model was derived, its learnability was not thoroughly examined. The problem of finding the configurations of minimum energy for the SK model is known to belong to the NP-hard class, and the effectiveness of the ARNN approach in solving this problem is still uncertain and a matter of ongoing research \cite{https://doi.org/10.48550/arxiv.2210.11145, 10.1038/s42256-021-00401-3, condmat7020038}. Further systematic studies are needed to fully understand the learnability of the ARNN architecture presented in this work at very low temperatures and also on different systems.
 
 There are several promising directions for future research to expand upon presented ARNN architectures. For instance, deriving the architecture for statistical models with more than binary variables. In statistical physics, the models with variables that have more than two states are called Potts models. The language models, where each variable represents a word, and could take values among a huge number of states, usually more than tens of thousand possible words (or states), belong to this set of systems. The generalization of the present work to Potts models could allow us to connect the physics of the problem to recent language generative models like the transformer architecture \cite{https://doi.org/10.48550/arxiv.2005.14165}. Another direction could be to consider systems with interactions beyond pairwise, to describe more complex probability distributions. Additionally, it would be interesting to examine sparse interacting system graphs, such as systems that interact on grids or random sparse graphs. The first case is fundamental for a large class of physics systems and image generation tasks, while the latter type, such as Erdos-Renyi interaction graphs, is common in optimization \cite{doi:10.1126/science.1073287} and inference problems \cite{Biazzo2022}. 
 %\section{SI}
