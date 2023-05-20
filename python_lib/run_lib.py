@@ -15,7 +15,7 @@ def train_net(
     stats_step=1,
     save_net=False,
     namefile_net="net",
-    init_steps = 5000
+    init_steps=5000
 ):
     stats = []
     net2train.train(

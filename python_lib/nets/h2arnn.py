@@ -14,10 +14,13 @@ class SK_krsb(nn.Module):
                  dict_nets={"k": 0},
                  dtype=torch.float32,
                  device="cpu",
+                 N_i=None,
+
                  ):
         super().__init__()
         N = model.N
-        N_i = N - n_i - 1
+        if N_i is None:
+            N_i = N - n_i - 1
         self.n_i = n_i
         self.N_i = N_i
         self.k = dict_nets["k"] if "k" in dict_nets else 0
@@ -56,19 +59,28 @@ class SK_krsb(nn.Module):
         torch.nn.init.normal_(self.bias_0, mean=0.0, std=1/N)
 
     def forward(self, m):
-        m_n_i = m[:, 1:]
-        m_i = m[:, 0]
-        res_p = F.logsigmoid(self.bias_p[0] + self.weight_p[0] * m_n_i)
-        res_m = F.logsigmoid(self.bias_m[0] + self.weight_m[0] * m_n_i)
-        for kk in range(1, self.k+1):
-            res_p = F.logsigmoid(self.bias_p[kk] + self.weight_p[kk] * res_p)
-            res_m = F.logsigmoid(self.bias_m[kk] + self.weight_m[kk] * res_m)
+        # print("n_i", self.n_i, "N_i", self.N_i, "k", self.k)
+        # print("m", m.shape)
+        if m.shape[1] > 0:
+            m_n_i = m[:, 1:]
+            m_i = m[:, 0]
+            #print("m_n_i", m_n_i.shape)
+            #print("m_i", m_i.shape)
+            res_p = F.logsigmoid(self.bias_p[0] + self.weight_p[0] * m_n_i)
+            res_m = F.logsigmoid(self.bias_m[0] + self.weight_m[0] * m_n_i)
+            for kk in range(1, self.k+1):
+                res_p = F.logsigmoid(
+                    self.bias_p[kk] + self.weight_p[kk] * res_p)
+                res_m = F.logsigmoid(
+                    self.bias_m[kk] + self.weight_m[kk] * res_m)
 
-        res_p = self.weight_p[-1] * res_p
-        res_m = self.weight_m[-1] * res_m
-        res_0 = self.bias_0 + self.weight_0 * m_i
+            res_p = self.weight_p[-1] * res_p
+            res_m = self.weight_m[-1] * res_m
+            res_0 = self.bias_0 + self.weight_0 * m_i
 
-        return torch.sigmoid(res_0 + res_p.sum(dim=1) + res_m.sum(dim=1))
+            return torch.sigmoid(res_0 + res_p.sum(dim=1) + res_m.sum(dim=1))
+        else:
+            return torch.sigmoid(self.bias_0)
 
     def set_params_exact(self, model, beta):
         return 1
@@ -84,14 +96,16 @@ class h2arnn(ANN):
         device="cpu",
         eps=1e-10,
         dict_nets={"set_exact": False},
-        learn_first_l=False
+        learn_first_l=False,
+        net=None,
     ):
+        print(net, net is None)
+        if net is None:
+            net = []
 
-        net = []
-
-        for n_i in range(model.N):
-            net.append(single_net(model, n_i, device=device,
-                       dtype=dtype, dict_nets=dict_nets))
+            for n_i in range(model.N):
+                net.append(single_net(model, n_i, device=device,
+                                      dtype=dtype, dict_nets=dict_nets))
 
         super(h2arnn, self).__init__(
             model, net, dtype=dtype, device=device, eps=eps, print_num_params=False)
@@ -102,6 +116,18 @@ class h2arnn(ANN):
             self.set_params_exact(model, 0.1)
 
         self.J = model.J.clone()
+
+        is_symmetric = torch.allclose(self.J, self.J.transpose(0, 1))
+        # Check if the matrix is lower triangular
+        is_lower_triangular = torch.all(self.J == torch.tril(self.J))
+        is_upper_triangular = torch.all(self.J == torch.triu(self.J))
+        if is_symmetric:
+            self.J = torch.tril(self.J + self.J.transpose(0, 1))
+        elif is_upper_triangular:
+            self.J = torch.tril(self.J)
+        if not is_lower_triangular:
+            print(
+                "Warning: the matrix J is not lower triangular, converted to lower triangular matrix")
 
         self.learn_first_l = learn_first_l
         if self.learn_first_l:
@@ -202,3 +228,40 @@ class h2arnn(ANN):
             stats = self.compute_stats(
                 beta, batch_size, print_=ifprint, batch_iter=batch_iter)
         return stats
+
+
+class h2arnn_sparse(h2arnn):
+
+    def __init__(self,
+                 model,
+                 single_net,
+                 input_mask,
+                 dtype=torch.float32,
+                 device="cpu",
+                 eps=1e-10,
+                 dict_nets={"set_exact": False},
+                 learn_first_l=False):
+
+        net = []
+        mask_J = []
+        for n_i in range(model.N):
+            sub_J = model.J[n_i:, 0:n_i]
+            non_zero_rows = torch.any(sub_J != 0, dim=1)
+            indxs = torch.argwhere(non_zero_rows).squeeze(dim=1)
+            if len(indxs) > 0 and indxs[0] != 0:
+                indxs = torch.concat([torch.tensor([0]), indxs], dim=0)
+            mask_J.append(indxs)
+            #print("n_i: ", n_i, "len(indxs): ", len(indxs), end=" ")
+            N_i = len(indxs) - 1 if len(indxs) > 0 else 0
+            net.append(single_net(model, n_i, device=device,
+                       dtype=dtype, dict_nets=dict_nets, N_i=N_i))
+
+        super().__init__(model, single_net, input_mask,
+                         dtype=dtype, device=device, eps=eps, dict_nets=dict_nets, learn_first_l=learn_first_l, net=net)
+
+        self.mask_J = mask_J
+
+    def first_l(self, x, n_i):
+        '''consider populated the lower triangular values of the matrix J'''
+
+        return F.linear(x, self.J[n_i:, 0:n_i][self.mask_J[n_i]])

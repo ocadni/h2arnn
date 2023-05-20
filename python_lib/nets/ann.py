@@ -16,13 +16,14 @@ def compute_stats(x, loss, log_prob, energy, beta, model, step=0, ifprint=True, 
         free_energy_std = loss.std() / (beta * N)
         entropy_mean = -log_prob.mean() / N
         energy_mean = energy.mean() / N
+        energy_min = energy.min() / N
         mag = x.mean(dim=0).cpu().detach().numpy()
         mag_mean = torch.abs(x.mean(dim=1)).mean(dim=0)
         mag_mean = mag_mean.cpu().detach().numpy().item()
         q = torch.histogram((x@x.T).flatten().cpu()/N,
                             bins=100, range=(-1, 1))[0]
         if ifprint:
-            str_p = f"\rstep: {step} {beta:.5f} fe: {free_energy_mean:.3f} +- {free_energy_std:.5f} E: {energy_mean:.3f}, S: {entropy_mean:.3f}, M: {mag_mean:.3}"
+            str_p = f"\rstep: {step} {beta:.5f} fe: {free_energy_mean:.3f} +- {free_energy_std:.5f}, E: {energy_mean:.3f}, E_min: {energy_min:.3f}, S: {entropy_mean:.3f}, M: {mag_mean:.3}"
             times["stats"] = time.time() - tt
             for kk in times:
                 str_p += f" {kk} : {times[kk]:.2}"
@@ -37,6 +38,7 @@ def compute_stats(x, loss, log_prob, energy, beta, model, step=0, ifprint=True, 
         "free_energy_std": free_energy_std,
         "entropy_mean": entropy_mean,
         "energy_mean": energy_mean,
+        "energy_min": energy_min,
         "mag": mag,
         "mag_mean": mag_mean,
         "q": q
@@ -155,6 +157,9 @@ class ANN(nn.Module):
                 temp = np.array([elem[kk]*elem[kk]
                                 for elem in stats_list]).sum()
                 res_stats[kk] = np.sqrt(temp/batch_iter)
+            elif kk == "energy_min":
+                res_stats[kk] = np.array([elem[kk]
+                                         for elem in stats_list]).min()
             else:
                 res_stats[kk] = np.array([elem[kk]
                                          for elem in stats_list]).mean()
