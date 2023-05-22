@@ -135,8 +135,10 @@ def from_file_case(args):
     betas = np.linspace(betas_r[0], betas_r[1], int(betas_r[2]))
     stats = []
 
-    coupl = np.loadtxt(open(args.file_couplings, "r"))
-
+    coupl = np.array(np.genfromtxt(args.file_couplings,
+                     delimiter=' '), dtype=np.float_)
+    vals = coupl[:, 2]
+    indexes = coupl[:, 0:2].astype(int)
     N = int(np.max(coupl[:, 0:2]) + 1)
 
     H = torch.ones(N)
@@ -144,11 +146,19 @@ def from_file_case(args):
     J = torch.zeros(N, N)
     H = hh * H
 
-    for (i, j, val) in coupl:
-        if i > j:
-            J[int(i)][int(j)] += val
-        else:
-            J[int(j)][int(i)] += val
+    J[indexes[:, 0], indexes[:, 1]] = torch.Tensor(vals)
+    is_symmetric = torch.allclose(J, J.transpose(0, 1))
+    is_lower_triangular = torch.all(J == torch.tril(J))
+    is_upper_triangular = torch.all(J == torch.triu(J))
+    if is_symmetric:
+        J = torch.tril(J + J.transpose(0, 1))
+        print("(couplings) symmetric -> lower triangular")
+    elif is_upper_triangular:
+        J = J.transpose(0, 1)
+        print("(couplings) upper triangular -> lower triangular")
+    elif is_lower_triangular:
+        print("(couplings) lower triangular [OK]")
+
     if args.file_fields != "no fields file":
         fields = np.loadtxt(open(args.file_fields, "r"))
         for (i, val) in fields:
