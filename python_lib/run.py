@@ -28,9 +28,9 @@ def file_name(args, net=False):
             os.makedirs(args.save_dir+"nets/")
 
     if net:
-        return args.save_dir + "nets/" + f"N{args.N}_seed{args.seed}_model{args.model}_net_spec{args.net_spec}_J{args.J:.2}_h{args.h:.2}_lr{args.lr:.2}_max_step{args.max_step}_batch_size{args.batch_size}_std_fe_limit{args.std_fe_limit:.2}"
+        return args.save_dir + "nets/" + args.file_name + f"N{args.N}_seed{args.seed}_model{args.model}_net_spec{args.net_spec}_J{args.J:.2}_h{args.h:.2}_lr{args.lr:.2}_max_step{args.max_step}_batch_size{args.batch_size}_std_fe_limit{args.std_fe_limit:.2}"
     else:
-        return args.save_dir + f"N{args.N}_seed{args.seed}_model{args.model}_net_spec{args.net_spec}"
+        return args.save_dir + args.file_name + f"N{args.N}_seed{args.seed}_model{args.model}_net_spec{args.net_spec}"
 
 
 def parse_args():
@@ -46,7 +46,7 @@ def parse_args():
     parser.add_argument(
         "--file_name",
         type=str,
-        default="data",
+        default="",
         help="name of the file in which the results will be saved",
     )
     parser.add_argument(
