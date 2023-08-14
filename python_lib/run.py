@@ -142,22 +142,13 @@ def from_file_case(args):
     N = int(np.max(coupl[:, 0:2]) + 1)
 
     H = torch.ones(N)
-    J_interaction = torch.ones(N, N) - torch.eye(N, N)
+    #J_interaction = torch.ones(N, N) - torch.eye(N, N)
     J = torch.zeros(N, N)
     H = hh * H
 
     J[indexes[:, 0], indexes[:, 1]] = torch.Tensor(vals)
-    is_symmetric = torch.allclose(J, J.transpose(0, 1))
-    is_lower_triangular = torch.all(J == torch.tril(J))
-    is_upper_triangular = torch.all(J == torch.triu(J))
-    if is_symmetric:
-        J = torch.tril(J + J.transpose(0, 1))
-        print("(couplings) symmetric -> lower triangular")
-    elif is_upper_triangular:
-        J = J.transpose(0, 1)
-        print("(couplings) upper triangular -> lower triangular")
-    elif is_lower_triangular:
-        print("(couplings) lower triangular [OK]")
+    J = torch.tril(J + J.transpose(0, 1))
+    J_interaction = J != 0
 
     if args.file_fields != "no fields file":
         fields = np.loadtxt(open(args.file_fields, "r"))
@@ -371,9 +362,11 @@ def SK_case(args):
     H = torch.ones(N)
     H = hh * H
 
-    J_interaction = torch.ones(N, N) - torch.eye(N, N)
+    J_interaction = torch.tril(torch.ones(N, N), diagonal=-1)
+
     J_prob = graph_gen.spin_glass(N, J=JJ, J_0=0)
     J = graph_gen.set_J(J_interaction, J_prob)
+
     SK_model = spins_model.model(N, H, J, J_interaction, device=device)
 
     dict_nets = {"set_exact": False}

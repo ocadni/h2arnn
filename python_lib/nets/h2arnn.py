@@ -116,18 +116,8 @@ class h2arnn(ANN):
             self.set_params_exact(model, 0.1)
 
         self.J = model.J.clone()
-
-        is_symmetric = torch.allclose(self.J, self.J.transpose(0, 1))
-        # Check if the matrix is lower triangular
-        is_lower_triangular = torch.all(self.J == torch.tril(self.J))
-        is_upper_triangular = torch.all(self.J == torch.triu(self.J))
-        if is_symmetric:
-            self.J = torch.tril(self.J + self.J.transpose(0, 1))
-        elif is_upper_triangular:
-            self.J = torch.tril(self.J)
-        if not is_lower_triangular:
-            print(
-                "Warning: the matrix J is not lower triangular, converted to lower triangular matrix")
+        self.J = self.J.to(device=device, dtype=dtype)
+        self.J = torch.tril(self.J + self.J.transpose(0, 1))
 
         self.learn_first_l = learn_first_l
         if self.learn_first_l:
@@ -137,6 +127,8 @@ class h2arnn(ANN):
         self.print_num_params(train=False)
 
     def set_params_first_l(self, model):
+        if self.beta_model:
+            J = model.beta * model.J.clone()
         if self.learn_first_l:
             self.J = nn.Parameter(model.J.clone())
         else:
