@@ -127,8 +127,8 @@ class h2arnn(ANN):
         self.print_num_params(train=False)
 
     def set_params_first_l(self, model):
-        if self.beta_model:
-            J = model.beta * model.J.clone()
+        # if self.beta_model:
+        #    J = model.beta * model.J.clone()
         if self.learn_first_l:
             self.J = nn.Parameter(model.J.clone())
         else:
