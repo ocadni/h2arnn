@@ -1,5 +1,6 @@
 # H2ARNN 
 ## Pairwise interacting systems (H2) AutoRegressive Neural Network
+[![DOI](https://zenodo.org/badge/196019537.svg)](https://zenodo.org/badge/latestdoi/196019537)
 
 This repository contains a python package to train Autoregressive Neural Networks (arnn) to learn to generate according to the classical Boltzmann distribution of a generic pairwise interacting spins system.  The architectures of the autoregressive neural newtorks implemented so far are the MADE architecture, the CW architecture, the SK-krsb architecture. New architectures can be easily added.
 This repository contains the code used to generate the images and results presented in the paper: 
