@@ -89,25 +89,30 @@ class CWARNN_inf_(nn.Module):
         nn (_type_): _description_
     """
 
-    def __init__(self, N, device, dtype):
+    def __init__(self, N, device, dtype, shared_var=True, activation=torch.sign):
         """_summary_"""
         super(CWARNN_inf_, self).__init__()
         self.N = N
         self.dtype = dtype
         self.device = device
+        self.shared_var = shared_var
+        self.activation = activation
         one_vars = torch.zeros((1, N), device=device, dtype=dtype)
-        shared_vars = torch.zeros((1), device=device, dtype=dtype)
         self.one_vars = nn.Parameter(one_vars)
-        self.shared_var = nn.Parameter(shared_vars)
         torch.nn.init.normal_(self.one_vars, mean=0.0, std=1/N)
-        torch.nn.init.normal_(self.shared_var, mean=0.0, std=1/N)
+        if shared_var:
+            shared_vars = torch.zeros((1), device=device, dtype=dtype)
+            self.shared_var = nn.Parameter(shared_vars)
+            torch.nn.init.normal_(self.shared_var, mean=0.0, std=1/N)
 
     def forward(self, x):
         m = x.shape[0]
         res = torch.zeros((m, self.N),
                           device=self.device, dtype=self.dtype)
         torch.cumsum(x[:, :-1], dim=1, out=res[:, 1:])
-        x1 = self.one_vars*torch.sign(res)
+        x1 = self.one_vars*self.activation(res)
+        if self.shared_var:
+            x2 = self.shared_var * res
         x2 = self.shared_var * res
         return torch.sigmoid(x2 + x1)
 
@@ -123,10 +128,13 @@ class CWARNN_inf(ANN):
         dtype=torch.float32,
         device="cpu",
         eps=1e-10,
-        dict_nets={"bias": False},
+        dict_nets={"bias": False, "shared_var": True,
+                   "activation": torch.sign},
     ):
-
-        net = CWARNN_inf_(model.N, device=device, dtype=dtype)
+        shared_var = dict_nets["shared_var"] if "shared_var" in dict_nets else True
+        activation = dict_nets["activation"] if "activation" in dict_nets else torch.sign
+        net = CWARNN_inf_(model.N, device=device, dtype=dtype,
+                          shared_var=shared_var, activation=activation)
         super(CWARNN_inf, self).__init__(
             model, net, dtype=dtype, device=device, eps=eps)
 

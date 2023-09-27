@@ -312,6 +312,23 @@ def CW_case(args):
             net = cw_arnn.CWARNN_inf(CW_model,
                                      device=device,
                                      )
+        elif net_spec == "CWARNN_inf_no_shared":
+            net = cw_arnn.CWARNN_inf(CW_model,
+                                     device=device,
+                                     dict_nets={"shared_var": False}
+                                     )
+        elif net_spec == "CWARNN_inf_relu":
+            net = cw_arnn.CWARNN_inf(CW_model,
+                                     device=device,
+                                     dict_nets={"shared_var": True,
+                                                "activation": torch.nn.ReLU()}
+                                     )
+        elif net_spec == "CWARNN_inf_tanh":
+            net = cw_arnn.CWARNN_inf(CW_model,
+                                     device=device,
+                                     dict_nets={"shared_var": True,
+                                                "activation": torch.nn.Tanh()}
+                                     )
         elif net_spec == "CWARNN_free":
             list_n = h2arnn.CWARNN
             input_mask = torch.tril(J_interaction, diagonal=-1)
