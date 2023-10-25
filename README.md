@@ -2,13 +2,10 @@
 ## Pairwise interacting systems (H2) AutoRegressive Neural Network
 [![DOI](https://zenodo.org/badge/196019537.svg)](https://zenodo.org/badge/latestdoi/196019537)
 
-This repository contains a python package to train Autoregressive Neural Networks (arnn) to learn to generate according to the classical Boltzmann distribution of a generic pairwise interacting spins system.  The architectures of the autoregressive neural newtorks implemented so far are the MADE architecture, the CW architecture, the SK-krsb architecture. New architectures can be easily added.
+This repository contains a Python package to train Autoregressive Neural Networks (arnn) to learn to generate according to the classical Boltzmann distribution of a generic pairwise interacting spins system.  The architectures of the autoregressive neural networks implemented so far are the MADE architecture, the CW architecture, and the SK-krsb architecture. New architectures can be easily added.
 This repository contains the code used to generate the images and results presented in the paper: 
 
- > The autoregressive neural network architecture of the Boltzmann distribution of pairwise interacting spins systems.
- >
- > Indaco Biazzo [[arXiv:2302.08347](https://arxiv.org/abs/2302.08347)]
-
+ > Biazzo, Indaco. *"The autoregressive neural network architecture of the Boltzmann distribution of pairwise interacting spins systems."* Commun Phys 6, 296 (2023).[[https://doi.org/10.1038/s42005-023-01416-5)](https://doi.org/10.1038/s42005-023-01416-5)].
 
 ## Requirements
 Tested with python 3.10.4 and:
@@ -40,7 +37,7 @@ Tested with python 3.10.4 and:
 If you use the code please cite the paper:
 
 
-Biazzo, Indaco. *"The autoregressive neural network architecture of the Boltzmann distribution of pairwise interacting spins systems."* arXiv preprint [[arXiv:2302.08347](https://arxiv.org/abs/2302.08347)] (2023).
+Biazzo, Indaco. *"The autoregressive neural network architecture of the Boltzmann distribution of pairwise interacting spins systems."* Commun Phys 6, 296 (2023).[[https://doi.org/10.1038/s42005-023-01416-5)](https://doi.org/10.1038/s42005-023-01416-5)].
 
 ## License
 - MIT License. See the LICENSE file for details.
