@@ -34,10 +34,10 @@ Tested with python 3.10.4 and:
     2. `./results/CW/CW_plots.ipynb`
 
 ## Citation
-If you use the code please cite the paper:
+If you use the code, please cite the paper:
 
 
-Biazzo, Indaco. *"The autoregressive neural network architecture of the Boltzmann distribution of pairwise interacting spins systems."* Commun Phys 6, 296 (2023).[[https://doi.org/10.1038/s42005-023-01416-5)](https://doi.org/10.1038/s42005-023-01416-5)].
+Biazzo, I., Braunstein, A., Dall’Asta, L. et al. (2022). A Bayesian generative neural network framework for epidemic inference problems. *Scientific Reports*, 12, 19673. Available at: [https://doi.org/10.1038/s41598-022-20898-x](https://doi.org/10.1038/s41598-022-20898-x)
 
 ## License
 - MIT License. See the LICENSE file for details.
